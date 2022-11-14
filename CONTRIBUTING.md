@@ -94,3 +94,5 @@ For example if Nate Stringham would like to a support for media queries he could
 Please format your Rust code with `cargo fmt` before you commit.
 
 Please use [Prettier](https://prettier.io) for markdown files.
+
+You may want to enable the `Format On Save` option in VS-Code settings
