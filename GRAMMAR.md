@@ -36,6 +36,16 @@ This document intentionally ignores operator persistence. This mean that this do
 
 we are not supporting multi type shorthand properties like `font` and `border` but we are supporting shorthands for multiple sides like `border-color` and `margin`
 
+### Things we might add later
+
+these are features we don't currently have included but might include in the future.
+
+- comments `/* text */`
+- value functions `calc(max(100vh, 100%) - 64px)`
+- more properties
+- key frames
+- font face declarations
+
 ## Utilities
 
 ```bnf
