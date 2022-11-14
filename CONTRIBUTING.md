@@ -35,7 +35,7 @@ Install the [rust-analyzer VS-Code Extension](https://marketplace.visualstudio.c
 
 Install the [Better TOML VS-Code Extension](https://marketplace.visualstudio.com/items?itemName=bungcip.better-toml)
 
-If you prefer using a GUI for unit tests instead of command line you might also like the the [Rust Test Explorer VS-Code Extension](https://marketplace.visualstudio.com/items?itemName=swellaby.vscode-rust-test-adapter)
+If you prefer using a GUI for unit tests instead of command line you might also like the [Rust Test Explorer VS-Code Extension](https://marketplace.visualstudio.com/items?itemName=swellaby.vscode-rust-test-adapter)
 
 ## Useful Commands
 
