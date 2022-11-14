@@ -162,16 +162,16 @@ p.class.class2#id[target].class:has(p.class) {}
 <!-- prettier-ignore -->
 ```css
 * {
-text-align: center;
-color: red;
-background-color: blue;
-height: 100px;
-width: 100px;
-font-size: 18px;
-font-family: Arial;
-font-family: "Arial";
-opacity: 0.5;
-padding: 10px;
+    text-align: center;
+    color: red;
+    background-color: blue;
+    height: 100px;
+    width: 100px;
+    font-size: 18px;
+    font-family: Arial;
+    font-family: "Arial";
+    opacity: 0.5;
+    padding: 10px;
 }
 ```
 
