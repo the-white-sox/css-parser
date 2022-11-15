@@ -90,14 +90,14 @@ mod tests {
     use super::*;
 
     #[test]
-    fn empty_string() {
+    fn lambda() {
         let input = "";
         let tokens = tokenize(input);
         assert_eq!(tokens.len(), 0);
     }
 
     #[test]
-    fn one_character_identifier() {
+    fn identifier_with_one_character() {
         let input = "a";
         let tokens = tokenize(input);
         assert_eq!(tokens.len(), 1);
@@ -105,7 +105,7 @@ mod tests {
     }
 
     #[test]
-    fn multi_character_identifier() {
+    fn identifier_with_multiple_characters() {
         let input = "abc";
         let tokens = tokenize(input);
         assert_eq!(tokens.len(), 1);
@@ -145,7 +145,7 @@ mod tests {
     }
 
     #[test]
-    fn one_character_function() {
+    fn function_with_one_character() {
         let input = "a(";
         let tokens = tokenize(input);
         assert_eq!(tokens.len(), 1);
@@ -153,7 +153,7 @@ mod tests {
     }
 
     #[test]
-    fn multi_character_function() {
+    fn function_with_multiple_characters() {
         let input = "abc(";
         let tokens = tokenize(input);
         assert_eq!(tokens.len(), 1);
@@ -177,8 +177,240 @@ mod tests {
     }
 
     #[test]
+    fn hash_delimiter() {
+        let input = "#";
+        let tokens = tokenize(input);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(tokens[0].token, Token::Delimiter('#'));
+    }
+
+    #[test]
+    fn hash_one_letter() {
+        let input = "#a";
+        let tokens = tokenize(input);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(
+            tokens[0].token,
+            Token::Hash("a".to_string(), HashType::Unrestricted)
+        );
+    }
+
+    #[test]
+    fn hash_two_letters() {
+        let input = "#a";
+        let tokens = tokenize(input);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(
+            tokens[0].token,
+            Token::Hash("a".to_string(), HashType::Unrestricted)
+        );
+    }
+
+    #[test]
+    fn hash_three_letters() {
+        let input = "#abc";
+        let tokens = tokenize(input);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(
+            tokens[0].token,
+            Token::Hash("abc".to_string(), HashType::Id)
+        );
+    }
+
+    #[test]
+    fn hash_four_letters() {
+        let input = "#abcd";
+        let tokens = tokenize(input);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(
+            tokens[0].token,
+            Token::Hash("abcd".to_string(), HashType::Id)
+        );
+    }
+
+    #[test]
+    fn hash_one_digit() {
+        let input = "#1";
+        let tokens = tokenize(input);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(
+            tokens[0].token,
+            Token::Hash("1".to_string(), HashType::Unrestricted)
+        );
+    }
+
+    #[test]
+    fn hash_four_digits() {
+        let input = "#1234";
+        let tokens = tokenize(input);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(
+            tokens[0].token,
+            Token::Hash("1234".to_string(), HashType::Unrestricted)
+        );
+    }
+
+    #[test]
+    fn hash_unrestricted_one_character() {
+        let input = "#a";
+        let tokens = tokenize(input);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(
+            tokens[0].token,
+            Token::Hash("a".to_string(), HashType::Unrestricted)
+        );
+    }
+
+    #[test]
+    fn string_empty_double() {
+        let input = "\"\"";
+        let tokens = tokenize(input);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(tokens[0].token, Token::String("".to_string()));
+    }
+
+    #[test]
+    fn string_empty_single() {
+        let input = "''";
+        let tokens = tokenize(input);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(tokens[0].token, Token::String("".to_string()));
+    }
+
+    #[test]
+    fn string_one_character_double() {
+        let input = "\"a\"";
+        let tokens = tokenize(input);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(tokens[0].token, Token::String("a".to_string()));
+    }
+
+    #[test]
+    fn string_one_character_single() {
+        let input = "'a'";
+        let tokens = tokenize(input);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(tokens[0].token, Token::String("a".to_string()));
+    }
+
+    #[test]
+    fn string_many_characters_double() {
+        let input = "\"abc def\"";
+        let tokens = tokenize(input);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(tokens[0].token, Token::String("abc def".to_string()));
+    }
+
+    #[test]
+    fn string_many_characters_single() {
+        let input = "'abc def'";
+        let tokens = tokenize(input);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(tokens[0].token, Token::String("abc def".to_string()));
+    }
+
+    #[test]
+    fn string_with_special_characters() {
+        let input = "\"!@#$%^&*-+=;:,.?/`~|()[]{}\"";
+        let tokens = tokenize(input);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(
+            tokens[0].token,
+            Token::String("!@#$%^&*-+=;:,.?/`~|()[]{}".to_string())
+        );
+    }
+
+    #[test]
+    fn string_with_escaped_double() {
+        let input = "\"\\\"\"";
+        let tokens = tokenize(input);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(tokens[0].token, Token::String("\"".to_string()));
+    }
+
+    #[test]
+    fn string_with_escaped_single() {
+        let input = "'\\''";
+        let tokens = tokenize(input);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(tokens[0].token, Token::String("'".to_string()));
+    }
+
+    #[test]
+    fn string_with_escaped_newline() {
+        let input = "\"\\\n\"";
+        let tokens = tokenize(input);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(tokens[0].token, Token::String("\n".to_string()));
+    }
+
+    #[test]
+    fn string_with_no_close() {
+        let input = "\"abc";
+        let tokens = tokenize(input);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(tokens[0].token, Token::BadString("abc".to_string()));
+    }
+
+    #[test]
+    fn string_interrupted_by_newline() {
+        let input = "\"abc\n";
+        let tokens = tokenize(input);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(tokens[0].token, Token::BadString("abc".to_string()));
+    }
+
+    #[test]
     fn todo_simple() {
         todo!("add tests for untested things");
+    }
+
+    #[test]
+    fn whitespace_one_space() {
+        let input = " ";
+        let tokens = tokenize(input);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(tokens[0].token, Token::Whitespace());
+    }
+
+    #[test]
+    fn whitespace_many_spaces() {
+        let input = "   ";
+        let tokens = tokenize(input);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(tokens[0].token, Token::Whitespace());
+    }
+
+    #[test]
+    fn whitespace_one_tab() {
+        let input = "\t";
+        let tokens = tokenize(input);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(tokens[0].token, Token::Whitespace());
+    }
+
+    #[test]
+    fn whitespace_newline() {
+        let input = "\n";
+        let tokens = tokenize(input);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(tokens[0].token, Token::Whitespace());
+    }
+
+    #[test]
+    fn whitespace_carriage_return() {
+        let input = "\r";
+        let tokens = tokenize(input);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(tokens[0].token, Token::Whitespace());
+    }
+
+    #[test]
+    fn whitespace_many_characters() {
+        let input = "\t\t\t        \r\n   \r\n  \n \r\r\t";
+        let tokens = tokenize(input);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(tokens[0].token, Token::Whitespace());
     }
 
     #[test]
