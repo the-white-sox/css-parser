@@ -63,7 +63,7 @@ these are features we don't currently have included but might include in the fut
 
 ```bnf
 <stylesheet> ::= <imports> <rules> <EOF>
-<rules> ::= <rule> <rules> | <media-query> <rule> | ""
+<rules> ::= <rule> <rules> | <media-query> <rules> | ""
 ```
 
 ## Imports
@@ -76,13 +76,13 @@ these are features we don't currently have included but might include in the fut
 ## Media Query
 
 ```bnf
-<media-query> ::= "@media" <media-query-condition-list> "{" <rule> "}"
+<media-query> ::= "@media" <media-query-condition-list> "{" <rules> "}"
 <media-query-condition-list> ::= <media-query-condition> "," <media-query-condition-list> | <media-query-condition>
 <media-query-condition> ::= <media-type> | "(" <media-feature> ")" | "not" <media-query-condition> | <media-query-condition> "and" <media-query-condition> | <media-query-condition> "or" <media-query-condition> | "(" <media-query-condition> ")"
 <media-type> ::= "all" | "screen" | "print"
 <media-feature> ::= "color" | "monochrome"
 <media-feature> ::= "width:" <length> | "min-width:" <length> | "max-width:" <length> | "height:" <length> | "min-height:" <length> | "max-height:" <length>
-<media-feature> ::= "orientation:" <orientation-value> | "orientation:" <orientation-value>
+<media-feature> ::= "orientation:" <orientation-value>
 <media-feature> ::= "hover:" <hover-value> | "any-hover:" <hover-value> | "pointer:" <pointer-value> | "any-pointer:" <pointer-value>
 <media-feature> ::= "prefers-color-scheme:" <prefers-color-scheme-value>
 <orientation-value> ::= "portrait" | "landscape"
@@ -146,7 +146,7 @@ p.class.class2#id[target].class:has(p.class) {}
 
 ```bnf
 <declaration-list> ::= <declaration> ";" <declaration-list> | <declaration> | <declaration> ";"
-<declaration> ::= <color-property> ":" <color> | <sides-color-property> ":"
+<declaration> ::= <color-property> ":" <color> | <sides-color-property> ":" <sides-color>
 <declaration> ::= <length-property> ":" <length-or-percentage> | <side-lengths-property> ":" <side-lengths>
 <declaration> ::= "font-family" ":" <string>
 <declaration> ::= "opacity" ":" <alpha>
@@ -179,7 +179,7 @@ p.class.class2#id[target].class:has(p.class) {}
 
 ```bnf
 <side-lengths> ::= <length-or-percentage> | <length-or-percentage> <length-or-percentage> | <length-or-percentage> <length-or-percentage> <length-or-percentage> <length-or-percentage>
-<length-or-percentage> ::= <length> | <percentage>|
+<length-or-percentage> ::= <length> | <percentage>
 <percentage> ::= <number> "%"
 <length> ::= "0" | <number> <length-unit>
 <length-unit> ::= "px" | "cm" | "in" | "pt" | "em" | "rem" | "vh" | "vw" | "vb" | "vi" | "vmin" | "vmax"
@@ -188,7 +188,7 @@ p.class.class2#id[target].class:has(p.class) {}
 <sides-color> :== <color> | <color> <color> | <color> <color> <color> <color>
 <color> ::= "black" | "silver" | "gray" | "grey" | "white" | "maroon" | "red" | "purple" | "fuchsia" | "green" | "lime" | "olive" | "yellow" | "navy" | "blue" | "teal" | "aqua" | <rgb> | <hsl> | <hex>
 <rgb> ::= "rgb(" <0-255> "," <0-255> "," <0-255> ")" | "rgba(" <0-255> "," <0-255> "," <0-255> "," <alpha> ")"
-<hex> ::= "#" <hex-byte> <hex-byte> <hex-byte> | "#" <hex-byte> <hex-byte> <hex-byte> <hex-byte> | "#" <hex-byte> <hex-digit> | "#" <hex-byte> <hex-byte>
+<hex> ::= "#" <hex-byte> <hex-byte> <hex-byte> | "#" <hex-byte> <hex-byte> <hex-byte> <hex-byte> | "#" <hex-digit> <hex-digit> <hex-digit> | "#" <hex-digit> <hex-digit> <hex-digit> <hex-digit>
 <hsl> ::= "hsl(" <0-360> "," <0-100> "%," <0-100> "%)" | "hsla(" <0-360> "," <0-100> "%," <0-100> "%," <alpha> ")"
 <alpha> ::= "0." <digits> | "." <digits> | 1 | 0
 <text-align-value> ::= "left" | "right" | "center" | "justify"
