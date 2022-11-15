@@ -2,6 +2,8 @@ use std::env;
 use std::fs;
 
 mod parser;
+mod tokenizer;
+
 use crate::parser::parse;
 
 fn main() {

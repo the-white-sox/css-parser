@@ -1,5 +1,7 @@
 use std::fmt;
 
+use crate::tokenizer::tokenize;
+
 pub struct ParsingError {
     line: usize,
     column: usize,
@@ -19,5 +21,6 @@ impl fmt::Display for ParsingError {
 
 /// Parses a iterator of characters as css
 pub fn parse(input: &str) -> Result<(), ParsingError> {
-    todo!()
+    tokenize(input);
+    Ok(())
 }
