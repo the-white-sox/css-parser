@@ -73,7 +73,7 @@ impl<I: Iterator<Item = char>> Tokenizer<I> {
     }
 
     /// Consumes a sequence of numbers letters hyphens and underscores
-    fn consume_identifier(&mut self) -> String {
+    fn consume_identifier_sequence(&mut self) -> String {
         let mut identifier = String::new();
 
         while let Some(&(_, _, character)) = self.chars.peek() {
@@ -90,6 +90,27 @@ impl<I: Iterator<Item = char>> Tokenizer<I> {
         }
 
         identifier
+    }
+
+    /// Consumes a sequence of numbers letters hyphens and underscores then returns a Token
+    ///
+    /// can return a Token::Identifier, Token::Function, Token::Url, or Token::BadUrl
+    fn consume_identifier_like_token(&mut self, first_character: char) -> Token {
+        let mut identifier = self.consume_identifier_sequence();
+
+        identifier.insert(0, first_character);
+
+        if let Some((_, _, '(')) = self.chars.peek() {
+            self.chars.next();
+
+            if identifier.eq_ignore_ascii_case("url") {
+                todo!("add support for urls");
+            } else {
+                Token::Function(identifier)
+            }
+        } else {
+            Token::Identifier(identifier)
+        }
     }
 }
 
@@ -134,9 +155,9 @@ impl<I: Iterator<Item = char>> Iterator for Tokenizer<I> {
                 Token::Whitespace()
             }
 
-            'a'..='z' | 'A'..='Z' | '_' => {
-                todo!("add support for identifiers, functions, and urls")
-            }
+            // identifiers, functions, and urls
+            'a'..='z' | 'A'..='Z' | '_' => self.consume_identifier_like_token(character),
+
             '0'..='9' => todo!("add support for numbers, percentages, and dimensions"),
             '#' => todo!("add support for hashes"),
             '"' => todo!("add support for strings"),
@@ -148,7 +169,7 @@ impl<I: Iterator<Item = char>> Iterator for Tokenizer<I> {
             // at keywords
             '@' => {
                 if self.would_start_identifier() {
-                    Token::AtKeyword(self.consume_identifier())
+                    Token::AtKeyword(self.consume_identifier_sequence())
                 } else {
                     Token::Delimiter('@')
                 }
