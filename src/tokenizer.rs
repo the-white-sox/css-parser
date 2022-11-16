@@ -428,8 +428,73 @@ mod tests {
     }
 
     #[test]
-    fn todo_simple() {
-        todo!("add tests for untested things");
+    fn number_zero() {
+        assert_tokens("0", vec![Token::Number(0.0)]);
+    }
+
+    #[test]
+    fn number_one() {
+        assert_tokens("1", vec![Token::Number(1.0)]);
+    }
+
+    #[test]
+    fn number_negative_one() {
+        assert_tokens("-1", vec![Token::Number(-1.0)]);
+    }
+
+    #[test]
+    fn number_positive_one() {
+        assert_tokens("+1", vec![Token::Number(1.0)]);
+    }
+
+    #[test]
+    fn number_one_point_zero() {
+        assert_tokens("1.0", vec![Token::Number(1.0)]);
+    }
+
+    #[test]
+    fn number_one_point_five() {
+        assert_tokens("1.5", vec![Token::Number(1.5)]);
+    }
+
+    #[test]
+    fn number_point_five() {
+        assert_tokens(".5", vec![Token::Number(0.5)]);
+    }
+
+    #[test]
+    fn percentage_zero() {
+        assert_tokens("0%", vec![Token::Percentage(0.0)]);
+    }
+
+    #[test]
+    fn percentage_one() {
+        assert_tokens("1%", vec![Token::Percentage(1.0)]);
+    }
+
+    #[test]
+    fn percentage_one_hundred() {
+        assert_tokens("100%", vec![Token::Percentage(100.0)]);
+    }
+
+    #[test]
+    fn percentage_negative_three_hundred() {
+        assert_tokens("-300%", vec![Token::Percentage(-300.0)]);
+    }
+
+    #[test]
+    fn percentage_positive_point_five() {
+        assert_tokens("+.5%", vec![Token::Percentage(0.5)]);
+    }
+
+    #[test]
+    fn dimension_zero_px() {
+        assert_tokens("0px", vec![Token::Dimension(0.0, "px".to_string())]);
+    }
+
+    #[test]
+    fn dimension_negative_three_em() {
+        assert_tokens("-3em", vec![Token::Dimension(-3.0, "em".to_string())]);
     }
 
     #[test]
