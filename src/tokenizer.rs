@@ -194,6 +194,86 @@ mod tests {
     }
 
     #[test]
+    fn function_with_hyphen_and_underscore() {
+        assert_tokens("a-b_c(", vec![Token::Function("a-b_c".to_string())]);
+    }
+
+    #[test]
+    fn function_url_double_quote() {
+        assert_tokens(
+            "url(\"https://example.com/image.png\")",
+            vec![
+                Token::Function("url".to_string()),
+                Token::String("https://example.com/image.png".to_string()),
+                Token::CloseParenthesis(),
+            ],
+        );
+    }
+
+    #[test]
+    fn function_url_single_quote() {
+        assert_tokens(
+            "url('https://example.com/image.png')",
+            vec![
+                Token::Function("url".to_string()),
+                Token::String("https://example.com/image.png".to_string()),
+                Token::CloseParenthesis(),
+            ],
+        );
+    }
+
+    #[test]
+    fn url_empty() {
+        assert_tokens("url()", vec![Token::Url("".to_string())]);
+    }
+
+    #[test]
+    fn url_one_character() {
+        assert_tokens("url(a)", vec![Token::Url("a".to_string())]);
+    }
+
+    #[test]
+    fn url_example_image() {
+        assert_tokens(
+            "url(https://example.com/image.png)",
+            vec![Token::Url("https://example.com/image.png".to_string())],
+        );
+    }
+
+    #[test]
+    fn url_with_whitespace() {
+        assert_tokens(
+            "url(   https://example.com/image.png   )",
+            vec![Token::Url("https://example.com/image.png".to_string())],
+        );
+    }
+
+    #[test]
+    fn bad_url_interrupted_by_whitespace() {
+        assert_tokens("url(https://url.with spaces.com)", vec![Token::BadUrl()]);
+    }
+
+    #[test]
+    fn bad_url_with_double_quote() {
+        assert_tokens("url(https://url.with\"quote.com)", vec![Token::BadUrl()]);
+    }
+
+    #[test]
+    fn bad_url_with_single_quote() {
+        assert_tokens("url(https://url.with'quote.com)", vec![Token::BadUrl()]);
+    }
+
+    #[test]
+    fn bad_url_with_open_paren() {
+        assert_tokens("url(https://url.with(paren.com)", vec![Token::BadUrl()]);
+    }
+
+    #[test]
+    fn bad_url_with_null() {
+        assert_tokens("url(https://url.with\0null.com)", vec![Token::BadUrl()]);
+    }
+
+    #[test]
     fn at_media() {
         assert_tokens("@media", vec![Token::AtKeyword("media".to_string())]);
     }
