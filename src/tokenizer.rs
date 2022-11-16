@@ -48,14 +48,24 @@ pub struct TokenAt {
 ///
 /// adapted from https://www.w3.org/TR/css-syntax-3/#consume-token
 pub fn tokenize(input: &str) -> Vec<TokenAt> {
-    let line_counter = LineCounter::new(input.chars());
+    let mut line_counter = LineCounter::new(input.chars()).peekable();
 
     let mut tokens = Vec::new();
 
-    for (line, column, character) in line_counter {
+    while let Some((line, column, character)) = line_counter.next() {
         let token = match character {
             '/' => todo!("add support for comments"),
-            ' ' | '\t' | '\r' | '\n' => todo!("add support for whitespace"),
+            ' ' | '\t' | '\r' | '\n' => {
+                while let Some((_, _, character)) = line_counter.peek() {
+                    match character {
+                        ' ' | '\t' | '\r' | '\n' => {
+                            line_counter.next();
+                        }
+                        _ => break,
+                    }
+                }
+                Token::Whitespace()
+            }
             'a'..='z' | 'A'..='Z' | '_' => {
                 todo!("add support for identifiers, functions, and urls")
             }
