@@ -343,6 +343,22 @@ mod tests {
     }
 
     #[test]
+    fn url_upper_case() {
+        assert_tokens(
+            "URL(https://example.com/image.png)",
+            vec![Token::Url("https://example.com/image.png".to_string())],
+        );
+    }
+
+    #[test]
+    fn url_mixed_case() {
+        assert_tokens(
+            "uRL(https://example.com/image.png)",
+            vec![Token::Url("https://example.com/image.png".to_string())],
+        );
+    }
+
+    #[test]
     fn bad_url_interrupted_by_whitespace() {
         assert_tokens("url(https://url.with spaces.com)", vec![Token::BadUrl()]);
     }
