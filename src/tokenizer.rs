@@ -68,7 +68,27 @@ impl<I: Iterator<Item = char>> Iterator for Tokenizer<I> {
 
         // adapted from https://www.w3.org/TR/css-syntax-3/#consume-token
         let token = match character {
-            '/' => todo!("add support for comments"),
+            // comments
+            '/' => {
+                if let Some((_, _, '*')) = self.chars.peek() {
+                    self.chars.next();
+
+                    while let Some((_, _, character)) = self.chars.next() {
+                        if character == '*' {
+                            if let Some((_, _, '/')) = self.chars.peek() {
+                                self.chars.next();
+                                return self.next();
+                            }
+                        }
+                    }
+
+                    Token::BadComment()
+                } else {
+                    Token::Delimiter('/')
+                }
+            }
+
+            // whitespace
             ' ' | '\t' | '\r' | '\n' => {
                 while let Some((_, _, character)) = self.chars.peek() {
                     match character {
@@ -80,6 +100,7 @@ impl<I: Iterator<Item = char>> Iterator for Tokenizer<I> {
                 }
                 Token::Whitespace()
             }
+
             'a'..='z' | 'A'..='Z' | '_' => {
                 todo!("add support for identifiers, functions, and urls")
             }
@@ -151,6 +172,11 @@ mod tests {
     #[test]
     fn comment_that_does_not_end() {
         assert_tokens("/* comment", vec![Token::BadComment()]);
+    }
+
+    #[test]
+    fn comment_delimiter() {
+        assert_tokens("/", vec![Token::Delimiter('/')]);
     }
 
     #[test]
