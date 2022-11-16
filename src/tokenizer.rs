@@ -6,6 +6,7 @@ use line_counter::LineCounter;
 /// taken from https://www.w3.org/TR/css-syntax-3/#tokenization
 #[derive(Debug, PartialEq)]
 pub enum Token {
+    BadComment(),
     Identifier(String),
     Function(String),
     AtKeyword(String),
@@ -94,6 +95,28 @@ mod tests {
         let input = "";
         let tokens = tokenize(input);
         assert_eq!(tokens.len(), 0);
+    }
+
+    #[test]
+    fn comment_empty() {
+        let input = "/**/";
+        let tokens = tokenize(input);
+        assert_eq!(tokens.len(), 0);
+    }
+
+    #[test]
+    fn comment_with_text() {
+        let input = "/* comment */";
+        let tokens = tokenize(input);
+        assert_eq!(tokens.len(), 0);
+    }
+
+    #[test]
+    fn comment_that_does_not_end() {
+        let input = "/* comment";
+        let tokens = tokenize(input);
+        assert_eq!(tokens.len(), 1);
+        assert_eq!(tokens[0].token, Token::BadComment());
     }
 
     #[test]
