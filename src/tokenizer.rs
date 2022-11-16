@@ -53,10 +53,43 @@ pub struct Tokenizer<I: Iterator<Item = char>> {
 }
 
 impl<I: Iterator<Item = char>> Tokenizer<I> {
+    /// Creates a new tokenizer from a iterator of characters
     pub fn new(chars: I) -> Self {
         Self {
             chars: LineCounter::new(chars).peekable(),
         }
+    }
+
+    /// If the next character would start a identifier
+    fn would_start_identifier(&mut self) -> bool {
+        match self.chars.peek() {
+            Some((_, _, character)) => match character {
+                'a'..='z' | 'A'..='Z' | '_' => true,
+                '\\' => todo!("add support for escapes"),
+                _ => false,
+            },
+            None => false,
+        }
+    }
+
+    /// Consumes a sequence of numbers letters hyphens and underscores
+    fn consume_identifier(&mut self) -> String {
+        let mut identifier = String::new();
+
+        while let Some(&(_, _, character)) = self.chars.peek() {
+            match character {
+                'a'..='z' | 'A'..='Z' | '0'..='9' | '_' | '-' => {
+                    self.chars.next();
+                    identifier.push(character);
+                }
+                '\\' => {
+                    todo!("add support for escapes");
+                }
+                _ => break,
+            }
+        }
+
+        identifier
     }
 }
 
@@ -111,7 +144,16 @@ impl<I: Iterator<Item = char>> Iterator for Tokenizer<I> {
             '+' => todo!("add support for numbers, percentages, and dimensions"),
             '-' => todo!("add support for numbers, percentages, and dimensions and identifiers"),
             '.' => todo!("add support for numbers, percentages, and dimensions"),
-            '@' => todo!("add support for at keywords"),
+
+            // at keywords
+            '@' => {
+                if self.would_start_identifier() {
+                    Token::AtKeyword(self.consume_identifier())
+                } else {
+                    Token::Delimiter('@')
+                }
+            }
+
             '\\' => todo!("add support for escapes"),
             ':' => Token::Colon(),
             ';' => Token::Semicolon(),
@@ -307,6 +349,11 @@ mod tests {
     #[test]
     fn at_import() {
         assert_tokens("@import", vec![Token::AtKeyword("import".to_string())]);
+    }
+
+    #[test]
+    fn at_delimiter() {
+        assert_tokens("@", vec![Token::Delimiter('@')]);
     }
 
     #[test]
