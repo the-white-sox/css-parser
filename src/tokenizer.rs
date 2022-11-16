@@ -570,6 +570,20 @@ mod tests {
     }
 
     #[test]
+    fn delimiters() {
+        assert_tokens(
+            "<>*~🐈",
+            vec![
+                Token::Delimiter('<'),
+                Token::Delimiter('>'),
+                Token::Delimiter('*'),
+                Token::Delimiter('~'),
+                Token::Delimiter('🐈'),
+            ],
+        );
+    }
+
+    #[test]
     fn todo_complex() {
         todo!("add test for actual CSS code");
     }
