@@ -60,6 +60,18 @@ impl<I: Iterator<Item = char>> Tokenizer<I> {
         }
     }
 
+    /// consumes whitespace from chars
+    fn consume_whitespace(&mut self) {
+        while let Some((_, _, character)) = self.chars.peek() {
+            match character {
+                ' ' | '\t' | '\r' | '\n' => {
+                    self.chars.next();
+                }
+                _ => break,
+            }
+        }
+    }
+
     /// If the next character would start a identifier
     fn would_start_identifier(&mut self) -> bool {
         match self.chars.peek() {
@@ -144,14 +156,7 @@ impl<I: Iterator<Item = char>> Iterator for Tokenizer<I> {
 
             // whitespace
             ' ' | '\t' | '\r' | '\n' => {
-                while let Some((_, _, character)) = self.chars.peek() {
-                    match character {
-                        ' ' | '\t' | '\r' | '\n' => {
-                            self.chars.next();
-                        }
-                        _ => break,
-                    }
-                }
+                self.consume_whitespace();
                 Token::Whitespace()
             }
 
