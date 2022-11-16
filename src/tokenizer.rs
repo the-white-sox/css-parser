@@ -3,7 +3,8 @@ mod line_counter;
 use line_counter::LineCounter;
 
 /// All the types of tokens found in CSS
-/// taken from https://www.w3.org/TR/css-syntax-3/#tokenization
+///
+/// adapted from https://www.w3.org/TR/css-syntax-3/#tokenization
 #[derive(Debug, PartialEq)]
 pub enum Token {
     BadComment(),
@@ -43,6 +44,9 @@ pub struct TokenAt {
     token: Token,
 }
 
+/// Converts a string into a vector of tokens
+///
+/// adapted from https://www.w3.org/TR/css-syntax-3/#consume-token
 pub fn tokenize(input: &str) -> Vec<TokenAt> {
     let line_counter = LineCounter::new(input.chars());
 
