@@ -15,9 +15,9 @@ pub enum Token {
     AtKeyword(String),
     Hash(String, HashType),
     String(String),
-    BadString(String),
+    BadString(),
     Url(String),
-    BadUrl(String),
+    BadUrl(),
     Delimiter(char),
     Number(f64),
     Percentage(f64),
@@ -313,12 +313,12 @@ mod tests {
 
     #[test]
     fn string_with_no_close() {
-        assert_tokens("\"abc", vec![Token::BadString("abc".to_string())]);
+        assert_tokens("\"abc", vec![Token::BadString()]);
     }
 
     #[test]
     fn string_interrupted_by_newline() {
-        assert_tokens("\"abc\n", vec![Token::BadString("abc".to_string())]);
+        assert_tokens("\"abc\n", vec![Token::BadString()]);
     }
 
     #[test]
