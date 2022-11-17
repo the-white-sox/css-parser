@@ -124,6 +124,34 @@ impl<I: Iterator<Item = char>> Tokenizer<I> {
             Token::Identifier(identifier)
         }
     }
+
+    /// Consumes a string token
+    fn consume_string_token(&mut self, end_character: char) -> Token {
+        let mut string = String::new();
+
+        while let Some((_, _, character)) = self.chars.next() {
+            match character {
+                '"' | '\'' => {
+                    if character == end_character {
+                        return Token::String(string);
+                    } else {
+                        string.push(character);
+                    }
+                }
+                '\n' => {
+                    return Token::BadString();
+                }
+                '\\' => {
+                    todo!("add support for escapes");
+                }
+                _ => {
+                    string.push(character);
+                }
+            }
+        }
+
+        Token::BadString()
+    }
 }
 
 impl<I: Iterator<Item = char>> Iterator for Tokenizer<I> {
@@ -164,9 +192,26 @@ impl<I: Iterator<Item = char>> Iterator for Tokenizer<I> {
             'a'..='z' | 'A'..='Z' | '_' => self.consume_identifier_like_token(character),
 
             '0'..='9' => todo!("add support for numbers, percentages, and dimensions"),
-            '#' => todo!("add support for hashes"),
-            '"' => todo!("add support for strings"),
-            '\'' => todo!("add support for strings"),
+
+            // ids and hashes
+            '#' => match self.chars.peek() {
+                Some((_, _, character)) => match character {
+                    'a'..='z' | 'A'..='Z' | '_' => {
+                        Token::Hash(self.consume_identifier_sequence(), HashType::Id)
+                    }
+                    '0'..='9' | '-' => {
+                        Token::Hash(self.consume_identifier_sequence(), HashType::Unrestricted)
+                    }
+                    '\\' => todo!("add support for escapes"),
+                    _ => Token::Delimiter('#'),
+                },
+                None => Token::Delimiter('#'),
+            },
+
+            // strings
+            '"' => self.consume_string_token('"'),
+            '\'' => self.consume_string_token('\''),
+
             '+' => todo!("add support for numbers, percentages, and dimensions"),
             '-' => todo!("add support for numbers, percentages, and dimensions and identifiers"),
             '.' => todo!("add support for numbers, percentages, and dimensions"),
@@ -405,18 +450,7 @@ mod tests {
 
     #[test]
     fn hash_one_letter() {
-        assert_tokens(
-            "#a",
-            vec![Token::Hash("a".to_string(), HashType::Unrestricted)],
-        );
-    }
-
-    #[test]
-    fn hash_two_letters() {
-        assert_tokens(
-            "#a",
-            vec![Token::Hash("a".to_string(), HashType::Unrestricted)],
-        );
+        assert_tokens("#a", vec![Token::Hash("a".to_string(), HashType::Id)]);
     }
 
     #[test]
@@ -446,10 +480,21 @@ mod tests {
     }
 
     #[test]
-    fn hash_unrestricted_one_character() {
+    fn hash_followed_by_whitespace() {
         assert_tokens(
-            "#a",
-            vec![Token::Hash("a".to_string(), HashType::Unrestricted)],
+            "#abc ",
+            vec![
+                Token::Hash("abc".to_string(), HashType::Id),
+                Token::Whitespace(),
+            ],
+        );
+    }
+
+    #[test]
+    fn hash_followed_by_colon() {
+        assert_tokens(
+            "#abc:",
+            vec![Token::Hash("abc".to_string(), HashType::Id), Token::Colon()],
         );
     }
 
