@@ -34,7 +34,7 @@ pub enum Token {
     CloseCurlyBracket(),
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum HashType {
     Id,
     Unrestricted,
@@ -129,6 +129,7 @@ impl<I: Iterator<Item = char>> Tokenizer<I> {
     fn consume_string_token(&mut self, end_character: char) -> Token {
         let mut string = String::new();
 
+        #[allow(clippy::while_let_on_iterator)] // because we are not exhausting chars
         while let Some((_, _, character)) = self.chars.next() {
             match character {
                 '"' | '\'' => {
@@ -191,8 +192,6 @@ impl<I: Iterator<Item = char>> Iterator for Tokenizer<I> {
             // identifiers, functions, and urls
             'a'..='z' | 'A'..='Z' | '_' => self.consume_identifier_like_token(character),
 
-            '0'..='9' => todo!("add support for numbers, percentages, and dimensions"),
-
             // ids and hashes
             '#' => match self.chars.peek() {
                 Some((_, _, character)) => match character {
@@ -212,6 +211,7 @@ impl<I: Iterator<Item = char>> Iterator for Tokenizer<I> {
             '"' => self.consume_string_token('"'),
             '\'' => self.consume_string_token('\''),
 
+            '0'..='9' => todo!("add support for numbers, percentages, and dimensions"),
             '+' => todo!("add support for numbers, percentages, and dimensions"),
             '-' => todo!("add support for numbers, percentages, and dimensions and identifiers"),
             '.' => todo!("add support for numbers, percentages, and dimensions"),
