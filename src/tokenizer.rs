@@ -125,6 +125,57 @@ impl<I: Iterator<Item = char>> Tokenizer<I> {
         }
     }
 
+    /// Consume a number
+    fn consume_number(&mut self, first_character: char) -> f64 {
+        let mut number = String::new();
+
+        number.push(first_character);
+
+        let mut has_dot = first_character == '.';
+
+        while let Some(&(_, _, character)) = self.chars.peek() {
+            match character {
+                '0'..='9' => {
+                    self.chars.next();
+                    number.push(character);
+                }
+                '.' => {
+                    if has_dot {
+                        break;
+                    }
+                    // technically "5." is not a valid number in CSS but we will allow it
+                    self.chars.next();
+                    number.push(character);
+                    has_dot = true;
+                }
+                _ => break,
+            }
+        }
+
+        number
+            .parse()
+            .expect("failed to parse number, this should never happen")
+    }
+
+    /// Consume a numeric token
+    ///
+    /// can return a Token::Number, Token::Percentage, or Token::Dimension
+    fn consume_numeric_token(&mut self, first_character: char) -> Token {
+        let number = self.consume_number(first_character);
+
+        match self.chars.peek() {
+            Some((_, _, 'a'..='z' | 'A'..='Z' | '_')) => {
+                let unit = self.consume_identifier_sequence();
+                Token::Dimension(number, unit)
+            }
+            Some((_, _, '%')) => {
+                self.chars.next();
+                Token::Percentage(number)
+            }
+            _ => Token::Number(number),
+        }
+    }
+
     /// Consumes a string token
     fn consume_string_token(&mut self, end_character: char) -> Token {
         let mut string = String::new();
@@ -194,7 +245,7 @@ impl<I: Iterator<Item = char>> Iterator for Tokenizer<I> {
 
             // ids and hashes
             '#' => match self.chars.peek() {
-                Some((_, _, character)) => match character {
+                Some((_, _, next_character)) => match next_character {
                     'a'..='z' | 'A'..='Z' | '_' => {
                         Token::Hash(self.consume_identifier_sequence(), HashType::Id)
                     }
@@ -211,10 +262,32 @@ impl<I: Iterator<Item = char>> Iterator for Tokenizer<I> {
             '"' => self.consume_string_token('"'),
             '\'' => self.consume_string_token('\''),
 
-            '0'..='9' => todo!("add support for numbers, percentages, and dimensions"),
-            '+' => todo!("add support for numbers, percentages, and dimensions"),
-            '-' => todo!("add support for numbers, percentages, and dimensions and identifiers"),
-            '.' => todo!("add support for numbers, percentages, and dimensions"),
+            // numbers
+            '0'..='9' => self.consume_numeric_token(character),
+            '+' => match self.chars.peek() {
+                Some(&(_, _, next_character)) => match next_character {
+                    '0'..='9' | '.' => self.consume_numeric_token(character),
+                    _ => Token::Delimiter('+'),
+                },
+                None => Token::Delimiter('+'),
+            },
+            '-' => match self.chars.peek() {
+                Some(&(_, _, next_character)) => match next_character {
+                    '0'..='9' | '.' => self.consume_numeric_token(character),
+                    'a'..='z' | 'A'..='Z' | '_' | '-' => {
+                        self.consume_identifier_like_token(character)
+                    }
+                    _ => Token::Delimiter('-'),
+                },
+                None => Token::Delimiter('-'),
+            },
+            '.' => match self.chars.peek() {
+                Some(&(_, _, next_character)) => match next_character {
+                    '0'..='9' => self.consume_numeric_token(character),
+                    _ => Token::Delimiter('.'),
+                },
+                None => Token::Delimiter('.'),
+            },
 
             // at keywords
             '@' => {
@@ -320,6 +393,11 @@ mod tests {
     #[test]
     fn identifier_with_leading_hyphen() {
         assert_tokens("-abc", vec![Token::Identifier("-abc".to_string())]);
+    }
+
+    #[test]
+    fn identifier_with_leading_double_hyphen() {
+        assert_tokens("--abc", vec![Token::Identifier("--abc".to_string())]);
     }
 
     #[test]
