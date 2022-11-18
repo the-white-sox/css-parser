@@ -42,9 +42,9 @@ pub enum HashType {
 
 #[derive(Debug)]
 pub struct TokenAt {
-    line: usize,
-    column: usize,
-    token: Token,
+    pub line: usize,
+    pub column: usize,
+    pub token: Token,
 }
 
 /// Converts a iterator of characters into an iterator of tokens
