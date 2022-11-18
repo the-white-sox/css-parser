@@ -116,12 +116,53 @@ impl<I: Iterator<Item = char>> Tokenizer<I> {
             self.chars.next();
 
             if identifier.eq_ignore_ascii_case("url") {
-                todo!("add support for urls");
+                self.consume_whitespace();
+
+                if let Some((_, _, '"' | '\'')) = self.chars.peek() {
+                    Token::Function(identifier)
+                } else {
+                    self.consume_url_token()
+                }
             } else {
                 Token::Function(identifier)
             }
         } else {
             Token::Identifier(identifier)
+        }
+    }
+
+    /// Consumes a url token
+    ///
+    /// Assumes that `url(` has already been consumed
+    ///
+    /// returns a Token::Url or Token::BadUrl
+    fn consume_url_token(&mut self) -> Token {
+        self.consume_whitespace();
+
+        let mut url = String::new();
+
+        while let Some(&(_, _, character)) = self.chars.peek() {
+            match character {
+                ')' => break,
+                ' ' | '\t' | '\r' | '\n' => break,
+                '"' | '\'' | '(' | '\0' | '\x08' | '\x0B' | '\x0E'..='\x1F' | '\x7F' => break,
+                '\\' => {
+                    todo!("add support for escapes");
+                }
+                _ => {
+                    self.chars.next();
+                    url.push(character);
+                }
+            }
+        }
+
+        self.consume_whitespace();
+
+        if let Some((_, _, ')')) = self.chars.peek() {
+            self.chars.next();
+            Token::Url(url)
+        } else {
+            Token::BadUrl()
         }
     }
 
@@ -440,6 +481,20 @@ mod tests {
     }
 
     #[test]
+    fn function_url_with_whitespace() {
+        assert_tokens(
+            "url(   \"https://example.com/image.png\"   )",
+            vec![
+                Token::Function("url".to_string()),
+                // according to the spec there should be whitespace here but we omit it to make parsing easier
+                Token::String("https://example.com/image.png".to_string()),
+                Token::Whitespace(),
+                Token::CloseParenthesis(),
+            ],
+        );
+    }
+
+    #[test]
     fn url_empty() {
         assert_tokens("url()", vec![Token::Url("".to_string())]);
     }
@@ -483,27 +538,55 @@ mod tests {
 
     #[test]
     fn bad_url_interrupted_by_whitespace() {
-        assert_tokens("url(https://url.with spaces.com)", vec![Token::BadUrl()]);
+        assert_tokens(
+            "url(https://url.with spaces)",
+            vec![
+                Token::BadUrl(),
+                // according to the spec there should be whitespace here but we omit it to make parsing easier
+                Token::Identifier("spaces".to_string()),
+                Token::CloseParenthesis(),
+            ],
+        );
     }
 
     #[test]
     fn bad_url_with_double_quote() {
-        assert_tokens("url(https://url.with\"quote.com)", vec![Token::BadUrl()]);
+        assert_tokens(
+            "url(https://url.with.quote\")",
+            vec![Token::BadUrl(), Token::BadString()],
+        );
     }
 
     #[test]
     fn bad_url_with_single_quote() {
-        assert_tokens("url(https://url.with'quote.com)", vec![Token::BadUrl()]);
+        assert_tokens(
+            "url(https://url.with.quote')",
+            vec![Token::BadUrl(), Token::BadString()],
+        );
     }
 
     #[test]
     fn bad_url_with_open_paren() {
-        assert_tokens("url(https://url.with(paren.com)", vec![Token::BadUrl()]);
+        assert_tokens(
+            "url(https://url.with.paren()",
+            vec![
+                Token::BadUrl(),
+                Token::OpenParenthesis(),
+                Token::CloseParenthesis(),
+            ],
+        );
     }
 
     #[test]
     fn bad_url_with_null() {
-        assert_tokens("url(https://url.with\0null.com)", vec![Token::BadUrl()]);
+        assert_tokens(
+            "url(https://url.with.null\0)",
+            vec![
+                Token::BadUrl(),
+                Token::Delimiter('\0'),
+                Token::CloseParenthesis(),
+            ],
+        );
     }
 
     #[test]
