@@ -234,9 +234,22 @@ impl<I: Iterator<Item = char>> Tokenizer<I> {
                 '\n' => {
                     return Token::BadString();
                 }
-                '\\' => {
-                    todo!("add support for escapes");
-                }
+                '\\' => match self.chars.next() {
+                    Some((_, _, character)) => match character {
+                        '\r' => {
+                            if let Some((_, _, '\n')) = self.chars.peek() {
+                                self.next();
+                            }
+                        }
+                        '\n' => {}
+                        _ => {
+                            string.push(character);
+                        }
+                    },
+                    None => {
+                        return Token::BadString();
+                    }
+                },
                 _ => {
                     string.push(character);
                 }
@@ -709,7 +722,7 @@ mod tests {
 
     #[test]
     fn string_with_escaped_newline() {
-        assert_tokens("\"\\\n\"", vec![Token::String("\n".to_string())]);
+        assert_tokens("\"\\\n\"", vec![Token::String("".to_string())]);
     }
 
     #[test]
