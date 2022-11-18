@@ -339,11 +339,8 @@ impl<I: Iterator<Item = char>> Iterator for Tokenizer<I> {
                 None => Token::Delimiter('-'),
             },
             '.' => match self.chars.peek() {
-                Some(&(_, _, next_character)) => match next_character {
-                    '0'..='9' => self.consume_numeric_token(character),
-                    _ => Token::Delimiter('.'),
-                },
-                None => Token::Delimiter('.'),
+                Some((_, _, '0'..='9')) => self.consume_numeric_token(character),
+                _ => Token::Delimiter('.'),
             },
 
             // at keywords
