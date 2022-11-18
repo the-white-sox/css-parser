@@ -551,6 +551,131 @@ fn delimiters() {
 }
 
 #[test]
-fn todo_complex() {
-    todo!("add test for actual CSS code");
+fn complex_file() {
+    assert_tokens(
+        "
+        /* example css file */
+        @import url(\"https://fonts.googleapis.com/css2?family=Roboto&display=swap\");
+        @import url(https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap);
+
+        :root {
+            --color-primary: #880000;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        #header {
+            background-color: var(--color-primary);
+            color: rgb(255, 255, 255);
+        }
+
+        @media (min-width: 600px) {
+            *[role=\"main\"] {
+                max-width: 75%;
+            }
+        }
+
+        /* invalid comment because it is not closed
+        ",
+        vec![
+            Token::Whitespace(),
+            Token::Whitespace(),
+            Token::AtKeyword("import".to_owned()),
+            Token::Whitespace(),
+            Token::Function("url".to_owned()),
+            Token::String(
+                "https://fonts.googleapis.com/css2?family=Roboto&display=swap".to_owned(),
+            ),
+            Token::CloseParenthesis(),
+            Token::Semicolon(),
+            Token::Whitespace(),
+            Token::AtKeyword("import".to_owned()),
+            Token::Whitespace(),
+            Token::Url(
+                "https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap".to_owned(),
+            ),
+            Token::Semicolon(),
+            Token::Whitespace(),
+            Token::Colon(),
+            Token::Identifier("root".to_owned()),
+            Token::Whitespace(),
+            Token::OpenCurlyBracket(),
+            Token::Whitespace(),
+            Token::Identifier("--color-primary".to_owned()),
+            Token::Colon(),
+            Token::Whitespace(),
+            Token::Hash("880000".to_owned(), HashType::Unrestricted),
+            Token::Semicolon(),
+            Token::Whitespace(),
+            Token::Identifier("font-family".to_owned()),
+            Token::Colon(),
+            Token::Whitespace(),
+            Token::String("Roboto".to_owned()),
+            Token::Comma(),
+            Token::Whitespace(),
+            Token::Identifier("sans-serif".to_owned()),
+            Token::Semicolon(),
+            Token::Whitespace(),
+            Token::CloseCurlyBracket(),
+            Token::Whitespace(),
+            Token::Hash("header".to_owned(), HashType::Id),
+            Token::Whitespace(),
+            Token::OpenCurlyBracket(),
+            Token::Whitespace(),
+            Token::Identifier("background-color".to_owned()),
+            Token::Colon(),
+            Token::Whitespace(),
+            Token::Function("var".to_owned()),
+            Token::Identifier("--color-primary".to_owned()),
+            Token::CloseParenthesis(),
+            Token::Semicolon(),
+            Token::Whitespace(),
+            Token::Identifier("color".to_owned()),
+            Token::Colon(),
+            Token::Whitespace(),
+            Token::Function("rgb".to_owned()),
+            Token::Number(255.0),
+            Token::Comma(),
+            Token::Whitespace(),
+            Token::Number(255.0),
+            Token::Comma(),
+            Token::Whitespace(),
+            Token::Number(255.0),
+            Token::CloseParenthesis(),
+            Token::Semicolon(),
+            Token::Whitespace(),
+            Token::CloseCurlyBracket(),
+            Token::Whitespace(),
+            Token::AtKeyword("media".to_owned()),
+            Token::Whitespace(),
+            Token::OpenParenthesis(),
+            Token::Identifier("min-width".to_owned()),
+            Token::Colon(),
+            Token::Whitespace(),
+            Token::Dimension(600.0, "px".to_owned()),
+            Token::CloseParenthesis(),
+            Token::Whitespace(),
+            Token::OpenCurlyBracket(),
+            Token::Whitespace(),
+            Token::Delimiter('*'),
+            Token::OpenSquareBracket(),
+            Token::Identifier("role".to_owned()),
+            Token::Delimiter('='),
+            Token::String("main".to_owned()),
+            Token::CloseSquareBracket(),
+            Token::Whitespace(),
+            Token::OpenCurlyBracket(),
+            Token::Whitespace(),
+            Token::Identifier("max-width".to_owned()),
+            Token::Colon(),
+            Token::Whitespace(),
+            Token::Percentage(75.0),
+            Token::Semicolon(),
+            Token::Whitespace(),
+            Token::CloseCurlyBracket(),
+            Token::Whitespace(),
+            Token::CloseCurlyBracket(),
+            Token::Whitespace(),
+            Token::BadComment(),
+        ],
+    );
 }
