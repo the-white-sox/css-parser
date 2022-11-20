@@ -113,18 +113,18 @@ these are features we don't currently have included but might include in the fut
 ## Selectors
 
 ```bnf
-<selector-list> ::= <selector> "," <selector-list> | <selector>
-<selector> ::= <ciap-list> | <element-list>
-<element-list> ::= <element> | <element-list> <ciap-list> | <ciap-list> <element-list> | <element-list> <element-list> | <element-list> ">" <element-list> | <element-list> "+" <element-list> | <element-list> "~" <element-list>
-<ciap-list> ::= <class-list> | <id-list> | <attribute-list> | <pseudo-class-list>
-<class-list> ::= "." <class> | <class-list> "." <class> | <class-list> " ." <class> | <ciap-list> "." <class>
-<id-list> ::= "#" <id> | <ciap-list> "#" <id>
-<attribute-list> ::= "[" <attribute> "]" | "[" <attribute> "=" <value> "]" | <ciap-list> "[" <attribute> "]" | <ciap-list>  "[" <attribute> "=" <value> "]"
-<pseudo-class-list> ::= ":" <pseudo-class> |<ciap-list> ":" <pseudo-class>  | ":" <pseudo-class-other> "(" selector ")"
-<element> ::= "div" | "body" | "p"
-<attribute> ::= "target" | "title" | "lang" | "href"
-<pseudo-class> ::= "focus" | "focus-within" | "focus-visible" | "hover" | "visited" | "default" | "active" | "target" | "root"
-<pseudo-class-other> ::= "not" | "has"
+<selector-list> ::= <complex-selector> "," <selector-list> | <complex-selector>
+<complex-selector> ::= <compound-selector> <combinator> <complex-selector> | <compound-selector>
+<combinator> ::= <whitespace> | "+" | ">" | "~"
+<compound-selector> ::= <element-selector> | <element-selector> <non-element-compound-selector> | <non-element-compound-selector>
+<element-selector> ::= "*" | <identifier>
+<non-element-compound-selector> ::= <non-element-simple-selector> <non-element-compound-selector> | <non-element-simple-selector>
+<non-element-simple-selector> ::= <basic-selector> | <pseudo-class>
+<basic-selector> ::= "." <identifier> | "#" <identifier> | <attribute-selector>
+<attribute-selector> ::= "[" <identifier> "]" | "[" <identifier> "=" <string> "]" | "[" <identifier> "~=" <string> "]" | "[" <identifier> "|=" <string> "]" | "[" <identifier> "^=" <string> "]" | "[" <identifier> "$=" <string> "]" | "[" <identifier> "*=" <string> "]"
+<pseudo-class> ::= ":focus" | ":focus-within" | ":focus-visible" | ":hover" | ":visited" | ":default" | ":active" | ":target" | ":root"
+<pseudo-class> ::= ":not(" <relative-selector> ")" | ":has(" <relative-selector> ")"
+<relative-selector> ::= <combinator> <complex-selector> | <complex-selector>
 ```
 
 ### Examples
