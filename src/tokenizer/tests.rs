@@ -147,7 +147,7 @@ mod urls {
 
     #[test]
     fn empty() {
-        assert_tokens("url()", vec![Token::Url("".to_owned())]);
+        assert_tokens("url()", vec![Token::BadUrl()]);
     }
 
     #[test]
