@@ -4,8 +4,8 @@ A parser for [CSS](https://www.w3.org/TR/css-syntax-3/) written in [Rust](https:
 
 ## Usage
 
-```sh-session
-./css-parser my_css_file.css
+```ps1
+css-parser my-css-file.css
 ```
 
 ## CSS Grammar
