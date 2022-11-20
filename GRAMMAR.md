@@ -40,7 +40,6 @@ we are not supporting multi type shorthand properties like `font` and `border` b
 
 these are features we don't currently have included but might include in the future.
 
-- comments `/* text */`
 - value functions `calc(max(100vh, 100%) - 64px)`
 - more properties
 - key frames
