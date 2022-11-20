@@ -161,6 +161,10 @@ impl<I: Iterator<Item = char>> Tokenizer<I> {
 
         self.consume_whitespace();
 
+        if url.is_empty() {
+            return Token::BadUrl();
+        }
+
         if let Some((_, _, ')')) = self.chars.peek() {
             self.chars.next();
             Token::Url(url)

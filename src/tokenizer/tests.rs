@@ -147,7 +147,7 @@ mod urls {
 
     #[test]
     fn empty() {
-        assert_tokens("url()", vec![Token::BadUrl()]);
+        assert_tokens("url()", vec![Token::BadUrl(), Token::CloseParenthesis()]);
     }
 
     #[test]
