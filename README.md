@@ -10,7 +10,7 @@ css-parser my-css-file.css
 
 ## CSS Grammar
 
-Due to provided time constraints, this project utilizes a modified CSS grammar that can be found in [GRAMMAR.md](./GRAMMAR.md).
+Due to provided time constraints, this project utilizes a simplified CSS grammar that can be found in [GRAMMAR.md](./GRAMMAR.md).
 
 ## Build
 
