@@ -8,7 +8,7 @@ mod tokenizer;
 use crate::parser::parse;
 
 const GREEN_CHECK: &str = "\u{001b}[92m✓\u{001b}[0m";
-const RED_X: &str = "\u{001b}[31m✗\u{001b}[0m";
+const RED_X: &str = "\u{001b}[31mX\u{001b}[0m";
 const BLUE_I: &str = "\u{001b}[96mi\u{001b}[0m";
 
 fn main() -> ExitCode {
