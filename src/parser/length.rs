@@ -1,5 +1,8 @@
 use std::str::FromStr;
 
+use super::*;
+use crate::tokenizer::*;
+
 #[derive(Debug, PartialEq)]
 pub enum Distance {
     Zero(),
@@ -42,6 +45,22 @@ impl FromStr for DistanceUnit {
             "vmin" => Ok(ViewportMinimum),
             "vmax" => Ok(ViewportMaximum),
             _ => Err(()),
+        }
+    }
+}
+
+impl Parsable for Distance {
+    fn parse<I: Iterator<Item = char>>(parser: &mut Parser<I>) -> Result<Self, ParsingError> {
+        match parser.tokens.next() {
+            Some(token_at) => match token_at.token {
+                Token::Number(value) if value == 0.0 => Ok(Distance::Zero()),
+                Token::Dimension(value, unit) => Ok(Distance::Distance(
+                    value,
+                    DistanceUnit::from_str(unit.as_str()).unwrap(),
+                )),
+                _ => Err(ParsingError::wrong_token(token_at, "dimension")),
+            },
+            None => Err(ParsingError::end_of_file("dimension")),
         }
     }
 }
