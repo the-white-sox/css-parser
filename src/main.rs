@@ -5,7 +5,7 @@ use std::process::ExitCode;
 mod parser;
 mod tokenizer;
 
-use crate::parser::parse;
+use crate::parser::Stylesheet;
 
 const GREEN_CHECK: &str = "\u{001b}[92m✓\u{001b}[0m";
 const RED_X: &str = "\u{001b}[31mX\u{001b}[0m";
@@ -23,8 +23,8 @@ fn main() -> ExitCode {
 
         println!("{} Parsing {}", BLUE_I, file_name);
 
-        match parse(&string) {
-            Ok(()) => {
+        match string.parse::<Stylesheet>() {
+            Ok(_) => {
                 println!("{} Ok", GREEN_CHECK);
             }
             Err(error) => {
