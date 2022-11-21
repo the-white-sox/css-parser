@@ -4,6 +4,7 @@ use std::{fmt, str::FromStr};
 use crate::tokenizer::{Token, TokenAt, Tokenizer};
 
 mod string;
+mod url;
 
 #[derive(Debug, PartialEq)]
 pub enum ParsingError {
@@ -77,6 +78,20 @@ impl<I: Iterator<Item = char>> Parser<I> {
 
     fn parse<T: Parsable>(&mut self) -> Result<T, ParsingError> {
         T::parse(self)
+    }
+
+    fn expect(&mut self, expected: Token) -> Result<(), ParsingError> {
+        match self.tokens.next() {
+            Some(token_at) => {
+                if token_at.token == expected {
+                    Ok(())
+                } else {
+                    Err(ParsingError::wrong_token(token_at, &expected.to_string()))
+                }
+            }
+
+            None => Err(ParsingError::end_of_file("a string")),
+        }
     }
 
     pub fn to_stylesheet(mut self) -> Result<Stylesheet, ParsingError> {
