@@ -3,6 +3,8 @@ use std::{fmt, str::FromStr};
 
 use crate::tokenizer::{Token, TokenAt, Tokenizer};
 
+mod string;
+
 #[derive(Debug, PartialEq)]
 pub enum ParsingError {
     WrongToken {
