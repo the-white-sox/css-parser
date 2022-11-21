@@ -6,7 +6,7 @@ use crate::tokenizer::{Token, TokenAt, Tokenizer};
 mod string;
 mod url;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum ParsingError {
     WrongToken {
         line: usize,
@@ -94,7 +94,7 @@ impl<I: Iterator<Item = char>> Parser<I> {
         }
     }
 
-    pub fn to_stylesheet(mut self) -> Result<Stylesheet, ParsingError> {
+    pub fn into_stylesheet(mut self) -> Result<Stylesheet, ParsingError> {
         self.parse()
     }
 }
@@ -107,6 +107,7 @@ pub struct Stylesheet {}
 
 impl Parsable for Stylesheet {
     fn parse<I: Iterator<Item = char>>(parser: &mut Parser<I>) -> Result<Self, ParsingError> {
+        #[allow(clippy::while_let_on_iterator)] // because we are borrowing parser
         while let Some(TokenAt {
             line,
             column,
@@ -141,6 +142,6 @@ impl FromStr for Stylesheet {
     type Err = ParsingError;
 
     fn from_str(input: &str) -> Result<Self, Self::Err> {
-        Parser::new(input.chars()).to_stylesheet()
+        Parser::new(input.chars()).into_stylesheet()
     }
 }

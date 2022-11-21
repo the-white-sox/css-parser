@@ -24,6 +24,7 @@ impl Parsable for Url {
     }
 }
 
+#[cfg(test)]
 mod tests {
     use super::*;
 

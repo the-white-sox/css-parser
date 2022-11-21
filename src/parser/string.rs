@@ -5,7 +5,7 @@ impl Parsable for String {
     fn parse<I: Iterator<Item = char>>(parser: &mut Parser<I>) -> Result<Self, ParsingError> {
         match parser.tokens.next() {
             Some(token_at) => match token_at.token {
-                Token::String(string) => Ok(string.to_string()),
+                Token::String(string) => Ok(string),
                 _ => Err(ParsingError::wrong_token(token_at, "a string")),
             },
 
