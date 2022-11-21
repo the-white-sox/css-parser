@@ -1,3 +1,4 @@
+use std::fmt;
 use std::iter::Peekable;
 
 mod line_counter;
@@ -41,6 +42,37 @@ pub enum Token {
 pub enum HashType {
     Id,
     Unrestricted,
+}
+
+impl fmt::Display for Token {
+    /// this is intended to be used for the expected value in an error message
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::BadComment() => write!(f, "an invalid comment"),
+            Self::Identifier(name) => write!(f, "the identifier \"{name}\""),
+            Self::Function(name) => write!(f, "the function {name}"),
+            Self::AtKeyword(keyword) => write!(f, "@{keyword}"),
+            Self::Hash(string, _) => write!(f, "#{string}"),
+            Self::String(string) => write!(f, "the string \"{string}\""),
+            Self::BadString() => write!(f, "an invalid string"),
+            Self::Url(_) => write!(f, "a url"),
+            Self::BadUrl() => write!(f, "an invalid url"),
+            Self::Delimiter(char) => write!(f, "{char}"),
+            Self::Number(value) => write!(f, "the number {value}"),
+            Self::Percentage(value) => write!(f, "{value}%"),
+            Self::Dimension(value, unit) => write!(f, "the dimension {value}{unit}"),
+            Self::Whitespace() => write!(f, "some whitespace"),
+            Self::Colon() => write!(f, ":"),
+            Self::Semicolon() => write!(f, ";"),
+            Self::Comma() => write!(f, ","),
+            Self::OpenSquareBracket() => write!(f, "["),
+            Self::CloseSquareBracket() => write!(f, "]"),
+            Self::OpenParenthesis() => write!(f, "("),
+            Self::CloseParenthesis() => write!(f, ")"),
+            Self::OpenCurlyBracket() => write!(f, "}}"),
+            Self::CloseCurlyBracket() => write!(f, "{{"),
+        }
+    }
 }
 
 #[derive(Debug)]
