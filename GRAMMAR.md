@@ -58,10 +58,10 @@ these are features we don't currently have included but might include in the fut
 <hash> ::= "#" <identifier-characters>
 <string> ::= """ <string-characters> """ | "'" <string-characters> "'"
 <url> ::= "url(" <url-characters> ")"
-<number> ::= <digits> | <digits> "." <digits> | "+" <digits> | "+" <digits> "." <digits> | "-"
+<digits> ::= <digit> <digits> | <digit>
+<number> ::= <digits> | <digits> "." <digits> | "+" <digits> | "+" <digits> "." <digits> | "-" <digits> | "-" <digits> "." <digits>
 <percentage> ::= <number> "%"
 <dimension> ::= <number> <identifier>
-<digits> | "-" <digits> "." <digits>
 <whitespace-character> ::= " " | "\t" | "\n" | "\r"
 <whitespace> ::= <whitespace-character> <whitespace> | <whitespace-character>
 ```
