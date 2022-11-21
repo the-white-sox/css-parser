@@ -58,24 +58,12 @@ these are features we don't currently have included but might include in the fut
 <hash> ::= "#" <identifier-characters>
 <string> ::= """ <string-characters> """ | "'" <string-characters> "'"
 <url> ::= "url(" <url-characters> ")"
-<number> ::= <digits> | <digits> "." <digits> | "+" <digits> | "+" <digits> "." <digits> | "-"
+<digits> ::= <digit> <digits> | <digit>
+<number> ::= <digits> | <digits> "." <digits> | "+" <digits> | "+" <digits> "." <digits> | "-" <digits> | "-" <digits> "." <digits>
 <percentage> ::= <number> "%"
 <dimension> ::= <number> <identifier>
-<digits> | "-" <digits> "." <digits>
 <whitespace-character> ::= " " | "\t" | "\n" | "\r"
 <whitespace> ::= <whitespace-character> <whitespace> | <whitespace-character>
-```
-
-## Utilities
-
-```bnf
-<digit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
-<digits> ::= <digit> <digits> | <digit>
-<hex-digit> ::= <digit> | "a" - "f" | "A" - "F"
-<hex-byte> ::= <hex-digit> <hex-digit>
-<alphanumeric> ::= <letter> | <digit>
-<alphanumerics> ::= <alphanumeric> | <alphanumeric> <alphanumerics>
-<special-char> ::= ":" | "/" | "."
 ```
 
 ## Stylesheet
@@ -202,12 +190,12 @@ p.class.class2#id[target].class:has(p.class) {}
 <percentage> ::= <number> "%"
 <length> ::= "0" | <number> <length-unit>
 <length-unit> ::= "px" | "cm" | "in" | "pt" | "em" | "rem" | "vh" | "vw" | "vb" | "vi" | "vmin" | "vmax"
-<url-string> ::= <alphanumerics> | <special-char>
-<url> ::= "url(" <alphanumerics> ")"
 <sides-color> :== <color> | <color> <color> | <color> <color> <color> <color>
 <color> ::= "black" | "silver" | "gray" | "grey" | "white" | "maroon" | "red" | "purple" | "fuchsia" | "green" | "lime" | "olive" | "yellow" | "navy" | "blue" | "teal" | "aqua" | <rgb> | <hsl> | <hex>
 <rgb> ::= "rgb(" <0-255> "," <0-255> "," <0-255> ")" | "rgba(" <0-255> "," <0-255> "," <0-255> "," <alpha> ")"
 <hex> ::= "#" <hex-byte> <hex-byte> <hex-byte> | "#" <hex-byte> <hex-byte> <hex-byte> <hex-byte> | "#" <hex-digit> <hex-digit> <hex-digit> | "#" <hex-digit> <hex-digit> <hex-digit> <hex-digit>
+<hex-digit> ::= <digit> | "a" - "f" | "A" - "F"
+<hex-byte> ::= <hex-digit> <hex-digit>
 <hsl> ::= "hsl(" <0-360> "," <0-100> "%," <0-100> "%)" | "hsla(" <0-360> "," <0-100> "%," <0-100> "%," <alpha> ")"
 <alpha> ::= "0." <digits> | "." <digits> | 1 | 0
 <text-align-value> ::= "left" | "right" | "center" | "justify"
