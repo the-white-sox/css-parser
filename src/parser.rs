@@ -2,6 +2,8 @@ use std::fmt;
 
 use crate::tokenizer::{Token, TokenAt, Tokenizer};
 
+mod length;
+
 pub struct ParsingError {
     line: usize,
     column: usize,
