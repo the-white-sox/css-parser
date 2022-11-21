@@ -1,11 +1,11 @@
 #[derive(Debug, PartialEq)]
-pub enum Unit {
+pub enum Distance {
     Zero(),
-    Unit(f64, UnitType),
+    Distance(f64, DistanceUnit),
 }
 
-#[derive(Debug, PartialEq)]
-pub enum UnitType {
+#[derive(Debug, PartialEq, Eq)]
+pub enum DistanceUnit {
     Pixels,          // px
     Centimeters,     // cm
     Inches,          // in
