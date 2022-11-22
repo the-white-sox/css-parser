@@ -3,9 +3,9 @@ use std::{fmt, str::FromStr};
 
 use crate::tokenizer::{Token, TokenAt, Tokenizer};
 
+mod length;
 mod string;
 mod url;
-mod length;
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum ParsingError {
