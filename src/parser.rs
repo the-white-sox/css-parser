@@ -80,6 +80,7 @@ impl<I: Iterator<Item = char>> Parser<I> {
         T::parse(self)
     }
 
+    /// expect the next token to match a given token
     fn expect(&mut self, expected: Token) -> Result<(), ParsingError> {
         match self.tokens.next() {
             Some(token_at) => {
@@ -91,6 +92,24 @@ impl<I: Iterator<Item = char>> Parser<I> {
             }
 
             None => Err(ParsingError::end_of_file("a string")),
+        }
+    }
+
+    /// expect the next token to be whitespace and consume extra whitespace
+    fn expect_whitespace(&mut self) -> Result<(), ParsingError> {
+        self.expect(Token::Whitespace())?;
+        self.optional_whitespace();
+        Ok(())
+    }
+
+    /// consume whitespace token if there are any
+    fn optional_whitespace(&mut self) {
+        while let Some(TokenAt {
+            token: Token::Whitespace(),
+            ..
+        }) = self.tokens.peek()
+        {
+            self.tokens.next();
         }
     }
 
