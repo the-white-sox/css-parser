@@ -7,6 +7,7 @@ use crate::tokenizer::*;
 pub enum Distance {
     Zero(),
     Distance(f64, DistanceUnit),
+    Percentage(f64),
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -268,5 +269,37 @@ mod tests {
             Distance::Distance(-1000000.0, DistanceUnit::RootFontSize)
         );
         assert!(parser.tokens.next().is_none());
+    }
+
+    //
+    // PERCENTAGE
+    //
+
+    #[test]
+    fn percentage_no_value() {
+        assert!(parse_distance("%").is_err());
+    }
+
+    #[test]
+    fn percentage_zero() {
+        let mut parser = Parser::new("0%".chars());
+        let result = parser.parse::<Distance>().unwrap();
+
+        assert_eq!(result, Distance::Percentage(0.0));
+        assert!(parser.tokens.next().is_none());
+    }
+
+    #[test]
+    fn percentage_positive_value() {
+        let mut parser = Parser::new("23%".chars());
+        let result = parser.parse::<Distance>().unwrap();
+
+        assert_eq!(result, Distance::Percentage(23.0));
+        assert!(parser.tokens.next().is_none());
+    }
+
+    #[test]
+    fn percentage_negative_value() {
+        assert!(parse_distance("-87%").is_err());
     }
 }
