@@ -187,46 +187,39 @@ mod tests {
     // DISTANCE
     //
 
+    fn parse_distance(input: &str) -> Result<Distance, ParsingError> {
+        let mut parser = Parser::new(input.chars());
+        return parser.parse::<Distance>();
+    }
+
     #[test]
     fn nothing() {
-        let mut parser = Parser::new("".chars());
-
-        assert!(parser.parse::<Distance>().is_err());
+        assert!(parse_distance("").is_err());
     }
 
     #[test]
     fn only_unit() {
-        let mut parser = Parser::new("vb".chars());
-
-        assert!(parser.parse::<Distance>().is_err());
+        assert!(parse_distance("vb").is_err());
     }
 
     #[test]
     fn positive_int_without_unit() {
-        let mut parser = Parser::new("5".chars());
-
-        assert!(parser.parse::<Distance>().is_err());
+        assert!(parse_distance("5").is_err());
     }
 
     #[test]
     fn negative_int_without_unit() {
-        let mut parser = Parser::new("-69".chars());
-
-        assert!(parser.parse::<Distance>().is_err());
+        assert!(parse_distance("-69").is_err());
     }
 
     #[test]
     fn positive_float_without_unit() {
-        let mut parser = Parser::new("66.6".chars());
-
-        assert!(parser.parse::<Distance>().is_err());
+        assert!(parse_distance("66.6").is_err());
     }
 
     #[test]
     fn negative_float_without_unit() {
-        let mut parser = Parser::new("-98.6".chars());
-
-        assert!(parser.parse::<Distance>().is_err());
+        assert!(parse_distance("-98.6").is_err());
     }
 
     #[test]
