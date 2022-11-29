@@ -94,6 +94,17 @@ impl<I: Iterator<Item = char>> Parser<I> {
         }
     }
 
+    /// consume whitespace token if there are any
+    fn optional_whitespace(&mut self) {
+        while let Some(TokenAt {
+            token: Token::Whitespace(),
+            ..
+        }) = self.tokens.peek()
+        {
+            self.tokens.next();
+        }
+    }
+
     pub fn into_stylesheet(mut self) -> Result<Stylesheet, ParsingError> {
         self.parse()
     }
