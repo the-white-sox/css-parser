@@ -10,7 +10,6 @@ mod tests;
 pub enum Distance {
     Zero(),
     Distance(f64, DistanceUnit),
-    Percentage(f64),
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -58,7 +57,6 @@ impl Parsable for Distance {
         match parser.tokens.next() {
             Some(token_at) => match token_at.token {
                 Token::Number(value) if value == 0.0 => Ok(Distance::Zero()),
-                Token::Percentage(value) if value >= 0.0 => Ok(Distance::Percentage(value)),
                 Token::Dimension(value, unit) => Ok(Distance::Distance(
                     value,
                     DistanceUnit::from_str(unit.as_str()).unwrap(),
