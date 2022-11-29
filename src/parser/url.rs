@@ -12,7 +12,9 @@ impl Parsable for Url {
             Some(token_at) => match token_at.token {
                 Token::Url(url) => Ok(Url { url }),
                 Token::Function(name) if name == "url" => {
+                    parser.optional_whitespace();
                     let url: String = parser.parse()?;
+                    parser.optional_whitespace();
                     parser.expect(Token::CloseParenthesis())?;
                     Ok(Url { url })
                 }
