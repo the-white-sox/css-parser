@@ -55,6 +55,19 @@ mod tests {
     }
 
     #[test]
+    fn function_with_whitespace() {
+        let mut parser = Parser::new("url(   'example.com'   )".chars());
+        let result = parser.parse::<Url>().unwrap();
+        assert_eq!(
+            result,
+            Url {
+                url: "example.com".to_owned()
+            }
+        );
+        assert!(parser.tokens.next().is_none());
+    }
+
+    #[test]
     fn not_url() {
         let mut parser = Parser::new("url".chars());
         assert!(parser.parse::<String>().is_err());
