@@ -228,6 +228,15 @@ mod percentages {
     }
 
     #[test]
+    fn positive_float() {
+        let mut parser = Parser::new("62.3%".chars());
+        let result = parser.parse::<Distance>().unwrap();
+
+        assert_eq!(result, Distance::Percentage(62.3));
+        assert!(parser.tokens.next().is_none());
+    }
+
+    #[test]
     fn negative_int() {
         assert!(parse_distance("-87%").is_err());
     }
