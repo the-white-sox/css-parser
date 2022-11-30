@@ -58,6 +58,10 @@ mod tests {
 
     #[test]
     fn negative_int() {
-        assert!(parse_percentage("-87%").is_err());
+        let mut parser = Parser::new("-87%".chars());
+        let result = parser.parse::<Percentage>().unwrap();
+
+        assert_eq!(result, Percentage(-87.0));
+        assert!(parser.tokens.next().is_none());
     }
 }
