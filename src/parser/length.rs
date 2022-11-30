@@ -6,12 +6,17 @@ use crate::tokenizer::*;
 #[cfg(test)]
 mod tests;
 
+/// Represents a single length value.
+/// There are two types: zero (with no unit), and a number with a unit
+/// Grammar: `<length>`
 #[derive(Debug, PartialEq)]
 pub enum Length {
     Zero(),
     Length(f64, LengthUnit),
 }
 
+/// Represents a length unit.
+/// Grammar: `<length-unit>`
 #[derive(Debug, PartialEq, Eq)]
 pub enum LengthUnit {
     Pixels,             // px
