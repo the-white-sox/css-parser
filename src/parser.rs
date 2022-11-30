@@ -3,6 +3,7 @@ use std::{fmt, str::FromStr};
 
 use crate::tokenizer::{Token, TokenAt, Tokenizer};
 
+mod from_identifier;
 mod media_query;
 mod string;
 mod url;
