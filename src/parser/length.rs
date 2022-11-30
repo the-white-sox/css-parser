@@ -14,18 +14,18 @@ pub enum Distance {
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum DistanceUnit {
-    Pixels,          // px
-    Centimeters,     // cm
-    Inches,          // in
-    Points,          // pt
-    FontSize,        // em
-    RootFontSize,    // rem
-    ViewportHeight,  // vh
-    ViewportWidth,   // vw
-    ViewportBlockSize,   // vb
-    ViewportInlineSize,  // vi
-    ViewportMinimum, // vmin
-    ViewportMaximum, // vmax
+    Pixels,             // px
+    Centimeters,        // cm
+    Inches,             // in
+    Points,             // pt
+    FontSize,           // em
+    RootFontSize,       // rem
+    ViewportHeight,     // vh
+    ViewportWidth,      // vw
+    ViewportBlockSize,  // vb
+    ViewportInlineSize, // vi
+    ViewportMinimum,    // vmin
+    ViewportMaximum,    // vmax
 }
 
 impl FromStr for DistanceUnit {
@@ -55,12 +55,12 @@ impl FromStr for DistanceUnit {
 impl Parsable for Distance {
     fn parse<I: Iterator<Item = char>>(parser: &mut Parser<I>) -> Result<Self, ParsingError> {
         match parser.tokens.next() {
-            Some(token_at) => match token_at.token {
-                Token::Number(value) if value == 0.0 => Ok(Distance::Zero()),
-                Token::Dimension(value, unit) => Ok(Distance::Distance(
-                    value,
-                    DistanceUnit::from_str(unit.as_str()).unwrap(),
-                )),
+            Some(token_at) => match &token_at.token {
+                Token::Number(value) if *value == 0.0 => Ok(Distance::Zero()),
+                Token::Dimension(value, unit) => match DistanceUnit::from_str(unit.as_str()) {
+                    Ok(unit) => Ok(Distance::Distance(*value, unit)),
+                    Err(()) => Err(ParsingError::wrong_token(token_at, ""))
+                },
                 _ => Err(ParsingError::wrong_token(token_at, "dimension")),
             },
             None => Err(ParsingError::end_of_file("dimension")),
