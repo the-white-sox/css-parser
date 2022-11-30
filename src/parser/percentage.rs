@@ -1,5 +1,7 @@
 use super::*;
 
+/// Represents a percentage value
+/// Grammar: `<percentage>`
 #[derive(Debug, PartialEq)]
 pub struct Percentage(pub f64);
 
