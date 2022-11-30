@@ -79,9 +79,7 @@ mod units {
 
     #[test]
     fn invalid_unit() {
-        let input = "xd";
-
-        assert!(LengthUnit::from_str(input).is_err());
+        assert!(parse_unit("xd").is_err());
     }
 }
 
