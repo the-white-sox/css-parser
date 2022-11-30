@@ -2,7 +2,7 @@ use super::*;
 use crate::tokenizer::*;
 
 #[derive(Debug, PartialEq, Eq)]
-struct Url(String);
+pub struct Url(String);
 
 impl Parsable for Url {
     fn parse<I: Iterator<Item = char>>(parser: &mut Parser<I>) -> Result<Self, ParsingError> {
