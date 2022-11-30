@@ -1,5 +1,6 @@
 use super::*;
 
+#[derive(Debug, PartialEq, Eq)]
 pub enum ColorScheme {
     Light,
     Dark,
@@ -19,4 +20,24 @@ impl FromStr for ColorScheme {
 
 impl FromIdentifier for ColorScheme {
     const EXPECTED: &'static str = "light or dark";
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn light() {
+        assert_eq!(Ok(ColorScheme::Light), "light".parse::<ColorScheme>());
+    }
+
+    #[test]
+    fn dark() {
+        assert_eq!(Ok(ColorScheme::Dark), "dark".parse::<ColorScheme>());
+    }
+
+    #[test]
+    fn not_color_scheme() {
+        assert!("not a color scheme".parse::<ColorScheme>().is_err());
+    }
 }
