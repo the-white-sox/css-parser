@@ -82,7 +82,28 @@ impl Parsable for Length {
 }
 
 impl Parsable for LengthOrPercentage {
-    fn parse<I: Iterator<Item = char>>(_: &mut Parser<I>) -> Result<Self, ParsingError> {
-        todo!();
+    fn parse<I: Iterator<Item = char>>(parser: &mut Parser<I>) -> Result<Self, ParsingError> {
+        match parser.tokens.peek() {
+            Some(token_at) => match token_at.token {
+                // parse length
+                Token::Number(_) | Token::Dimension(_, _) => match parser.parse::<Length>() {
+                    Ok(length) => Ok(LengthOrPercentage::Length(length)),
+                    Err(error) => Err(error),
+                },
+
+                // parse percentage
+                Token::Percentage(_) => match parser.parse::<Percentage>() {
+                    Ok(percentage) => Ok(LengthOrPercentage::Percentage(percentage)),
+                    Err(error) => Err(error),
+                },
+
+                // neither
+                _ => Err(ParsingError::wrong_token(
+                    token_at.clone(),
+                    "length or percentage",
+                )),
+            },
+            None => Err(ParsingError::end_of_file("length or percentage")),
+        }
     }
 }
