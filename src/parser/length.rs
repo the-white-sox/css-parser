@@ -7,13 +7,13 @@ use crate::tokenizer::*;
 mod tests;
 
 #[derive(Debug, PartialEq)]
-pub enum Distance {
+pub enum Length {
     Zero(),
-    Distance(f64, DistanceUnit),
+    Length(f64, LengthUnit),
 }
 
 #[derive(Debug, PartialEq, Eq)]
-pub enum DistanceUnit {
+pub enum LengthUnit {
     Pixels,             // px
     Centimeters,        // cm
     Inches,             // in
@@ -28,11 +28,11 @@ pub enum DistanceUnit {
     ViewportMaximum,    // vmax
 }
 
-impl FromStr for DistanceUnit {
+impl FromStr for LengthUnit {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        use DistanceUnit::*;
+        use LengthUnit::*;
 
         match s {
             "px" => Ok(Pixels),
@@ -52,13 +52,13 @@ impl FromStr for DistanceUnit {
     }
 }
 
-impl Parsable for Distance {
+impl Parsable for Length {
     fn parse<I: Iterator<Item = char>>(parser: &mut Parser<I>) -> Result<Self, ParsingError> {
         match parser.tokens.next() {
             Some(token_at) => match &token_at.token {
-                Token::Number(value) if *value == 0.0 => Ok(Distance::Zero()),
-                Token::Dimension(value, unit) => match DistanceUnit::from_str(unit.as_str()) {
-                    Ok(unit) => Ok(Distance::Distance(*value, unit)),
+                Token::Number(value) if *value == 0.0 => Ok(Length::Zero()),
+                Token::Dimension(value, unit) => match LengthUnit::from_str(unit.as_str()) {
+                    Ok(unit) => Ok(Length::Length(*value, unit)),
                     Err(()) => Err(ParsingError::wrong_token(token_at, "dimension")),
                 },
                 _ => Err(ParsingError::wrong_token(token_at, "dimension")),
