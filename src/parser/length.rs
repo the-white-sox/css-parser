@@ -59,7 +59,7 @@ impl Parsable for Distance {
                 Token::Number(value) if *value == 0.0 => Ok(Distance::Zero()),
                 Token::Dimension(value, unit) => match DistanceUnit::from_str(unit.as_str()) {
                     Ok(unit) => Ok(Distance::Distance(*value, unit)),
-                    Err(()) => Err(ParsingError::wrong_token(token_at, "")),
+                    Err(()) => Err(ParsingError::wrong_token(token_at, "dimension")),
                 },
                 _ => Err(ParsingError::wrong_token(token_at, "dimension")),
             },
