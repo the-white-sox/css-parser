@@ -20,20 +20,8 @@ impl FromStr for MediaType {
     }
 }
 
-impl Parsable for MediaType {
-    fn parse<I: Iterator<Item = char>>(parser: &mut Parser<I>) -> Result<Self, ParsingError> {
-        match parser.tokens.next() {
-            Some(token_at) => match &token_at.token {
-                Token::Identifier(string) => match string.parse() {
-                    Ok(media_type) => Ok(media_type),
-                    Err(_) => Err(ParsingError::wrong_token(token_at, "all, print, or screen")),
-                },
-                _ => Err(ParsingError::wrong_token(token_at, "all, print, or screen")),
-            },
-
-            None => Err(ParsingError::end_of_file("all, print, or screen")),
-        }
-    }
+impl FromIdentifier for MediaType {
+    const EXPECTED: &'static str = "all, print, or screen";
 }
 
 #[cfg(test)]

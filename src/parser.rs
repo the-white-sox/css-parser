@@ -116,6 +116,8 @@ pub trait Parsable: Sized {
     fn parse<I: Iterator<Item = char>>(parser: &mut Parser<I>) -> Result<Self, ParsingError>;
 }
 
+pub use from_identifier::FromIdentifier;
+
 pub struct Stylesheet {}
 
 impl Parsable for Stylesheet {
