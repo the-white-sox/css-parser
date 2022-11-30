@@ -4,6 +4,7 @@ use std::{fmt, str::FromStr};
 use crate::tokenizer::{Token, TokenAt, Tokenizer};
 
 mod length;
+mod percentage;
 mod string;
 mod url;
 
