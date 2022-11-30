@@ -84,7 +84,7 @@ mod units {
         let input = "vb";
         let unit = DistanceUnit::from_str(input).unwrap();
 
-        assert_eq!(unit, DistanceUnit::RootBlockSize);
+        assert_eq!(unit, DistanceUnit::ViewportBlockSize);
     }
 
     #[test]
@@ -92,7 +92,7 @@ mod units {
         let input = "vi";
         let unit = DistanceUnit::from_str(input).unwrap();
 
-        assert_eq!(unit, DistanceUnit::RootInlineSize);
+        assert_eq!(unit, DistanceUnit::ViewportInlineSize);
     }
 
     #[test]

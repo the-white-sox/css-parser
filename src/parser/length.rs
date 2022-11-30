@@ -22,8 +22,8 @@ pub enum DistanceUnit {
     RootFontSize,    // rem
     ViewportHeight,  // vh
     ViewportWidth,   // vw
-    RootBlockSize,   // vb
-    RootInlineSize,  // vi
+    ViewportBlockSize,   // vb
+    ViewportInlineSize,  // vi
     ViewportMinimum, // vmin
     ViewportMaximum, // vmax
 }
@@ -43,8 +43,8 @@ impl FromStr for DistanceUnit {
             "rem" => Ok(RootFontSize),
             "vh" => Ok(ViewportHeight),
             "vw" => Ok(ViewportWidth),
-            "vb" => Ok(RootBlockSize),
-            "vi" => Ok(RootInlineSize),
+            "vb" => Ok(ViewportBlockSize),
+            "vi" => Ok(ViewportInlineSize),
             "vmin" => Ok(ViewportMinimum),
             "vmax" => Ok(ViewportMaximum),
             _ => Err(()),
