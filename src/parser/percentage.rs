@@ -1,7 +1,7 @@
 use super::*;
 
 #[derive(Debug, PartialEq)]
-pub struct Percentage(f64);
+pub struct Percentage(pub f64);
 
 impl Parsable for Percentage {
     fn parse<I: Iterator<Item = char>>(parser: &mut Parser<I>) -> Result<Self, ParsingError> {

@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use super::*;
+use super::{percentage::Percentage, *};
 use crate::tokenizer::*;
 
 #[cfg(test)]
@@ -31,6 +31,14 @@ pub enum LengthUnit {
     ViewportInlineSize, // vi
     ViewportMinimum,    // vmin
     ViewportMaximum,    // vmax
+}
+
+/// Wraps a length or percentage together
+/// Grammar: `<length-or-percentage>
+#[derive(Debug, PartialEq)]
+pub enum LengthOrPercentage {
+    Length(Length),
+    Percentage(Percentage),
 }
 
 impl FromStr for LengthUnit {
@@ -70,5 +78,11 @@ impl Parsable for Length {
             },
             None => Err(ParsingError::end_of_file("dimension")),
         }
+    }
+}
+
+impl Parsable for LengthOrPercentage {
+    fn parse<I: Iterator<Item = char>>(_: &mut Parser<I>) -> Result<Self, ParsingError> {
+        todo!();
     }
 }
