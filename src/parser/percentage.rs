@@ -64,4 +64,13 @@ mod tests {
         assert_eq!(result, Percentage(-87.0));
         assert!(parser.tokens.next().is_none());
     }
+
+    #[test]
+    fn negative_float() {
+        let mut parser = Parser::new("-4.20%".chars());
+        let result = parser.parse::<Percentage>().unwrap();
+
+        assert_eq!(result, Percentage(-4.20));
+        assert!(parser.tokens.next().is_none());
+    }
 }
