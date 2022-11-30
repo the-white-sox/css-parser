@@ -62,7 +62,7 @@ impl Parsable for Length {
         match parser.tokens.next() {
             Some(token_at) => match &token_at.token {
                 Token::Number(value) if *value == 0.0 => Ok(Length::Zero()),
-                Token::Dimension(value, unit) => match LengthUnit::from_str(unit.as_str()) {
+                Token::Dimension(value, unit) => match unit.parse::<LengthUnit>() {
                     Ok(unit) => Ok(Length::Length(*value, unit)),
                     Err(()) => Err(ParsingError::wrong_token(token_at, "dimension")),
                 },
