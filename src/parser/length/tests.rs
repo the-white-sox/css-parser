@@ -8,107 +8,73 @@ fn parse_distance(input: &str) -> Result<Distance, ParsingError> {
 mod units {
     use super::*;
 
+    fn parse_unit(input: &str) -> Result<DistanceUnit, ()> {
+        return input.parse::<DistanceUnit>();
+    }
+
     #[test]
     fn nothing() {
-        let input = "";
-
-        assert!(DistanceUnit::from_str(input).is_err());
+        assert!(parse_unit("").is_err());
     }
 
     #[test]
     fn pixels() {
-        let input = "px";
-        let unit = DistanceUnit::from_str(input).unwrap();
-
-        assert_eq!(unit, DistanceUnit::Pixels);
+        assert_eq!(parse_unit("px"), Ok(DistanceUnit::Pixels));
     }
 
     #[test]
     fn centimeters() {
-        let input = "cm";
-        let unit = DistanceUnit::from_str(input).unwrap();
-
-        assert_eq!(unit, DistanceUnit::Centimeters);
+        assert_eq!(parse_unit("cm"), Ok(DistanceUnit::Centimeters));
     }
 
     #[test]
     fn inches() {
-        let input = "in";
-        let unit = DistanceUnit::from_str(input).unwrap();
-
-        assert_eq!(unit, DistanceUnit::Inches);
+        assert_eq!(parse_unit("in"), Ok(DistanceUnit::Inches));
     }
 
     #[test]
     fn points() {
-        let input = "pt";
-        let unit = DistanceUnit::from_str(input).unwrap();
-
-        assert_eq!(unit, DistanceUnit::Points);
+        assert_eq!(parse_unit("pt"), Ok(DistanceUnit::Points));
     }
 
     #[test]
     fn font_size() {
-        let input = "em";
-        let unit = DistanceUnit::from_str(input).unwrap();
-
-        assert_eq!(unit, DistanceUnit::FontSize);
+        assert_eq!(parse_unit("em"), Ok(DistanceUnit::FontSize));
     }
 
     #[test]
     fn root_font_size() {
-        let input = "rem";
-        let unit = DistanceUnit::from_str(input).unwrap();
-
-        assert_eq!(unit, DistanceUnit::RootFontSize);
+        assert_eq!(parse_unit("rem"), Ok(DistanceUnit::RootFontSize));
     }
 
     #[test]
     fn viewport_height() {
-        let input = "vh";
-        let unit = DistanceUnit::from_str(input).unwrap();
-
-        assert_eq!(unit, DistanceUnit::ViewportHeight);
+        assert_eq!(parse_unit("vh"), Ok(DistanceUnit::ViewportHeight));
     }
 
     #[test]
     fn viewport_width() {
-        let input = "vw";
-        let unit = DistanceUnit::from_str(input).unwrap();
-
-        assert_eq!(unit, DistanceUnit::ViewportWidth);
+        assert_eq!(parse_unit("vw"), Ok(DistanceUnit::ViewportWidth));
     }
 
     #[test]
     fn root_block_size() {
-        let input = "vb";
-        let unit = DistanceUnit::from_str(input).unwrap();
-
-        assert_eq!(unit, DistanceUnit::ViewportBlockSize);
+        assert_eq!(parse_unit("vb"), Ok(DistanceUnit::ViewportBlockSize));
     }
 
     #[test]
     fn root_inline_size() {
-        let input = "vi";
-        let unit = DistanceUnit::from_str(input).unwrap();
-
-        assert_eq!(unit, DistanceUnit::ViewportInlineSize);
+        assert_eq!(parse_unit("vi"), Ok(DistanceUnit::ViewportInlineSize));
     }
 
     #[test]
     fn viewport_minimum() {
-        let input = "vmin";
-        let unit = DistanceUnit::from_str(input).unwrap();
-
-        assert_eq!(unit, DistanceUnit::ViewportMinimum);
+        assert_eq!(parse_unit("vmin"), Ok(DistanceUnit::ViewportMinimum));
     }
 
     #[test]
     fn viewport_maximum() {
-        let input = "vmax";
-        let unit = DistanceUnit::from_str(input).unwrap();
-
-        assert_eq!(unit, DistanceUnit::ViewportMaximum);
+        assert_eq!(parse_unit("vmax"), Ok(DistanceUnit::ViewportMaximum));
     }
 
     #[test]
