@@ -1,5 +1,6 @@
 use super::*;
 
+#[derive(Debug, PartialEq, Eq)]
 pub enum Distance {}
 
 impl Parsable for Distance {

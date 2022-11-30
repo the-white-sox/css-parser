@@ -75,7 +75,7 @@ impl fmt::Display for Token {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct TokenAt {
     pub line: usize,
     pub column: usize,
