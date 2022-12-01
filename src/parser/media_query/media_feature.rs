@@ -7,10 +7,10 @@ mod hover;
 mod orientation;
 mod pointer;
 
-use color_scheme::*;
-use hover::*;
-use orientation::*;
-use pointer::*;
+pub use color_scheme::ColorScheme;
+pub use hover::Hover;
+pub use orientation::Orientation;
+pub use pointer::Pointer;
 
 #[derive(Debug, PartialEq)]
 pub enum MediaFeature {
