@@ -86,6 +86,42 @@ mod side_length {
         }
     }
 
+    mod length_or_percentage {
+        use super::*;
+
+        fn parse_length_or_percentage(input: &str) -> Result<LengthOrPercentage, ParsingError> {
+            let mut parser = Parser::new(input.chars());
+            return parser.parse::<LengthOrPercentage>();
+        }
+
+        #[test]
+        fn nothing() {
+            assert!(parse_length_or_percentage("").is_err());
+        }
+
+        #[test]
+        fn percentage() {
+            let mut parser = Parser::new("89%".chars());
+            let result = parser.parse::<LengthOrPercentage>();
+
+            assert_eq!(result, Ok(LengthOrPercentage::Percentage(Percentage(89.0))));
+        }
+
+        #[test]
+        fn length() {
+            let mut parser = Parser::new("35px".chars());
+            let result = parser.parse::<LengthOrPercentage>();
+
+            assert_eq!(
+                result,
+                Ok(LengthOrPercentage::Length(Length::Length(
+                    35.0,
+                    LengthUnit::Pixels
+                )))
+            );
+        }
+    }
+
     mod single {
         use super::*;
 
@@ -162,42 +198,6 @@ mod side_length {
 
             assert_eq!(result, Length::Length(-1000000.0, LengthUnit::RootFontSize));
             assert!(parser.tokens.next().is_none());
-        }
-    }
-
-    mod length_or_percentage {
-        use super::*;
-
-        fn parse_length_or_percentage(input: &str) -> Result<LengthOrPercentage, ParsingError> {
-            let mut parser = Parser::new(input.chars());
-            return parser.parse::<LengthOrPercentage>();
-        }
-
-        #[test]
-        fn nothing() {
-            assert!(parse_length_or_percentage("").is_err());
-        }
-
-        #[test]
-        fn percentage() {
-            let mut parser = Parser::new("89%".chars());
-            let result = parser.parse::<LengthOrPercentage>();
-
-            assert_eq!(result, Ok(LengthOrPercentage::Percentage(Percentage(89.0))));
-        }
-
-        #[test]
-        fn length() {
-            let mut parser = Parser::new("35px".chars());
-            let result = parser.parse::<LengthOrPercentage>();
-
-            assert_eq!(
-                result,
-                Ok(LengthOrPercentage::Length(Length::Length(
-                    35.0,
-                    LengthUnit::Pixels
-                )))
-            );
         }
     }
 }
