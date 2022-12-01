@@ -83,6 +83,7 @@ impl<I: Iterator<Item = char>> Parser<I> {
         T::parse(self)
     }
 
+    /// expect the next token to match a given token
     fn expect(&mut self, expected: Token) -> Result<(), ParsingError> {
         match self.tokens.next() {
             Some(token_at) => {
