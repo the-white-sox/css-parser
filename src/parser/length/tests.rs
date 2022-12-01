@@ -200,4 +200,109 @@ mod side_length {
             assert!(parser.tokens.next().is_none());
         }
     }
+
+    mod double {
+        use super::*;
+
+        fn parse_side_length(input: &str) -> Result<SideLength, ParsingError> {
+            let mut parser = Parser::new(input.chars());
+            return parser.parse::<SideLength>();
+        }
+
+        #[test]
+        fn nothing() {
+            assert!(parse_side_length("").is_err());
+        }
+
+        #[test]
+        fn two_zeros() {
+            let result = parse_side_length("0 0");
+
+            assert_eq!(
+                result,
+                Ok(SideLength::Double(
+                    LengthOrPercentage::Length(Length::Zero()),
+                    LengthOrPercentage::Length(Length::Zero())
+                ))
+            )
+        }
+
+        #[test]
+        fn zero_and_percentage() {
+            let result = parse_side_length("0 5%");
+
+            assert_eq!(
+                result,
+                Ok(SideLength::Double(
+                    LengthOrPercentage::Length(Length::Zero()),
+                    LengthOrPercentage::Percentage(Percentage(5.0))
+                ))
+            );
+        }
+
+        #[test]
+        fn percentage_and_zero() {
+            let result = parse_side_length("25% 0");
+
+            assert_eq!(
+                result,
+                Ok(SideLength::Double(
+                    LengthOrPercentage::Percentage(Percentage(25.0)),
+                    LengthOrPercentage::Length(Length::Zero())
+                ))
+            );
+        }
+
+        #[test]
+        fn two_lengths() {
+            let result = parse_side_length("21rem -78px");
+
+            assert_eq!(
+                result,
+                Ok(SideLength::Double(
+                    LengthOrPercentage::Length(Length::Length(21.0, LengthUnit::RootFontSize)),
+                    LengthOrPercentage::Length(Length::Length(-78.0, LengthUnit::Pixels))
+                ))
+            )
+        }
+
+        #[test]
+        fn two_percentages() {
+            let result = parse_side_length("24% 70%");
+
+            assert_eq!(
+                result,
+                Ok(SideLength::Double(
+                    LengthOrPercentage::Percentage(Percentage(24.0)),
+                    LengthOrPercentage::Percentage(Percentage(70.0))
+                ))
+            );
+        }
+
+        #[test]
+        fn zero_and_length() {
+            let result = parse_side_length("0 284px");
+
+            assert_eq!(
+                result,
+                Ok(SideLength::Double(
+                    LengthOrPercentage::Length(Length::Zero()),
+                    LengthOrPercentage::Length(Length::Length(284.0, LengthUnit::Pixels))
+                ))
+            );
+        }
+
+        #[test]
+        fn length_and_zero() {
+            let result = parse_side_length("12vmax 0");
+
+            assert_eq!(
+                result,
+                Ok(SideLength::Double(
+                    LengthOrPercentage::Length(Length::Length(12.0, LengthUnit::ViewportMaximum)),
+                    LengthOrPercentage::Length(Length::Zero())
+                ))
+            );
+        }
+    }
 }
