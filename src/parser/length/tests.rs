@@ -1,10 +1,5 @@
 use super::*;
 
-fn parse_distance(input: &str) -> Result<Length, ParsingError> {
-    let mut parser = Parser::new(input.chars());
-    return parser.parse::<Length>();
-}
-
 mod side_length {
     use super::*;
 
@@ -125,34 +120,39 @@ mod side_length {
     mod single {
         use super::*;
 
+        fn parse_single_length(input: &str) -> Result<Length, ParsingError> {
+            let mut parser = Parser::new(input.chars());
+            return parser.parse::<Length>();
+        }
+
         #[test]
         fn nothing() {
-            assert!(parse_distance("").is_err());
+            assert!(parse_single_length("").is_err());
         }
 
         #[test]
         fn only_unit() {
-            assert!(parse_distance("vb").is_err());
+            assert!(parse_single_length("vb").is_err());
         }
 
         #[test]
         fn positive_int_without_unit() {
-            assert!(parse_distance("5").is_err());
+            assert!(parse_single_length("5").is_err());
         }
 
         #[test]
         fn negative_int_without_unit() {
-            assert!(parse_distance("-69").is_err());
+            assert!(parse_single_length("-69").is_err());
         }
 
         #[test]
         fn positive_float_without_unit() {
-            assert!(parse_distance("66.6").is_err());
+            assert!(parse_single_length("66.6").is_err());
         }
 
         #[test]
         fn negative_float_without_unit() {
-            assert!(parse_distance("-98.6").is_err());
+            assert!(parse_single_length("-98.6").is_err());
         }
 
         #[test]
