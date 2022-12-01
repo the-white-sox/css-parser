@@ -2,6 +2,7 @@ use super::media_query::*;
 use super::url::*;
 use super::*;
 
+#[derive(Debug, PartialEq)]
 pub struct Import {
     pub url: Url,
     pub media_queries: Vec<MediaQuery>,
@@ -41,16 +42,27 @@ mod tests {
     #[test]
     fn simple_url() {
         let mut parser = Parser::new("@import url(example.com);".chars());
-        let result: Import = parser.parse().unwrap();
-        assert_eq!(result.url.url, "example.com".to_owned());
-        assert_eq!(result.media_queries.len(), 0);
+        assert_eq!(
+            Ok(Import {
+                url: Url("example.com".to_owned()),
+                media_queries: vec![]
+            }),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
     }
 
     #[test]
     fn extra_whitespace() {
         let mut parser = Parser::new("@import    url(example.com)  ;".chars());
-        let result: Import = parser.parse().unwrap();
-        assert_eq!(result.url.url, "example.com".to_owned());
-        assert_eq!(result.media_queries.len(), 0);
+
+        assert_eq!(
+            Ok(Import {
+                url: Url("example.com".to_owned()),
+                media_queries: vec![]
+            }),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
     }
 }

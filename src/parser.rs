@@ -98,13 +98,6 @@ impl<I: Iterator<Item = char>> Parser<I> {
         }
     }
 
-    /// expect the next token to be whitespace and consume extra whitespace
-    fn expect_whitespace(&mut self) -> Result<(), ParsingError> {
-        self.expect(Token::Whitespace())?;
-        self.optional_whitespace();
-        Ok(())
-    }
-
     /// consume whitespace token if there are any
     fn optional_whitespace(&mut self) {
         while let Some(TokenAt {

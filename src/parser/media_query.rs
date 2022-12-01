@@ -1,11 +1,13 @@
 use super::rule::*;
 use super::*;
 
+#[derive(Debug, PartialEq)]
 pub struct MediaRule {
     pub media_queries: Vec<MediaQuery>,
     pub rules: Vec<Rule>,
 }
 
+#[derive(Debug, PartialEq)]
 pub struct MediaQuery {}
 
 impl Parsable for Vec<MediaQuery> {
