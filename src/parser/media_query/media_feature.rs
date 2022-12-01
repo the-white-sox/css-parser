@@ -12,7 +12,7 @@ use hover::*;
 use orientation::*;
 use pointer::*;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq)]
 pub enum MediaFeature {
     Color,
     Monochrome,

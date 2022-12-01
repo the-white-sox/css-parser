@@ -7,6 +7,7 @@ mod media_type;
 use media_feature::*;
 use media_type::*;
 
+#[derive(Debug, PartialEq)]
 pub enum MediaQuery {
     MediaType(MediaType),
     MediaFeature(MediaFeature),
