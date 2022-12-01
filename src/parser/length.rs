@@ -41,6 +41,20 @@ pub enum LengthOrPercentage {
     Percentage(Percentage),
 }
 
+/// Wrapper for side lengths ammounts of 1, 2, and 4.
+/// Grammar: `<side-length>`
+#[derive(Debug, PartialEq)]
+pub enum SideLength {
+    Single(LengthOrPercentage),
+    Double(LengthOrPercentage, LengthOrPercentage),
+    Quad(
+        LengthOrPercentage,
+        LengthOrPercentage,
+        LengthOrPercentage,
+        LengthOrPercentage,
+    ),
+}
+
 impl FromStr for LengthUnit {
     type Err = ();
 
@@ -105,5 +119,11 @@ impl Parsable for LengthOrPercentage {
             },
             None => Err(ParsingError::end_of_file("length or percentage")),
         }
+    }
+}
+
+impl Parsable for SideLength {
+    fn parse<I: Iterator<Item = char>>(_: &mut Parser<I>) -> Result<Self, ParsingError> {
+        todo!();
     }
 }
