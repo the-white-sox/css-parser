@@ -3,6 +3,11 @@ use super::*;
 mod side_length {
     use super::*;
 
+    fn parse_side_length(input: &str) -> Result<SideLength, ParsingError> {
+        let mut parser = Parser::new(input.chars());
+        return parser.parse::<SideLength>();
+    }
+
     mod unit {
         use super::*;
 
@@ -203,11 +208,6 @@ mod side_length {
 
     mod double {
         use super::*;
-
-        fn parse_side_length(input: &str) -> Result<SideLength, ParsingError> {
-            let mut parser = Parser::new(input.chars());
-            return parser.parse::<SideLength>();
-        }
 
         #[test]
         fn nothing() {
