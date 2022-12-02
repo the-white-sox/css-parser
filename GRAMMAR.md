@@ -190,7 +190,7 @@ p.class.class2#id[target].class:has(p.class) {}
 <percentage> ::= <number> "%"
 <length> ::= "0" | <number> <length-unit>
 <length-unit> ::= "px" | "cm" | "in" | "pt" | "em" | "rem" | "vh" | "vw" | "vb" | "vi" | "vmin" | "vmax"
-<sides-color> :== <color> | <color> <color> | <color> <color> <color> <color>
+<sides-color> ::= <color> | <color> <color> | <color> <color> <color> <color>
 <color> ::= "black" | "silver" | "gray" | "grey" | "white" | "maroon" | "red" | "purple" | "fuchsia" | "green" | "lime" | "olive" | "yellow" | "navy" | "blue" | "teal" | "aqua" | <rgb> | <hsl> | <hex>
 <rgb> ::= "rgb(" <0-255> "," <0-255> "," <0-255> ")" | "rgba(" <0-255> "," <0-255> "," <0-255> "," <alpha> ")"
 <hex> ::= "#" <hex-byte> <hex-byte> <hex-byte> | "#" <hex-byte> <hex-byte> <hex-byte> <hex-byte> | "#" <hex-digit> <hex-digit> <hex-digit> | "#" <hex-digit> <hex-digit> <hex-digit> <hex-digit>
