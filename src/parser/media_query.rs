@@ -18,7 +18,66 @@ pub enum MediaQuery {
 
 impl Parsable for MediaQuery {
     fn parse<I: Iterator<Item = char>>(parser: &mut Parser<I>) -> Result<Self, ParsingError> {
-        todo!()
+        let first = match parser.tokens.peek() {
+            Some(token_at) => match &token_at.token {
+                Token::Identifier(name) if name == "not" => {
+                    parser.tokens.next();
+                    parser.optional_whitespace();
+                    Ok(MediaQuery::Not(Box::new(parser.parse()?)))
+                }
+
+                Token::Identifier(_) => Ok(MediaQuery::MediaType(parser.parse()?)),
+
+                Token::OpenParenthesis() => {
+                    parser.tokens.next();
+                    parser.optional_whitespace();
+                    let inner = match parser.tokens.peek() {
+                        Some(TokenAt {
+                            token: Token::Identifier(name),
+                            ..
+                        }) if name.parse::<MediaType>().is_err() && name != "not" => {
+                            Ok(MediaQuery::MediaFeature(parser.parse()?))
+                        }
+                        Some(_) => parser.parse(),
+                        None => Err(ParsingError::end_of_file("media query")),
+                    };
+                    parser.optional_whitespace();
+                    parser.expect(Token::CloseParenthesis())?;
+                    inner
+                }
+
+                _ => Err(ParsingError::wrong_token(
+                    token_at.clone(),
+                    "a media type or opening parenthesis",
+                )),
+            },
+
+            None => Err(ParsingError::end_of_file("media query")),
+        }?;
+
+        parser.optional_whitespace();
+
+        match parser.tokens.peek() {
+            Some(TokenAt {
+                token: Token::Identifier(name),
+                ..
+            }) if name == "and" => {
+                parser.tokens.next();
+                parser.optional_whitespace();
+                Ok(MediaQuery::And(Box::new(first), Box::new(parser.parse()?)))
+            }
+
+            Some(TokenAt {
+                token: Token::Identifier(name),
+                ..
+            }) if name == "or" => {
+                parser.tokens.next();
+                parser.optional_whitespace();
+                Ok(MediaQuery::Or(Box::new(first), Box::new(parser.parse()?)))
+            }
+
+            _ => Ok(first),
+        }
     }
 }
 
