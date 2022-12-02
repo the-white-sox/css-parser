@@ -11,7 +11,7 @@ use line_counter::LineCounter;
 /// All the types of tokens found in CSS
 ///
 /// adapted from https://www.w3.org/TR/css-syntax-3/#tokenization
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum Token {
     BadComment(),
     Identifier(String),
@@ -38,7 +38,7 @@ pub enum Token {
     CloseCurlyBracket(),
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum HashType {
     Id,
     Unrestricted,
@@ -75,7 +75,7 @@ impl fmt::Display for Token {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct TokenAt {
     pub line: usize,
     pub column: usize,
