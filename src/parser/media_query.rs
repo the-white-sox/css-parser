@@ -5,8 +5,8 @@ mod media_feature;
 mod media_type;
 mod vec;
 
-use media_feature::*;
-use media_type::*;
+pub use media_feature::*;
+pub use media_type::*;
 pub use vec::*;
 
 #[derive(Debug, PartialEq)]
