@@ -2,7 +2,24 @@ use super::*;
 
 impl Parsable for Vec<MediaQuery> {
     fn parse<I: Iterator<Item = char>>(parser: &mut Parser<I>) -> Result<Self, ParsingError> {
-        todo!()
+        let mut media_queries = Vec::new();
+        loop {
+            media_queries.push(parser.parse()?);
+            parser.optional_whitespace();
+
+            match parser.tokens.peek() {
+                Some(TokenAt {
+                    token: Token::Comma(),
+                    ..
+                }) => {
+                    parser.tokens.next();
+                    parser.optional_whitespace();
+                    continue;
+                }
+                _ => break,
+            }
+        }
+        Ok(media_queries)
     }
 }
 
