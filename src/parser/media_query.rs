@@ -42,10 +42,10 @@ impl Parsable for MediaQuery {
                         }
                         Some(_) => parser.parse(),
                         None => Err(ParsingError::end_of_file("media query")),
-                    };
+                    }?;
                     parser.optional_whitespace();
                     parser.expect(Token::CloseParenthesis())?;
-                    inner
+                    Ok(inner)
                 }
 
                 _ => Err(ParsingError::wrong_token(
