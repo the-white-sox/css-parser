@@ -3,9 +3,11 @@ use crate::tokenizer::*;
 
 mod media_feature;
 mod media_type;
+mod vec;
 
 use media_feature::*;
 use media_type::*;
+pub use vec::*;
 
 #[derive(Debug, PartialEq)]
 pub enum MediaQuery {
@@ -78,12 +80,6 @@ impl Parsable for MediaQuery {
 
             _ => Ok(first),
         }
-    }
-}
-
-impl Parsable for Vec<MediaQuery> {
-    fn parse<I: Iterator<Item = char>>(parser: &mut Parser<I>) -> Result<Self, ParsingError> {
-        todo!()
     }
 }
 
@@ -228,98 +224,6 @@ mod tests {
                 )),
                 Box::new(MediaQuery::MediaType(MediaType::Print))
             )),
-            parser.parse()
-        );
-        assert_eq!(None, parser.tokens.next());
-    }
-
-    #[test]
-    fn list() {
-        let mut parser = Parser::new("screen, print".chars());
-        assert_eq!(
-            Ok(vec![
-                MediaQuery::MediaType(MediaType::Screen),
-                MediaQuery::MediaType(MediaType::Print)
-            ]),
-            parser.parse()
-        );
-        assert_eq!(None, parser.tokens.next());
-    }
-
-    #[test]
-    fn list_with_only_one() {
-        let mut parser = Parser::new("screen".chars());
-        assert_eq!(
-            Ok(vec![MediaQuery::MediaType(MediaType::Screen)]),
-            parser.parse()
-        );
-        assert_eq!(None, parser.tokens.next());
-    }
-
-    #[test]
-    fn empty_list() {
-        let mut parser = Parser::new("".chars());
-        assert!(parser.parse::<Vec<MediaQuery>>().is_err());
-    }
-
-    #[test]
-    fn list_with_no_whitespace() {
-        let mut parser = Parser::new("screen,print".chars());
-        assert_eq!(
-            Ok(vec![
-                MediaQuery::MediaType(MediaType::Screen),
-                MediaQuery::MediaType(MediaType::Print)
-            ]),
-            parser.parse()
-        );
-        assert_eq!(None, parser.tokens.next());
-    }
-
-    #[test]
-    fn list_with_extra_whitespace() {
-        let mut parser = Parser::new("screen   ,   print   ".chars());
-        assert_eq!(
-            Ok(vec![
-                MediaQuery::MediaType(MediaType::Screen),
-                MediaQuery::MediaType(MediaType::Print)
-            ]),
-            parser.parse()
-        );
-        assert_eq!(None, parser.tokens.next());
-    }
-
-    #[test]
-    fn trailing_comma() {
-        let mut parser = Parser::new("screen,print,".chars());
-        assert!(parser.parse::<Vec<MediaQuery>>().is_err());
-    }
-
-    #[test]
-    fn complex_list() {
-        let mut parser = Parser::new(
-            "(color) and screen, print and (orientation: landscape), not screen, (all or not all)"
-                .chars(),
-        );
-        assert_eq!(
-            Ok(vec![
-                MediaQuery::And(
-                    Box::new(MediaQuery::MediaFeature(MediaFeature::Color)),
-                    Box::new(MediaQuery::MediaType(MediaType::Screen)),
-                ),
-                MediaQuery::And(
-                    Box::new(MediaQuery::MediaType(MediaType::Print)),
-                    Box::new(MediaQuery::MediaFeature(MediaFeature::Orientation(
-                        Orientation::Landscape
-                    )))
-                ),
-                MediaQuery::Not(Box::new(MediaQuery::MediaType(MediaType::Screen))),
-                MediaQuery::Or(
-                    Box::new(MediaQuery::MediaType(MediaType::All)),
-                    Box::new(MediaQuery::Not(Box::new(MediaQuery::MediaType(
-                        MediaType::All
-                    ))))
-                )
-            ]),
             parser.parse()
         );
         assert_eq!(None, parser.tokens.next());
