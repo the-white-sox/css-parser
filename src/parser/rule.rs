@@ -1,4 +1,4 @@
-use super::media_query::*;
+use super::{media_query::*, *};
 
 #[derive(Debug, PartialEq)]
 pub enum Rule {
@@ -13,4 +13,10 @@ pub struct Ruleset {}
 pub struct MediaRule {
     pub media_queries: Vec<MediaQuery>,
     pub rules: Vec<Rule>,
+}
+
+impl Parsable for Vec<Rule> {
+    fn parse<I: Iterator<Item = char>>(parser: &mut Parser<I>) -> Result<Self, ParsingError> {
+        todo!()
+    }
 }
