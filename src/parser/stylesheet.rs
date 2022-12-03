@@ -6,6 +6,14 @@ pub struct Stylesheet {
     pub rules: Vec<Rule>,
 }
 
+impl FromStr for Stylesheet {
+    type Err = ParsingError;
+
+    fn from_str(input: &str) -> Result<Self, Self::Err> {
+        Parser::new(input.chars()).into_stylesheet()
+    }
+}
+
 impl Parsable for Stylesheet {
     fn parse<I: Iterator<Item = char>>(parser: &mut Parser<I>) -> Result<Self, ParsingError> {
         let mut imports = Vec::new();
