@@ -94,7 +94,7 @@ impl<I: Iterator<Item = char>> Parser<I> {
                 }
             }
 
-            None => Err(ParsingError::end_of_file("a string")),
+            None => Err(ParsingError::end_of_file(&expected.to_string())),
         }
     }
 
