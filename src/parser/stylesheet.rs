@@ -16,6 +16,8 @@ impl FromStr for Stylesheet {
 
 impl Parsable for Stylesheet {
     fn parse<I: Iterator<Item = char>>(parser: &mut Parser<I>) -> Result<Self, ParsingError> {
+        parser.optional_whitespace();
+
         let mut imports = Vec::new();
 
         while let Some(token_at) = parser.tokens.peek() {
@@ -100,6 +102,24 @@ mod tests {
                         media_queries: vec![]
                     }
                 ],
+                rules: vec![]
+            }),
+            parser.parse()
+        );
+
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn import_with_leading_whitespace() {
+        let mut parser = Parser::new(" @import url(example.com);".chars());
+
+        assert_eq!(
+            Ok(Stylesheet {
+                imports: vec![Import {
+                    url: Url("example.com".to_owned()),
+                    media_queries: vec![]
+                }],
                 rules: vec![]
             }),
             parser.parse()
