@@ -40,9 +40,9 @@ impl Parsable for Stylesheet {
 
 #[cfg(test)]
 mod tests {
-
-    use crate::parser::url::Url;
-
+    use super::media_query::{MediaQuery, MediaType};
+    use super::rule::media_rule::MediaRule;
+    use super::url::Url;
     use super::*;
 
     #[test]
@@ -101,6 +101,52 @@ mod tests {
                     }
                 ],
                 rules: vec![]
+            }),
+            parser.parse()
+        );
+
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn media_rule() {
+        let mut parser = Parser::new("@media screen { }".chars());
+
+        assert_eq!(
+            Ok(Stylesheet {
+                imports: vec![],
+                rules: vec![Rule::MediaRule(MediaRule {
+                    media_queries: vec![MediaQuery::MediaType(MediaType::Screen)],
+                    rules: vec![]
+                })]
+            }),
+            parser.parse()
+        );
+
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn import_and_multiple_media_rules() {
+        let mut parser =
+            Parser::new("@import url(example.com);\n@media screen { }\n@media print { }".chars());
+
+        assert_eq!(
+            Ok(Stylesheet {
+                imports: vec![Import {
+                    url: Url("example.com".to_owned()),
+                    media_queries: vec![]
+                }],
+                rules: vec![
+                    Rule::MediaRule(MediaRule {
+                        media_queries: vec![MediaQuery::MediaType(MediaType::Screen)],
+                        rules: vec![]
+                    }),
+                    Rule::MediaRule(MediaRule {
+                        media_queries: vec![MediaQuery::MediaType(MediaType::Print)],
+                        rules: vec![]
+                    })
+                ]
             }),
             parser.parse()
         );

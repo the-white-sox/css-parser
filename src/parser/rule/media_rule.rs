@@ -71,4 +71,22 @@ mod tests {
 
         assert_eq!(None, parser.tokens.next());
     }
+
+    #[test]
+    fn nested_media_query() {
+        let mut parser = Parser::new("@media (color) { @media print {} }".chars());
+
+        assert_eq!(
+            Ok(MediaRule {
+                media_queries: vec![MediaQuery::MediaFeature(MediaFeature::Color)],
+                rules: vec![Rule::MediaRule(MediaRule {
+                    media_queries: vec![MediaQuery::MediaType(MediaType::Print)],
+                    rules: vec![]
+                })]
+            }),
+            parser.parse()
+        );
+
+        assert_eq!(None, parser.tokens.next());
+    }
 }
