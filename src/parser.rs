@@ -4,6 +4,9 @@ use std::{fmt, str::FromStr};
 use crate::tokenizer::{Token, TokenAt, Tokenizer};
 
 mod color;
+mod import;
+mod media_query;
+mod rule;
 mod string;
 mod url;
 
@@ -81,6 +84,7 @@ impl<I: Iterator<Item = char>> Parser<I> {
         T::parse(self)
     }
 
+    /// expect the next token to match a given token
     fn expect(&mut self, expected: Token) -> Result<(), ParsingError> {
         match self.tokens.next() {
             Some(token_at) => {
@@ -92,6 +96,17 @@ impl<I: Iterator<Item = char>> Parser<I> {
             }
 
             None => Err(ParsingError::end_of_file("a string")),
+        }
+    }
+
+    /// consume whitespace token if there are any
+    fn optional_whitespace(&mut self) {
+        while let Some(TokenAt {
+            token: Token::Whitespace(),
+            ..
+        }) = self.tokens.peek()
+        {
+            self.tokens.next();
         }
     }
 
