@@ -86,7 +86,10 @@ impl Parsable for Length {
                 Token::Number(value) if *value == 0.0 => Ok(Length::Zero()),
                 Token::Dimension(value, unit) => match unit.parse::<LengthUnit>() {
                     Ok(unit) => Ok(Length::Length(*value, unit)),
-                    Err(()) => Err(ParsingError::wrong_token(token_at, "dimension")),
+                    Err(()) => Err(ParsingError::wrong_token(
+                        token_at,
+                        "one of px, cm, in, pt, em, rem, vh, vw, vb, vi, vmin, or vmax",
+                    )),
                 },
                 _ => Err(ParsingError::wrong_token(token_at, "dimension")),
             },
