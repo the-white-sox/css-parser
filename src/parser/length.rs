@@ -9,7 +9,7 @@ mod tests;
 /// Represents a single length value.
 /// There are two types: zero (with no unit), and a number with a unit
 /// Grammar: `<length>`
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub enum Length {
     Zero(),
     Length(f64, LengthUnit),
@@ -17,7 +17,7 @@ pub enum Length {
 
 /// Represents a length unit.
 /// Grammar: `<length-unit>`
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum LengthUnit {
     Pixels,             // px
     Centimeters,        // cm
@@ -35,7 +35,7 @@ pub enum LengthUnit {
 
 /// Wraps a length or percentage together
 /// Grammar: `<length-or-percentage>
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub enum LengthOrPercentage {
     Length(Length),
     Percentage(Percentage),
@@ -43,7 +43,7 @@ pub enum LengthOrPercentage {
 
 /// Wrapper for side lengths ammounts of 1, 2, and 4.
 /// Grammar: `<side-length>`
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub enum SideLength {
     Single(LengthOrPercentage),
     Double(LengthOrPercentage, LengthOrPercentage),

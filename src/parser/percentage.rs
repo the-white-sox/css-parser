@@ -2,7 +2,7 @@ use super::*;
 
 /// Represents a percentage value
 /// Grammar: `<percentage>`
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub struct Percentage(pub f64);
 
 impl Parsable for Percentage {
