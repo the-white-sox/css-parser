@@ -33,6 +33,30 @@ pub enum Color {
     Hsl { h: f64, s: f64, l: f64, a: f64 },
 }
 
+fn parse_percent<I: Iterator<Item = char>>(
+    parser: &mut Parser<I>,
+    min: f64,
+    max: f64,
+) -> Result<f64, ParsingError> {
+    match parser.tokens.next() {
+        Some(token_at) => match token_at.token {
+            Token::Percentage(val) => {
+                if val >= min && val <= max {
+                    Ok(val)
+                } else {
+                    Err(ParsingError::wrong_token(
+                        token_at,
+                        &format!("a percentage between {min}% and {max}%"),
+                    ))
+                }
+            }
+            _ => Err(ParsingError::wrong_token(token_at, "a percentage")),
+        },
+
+        None => Err(ParsingError::end_of_file("a percentage")),
+    }
+}
+
 fn parse_num<I: Iterator<Item = char>>(
     parser: &mut Parser<I>,
     min: f64,
@@ -116,9 +140,21 @@ impl Parsable for Color {
                         parser.expect(Token::CloseParenthesis())?;
                         Ok(Color::Rgb { r, g, b, a })
                     },
-                    // "hsl" => {
-                        
-                    // },
+                    "hsl" => {
+                        parser.optional_whitespace();
+                        let h = parse_num(parser, 0.0, 360.0)?;
+                        parser.optional_whitespace();
+                        parser.expect(Token::Comma())?;
+                        parser.optional_whitespace();
+                        let s = parse_percent(parser, 0.0, 100.0)?;
+                        parser.optional_whitespace();
+                        parser.expect(Token::Comma())?;
+                        parser.optional_whitespace();
+                        let l = parse_percent(parser, 0.0, 100.0)?;
+                        parser.optional_whitespace();
+                        parser.expect(Token::CloseParenthesis())?;
+                        Ok(Color::Hsl { h, s, l, a: 1.0 })
+                    },
                     _ => Err(ParsingError::wrong_token(token_at, "rgb, rgba, hex, hexa, hsl, or hsla")),
                 },
                 _ => Err(ParsingError::wrong_token(token_at, "a color")),
@@ -268,7 +304,15 @@ mod tests {
     #[test]
     fn rgb() {
         let mut parser = Parser::new("rgb( 37,102.4        ,0)".chars());
-        assert_eq!(Ok(Color::Rgb { r:37.0, g:102.4, b:0.0, a:1.0}), parser.parse());
+        assert_eq!(
+            Ok(Color::Rgb {
+                r: 37.0,
+                g: 102.4,
+                b: 0.0,
+                a: 1.0
+            }),
+            parser.parse()
+        );
         assert_eq!(None, parser.tokens.next());
     }
 
@@ -293,7 +337,15 @@ mod tests {
     #[test]
     fn rgba() {
         let mut parser = Parser::new("rgba( 37,102.4        ,0,0.4)".chars());
-        assert_eq!(Ok(Color::Rgb { r:37.0, g:102.4, b:0.0, a:0.4}), parser.parse());
+        assert_eq!(
+            Ok(Color::Rgb {
+                r: 37.0,
+                g: 102.4,
+                b: 0.0,
+                a: 0.4
+            }),
+            parser.parse()
+        );
         assert_eq!(None, parser.tokens.next());
     }
 
@@ -312,6 +364,39 @@ mod tests {
     #[test]
     fn rgba_no_comma() {
         let mut parser = Parser::new("rgb(50.0, 5.3, 23.0 .4)".chars());
+        assert!(parser.parse::<Color>().is_err());
+    }
+
+    #[test]
+    fn hsl() {
+        let mut parser = Parser::new("hsl( 37,99.4%        ,0%)".chars());
+        assert_eq!(
+            Ok(Color::Hsl {
+                h: 37.0,
+                s: 99.4,
+                l: 0.0,
+                a: 1.0
+            }),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn hsl_no_comma() {
+        let mut parser = Parser::new("hsl(50.0, 5.3% 23.0%)".chars());
+        assert!(parser.parse::<Color>().is_err());
+    }
+
+    #[test]
+    fn hsl_out_of_upper_range() {
+        let mut parser = Parser::new("hsl(50.0, 105.3%, 23.0%)".chars());
+        assert!(parser.parse::<Color>().is_err());
+    }
+
+    #[test]
+    fn hsl_out_of_lower_range() {
+        let mut parser = Parser::new("hsl(50.0, 5.3%, -23.0%)".chars());
         assert!(parser.parse::<Color>().is_err());
     }
 }
