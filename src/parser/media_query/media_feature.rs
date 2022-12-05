@@ -1,4 +1,4 @@
-use crate::parser::length::Distance;
+use crate::parser::length::Length;
 
 use super::*;
 
@@ -16,12 +16,12 @@ pub use pointer::Pointer;
 pub enum MediaFeature {
     Color,
     Monochrome,
-    MinWidth(Distance),
-    Width(Distance),
-    MaxWidth(Distance),
-    MinHeight(Distance),
-    Height(Distance),
-    MaxHeight(Distance),
+    MinWidth(Length),
+    Width(Length),
+    MaxWidth(Length),
+    MinHeight(Length),
+    Height(Length),
+    MaxHeight(Length),
     Orientation(Orientation),
     Hover(Hover),
     AnyHover(Hover),
@@ -48,33 +48,33 @@ impl Parsable for MediaFeature {
                     "monochrome" => Ok(MediaFeature::Monochrome),
                     "min-width" => {
                         parser.consume_colon_separator()?;
-                        let distance: Distance = parser.parse()?;
-                        Ok(MediaFeature::MinWidth(distance))
+                        let length: Length = parser.parse()?;
+                        Ok(MediaFeature::MinWidth(length))
                     }
                     "width" => {
                         parser.consume_colon_separator()?;
-                        let distance: Distance = parser.parse()?;
-                        Ok(MediaFeature::Width(distance))
+                        let length: Length = parser.parse()?;
+                        Ok(MediaFeature::Width(length))
                     }
                     "max-width" => {
                         parser.consume_colon_separator()?;
-                        let distance: Distance = parser.parse()?;
-                        Ok(MediaFeature::MaxWidth(distance))
+                        let length: Length = parser.parse()?;
+                        Ok(MediaFeature::MaxWidth(length))
                     }
                     "min-height" => {
                         parser.consume_colon_separator()?;
-                        let distance: Distance = parser.parse()?;
-                        Ok(MediaFeature::MinHeight(distance))
+                        let length: Length = parser.parse()?;
+                        Ok(MediaFeature::MinHeight(length))
                     }
                     "height" => {
                         parser.consume_colon_separator()?;
-                        let distance: Distance = parser.parse()?;
-                        Ok(MediaFeature::Height(distance))
+                        let length: Length = parser.parse()?;
+                        Ok(MediaFeature::Height(length))
                     }
                     "max-height" => {
                         parser.consume_colon_separator()?;
-                        let distance: Distance = parser.parse()?;
-                        Ok(MediaFeature::MaxHeight(distance))
+                        let length: Length = parser.parse()?;
+                        Ok(MediaFeature::MaxHeight(length))
                     }
                     "orientation" => {
                         parser.consume_colon_separator()?;
