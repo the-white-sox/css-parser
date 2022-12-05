@@ -1,0 +1,23 @@
+/*
+    this file contains syntactically valid media rules for testing purposes
+*/
+
+@media screen {
+    
+}
+
+@media (orientation: landscape) {
+    
+}
+
+@media (color) and (prefers-color-scheme: dark), print {
+    
+}
+
+@media screen {
+    @media (orientation: landscape) {
+        @media (color) and (prefers-color-scheme: dark), print {
+            
+        }
+    }
+}

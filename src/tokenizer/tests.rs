@@ -372,7 +372,12 @@ mod strings {
 
     #[test]
     fn escaped_newline() {
-        assert_tokens("\"\\\n\"", vec![Token::String("".to_owned())]);
+        assert_tokens("\"ab\\\n cd\"", vec![Token::String("ab cd".to_owned())]);
+    }
+
+    #[test]
+    fn escaped_carriage_return_newline() {
+        assert_tokens("\"ab\\\r\n cd\"", vec![Token::String("ab cd".to_owned())]);
     }
 
     #[test]
