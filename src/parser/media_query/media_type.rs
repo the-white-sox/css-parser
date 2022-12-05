@@ -31,24 +31,21 @@ mod tests {
     #[test]
     fn all() {
         let mut parser = Parser::new("all".chars());
-        let result = parser.parse::<MediaType>().unwrap();
-        assert_eq!(result, MediaType::All);
+        assert_eq!(MediaType::All, parser.parse().unwrap());
         assert!(parser.tokens.next().is_none());
     }
 
     #[test]
     fn print() {
         let mut parser = Parser::new("print".chars());
-        let result = parser.parse::<MediaType>().unwrap();
-        assert_eq!(result, MediaType::Print);
+        assert_eq!(MediaType::Print, parser.parse().unwrap());
         assert!(parser.tokens.next().is_none());
     }
 
     #[test]
     fn screen() {
         let mut parser = Parser::new("screen".chars());
-        let result = parser.parse::<MediaType>().unwrap();
-        assert_eq!(result, MediaType::Screen);
+        assert_eq!(MediaType::Screen, parser.parse().unwrap());
         assert!(parser.tokens.next().is_none());
     }
 
