@@ -174,8 +174,98 @@ impl Parsable for Color {
                         parser.expect(Token::CloseParenthesis())?;
                         Ok(Color::Hsl { h, s, l, a })
                     },
-                    _ => Err(ParsingError::wrong_token(token_at, "rgb, rgba, hex, hexa, hsl, or hsla")),
+                    _ => Err(ParsingError::wrong_token(token_at, "rgb, rgba, hsl, or hsla")),
                 },
+                Token::Hash(value, _) => {
+                     match value.len() {
+                        3 => {
+                            let mut red_string = String::new();
+                            let mut green_string = String::new();
+                            let mut blue_string = String::new();
+                            red_string.push_str(&value[0..1]);
+                            red_string.push_str(&value[0..1]);
+                            green_string.push_str(&value[1..2]);
+                            green_string.push_str(&value[1..2]);
+                            blue_string.push_str(&value[2..3]);
+                            blue_string.push_str(&value[2..3]);
+                            let Ok(r) = u8::from_str_radix(&red_string, 16) else {
+                                return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
+                            };
+                            let Ok(g) = u8::from_str_radix(&green_string, 16) else {
+                                return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
+                            };
+                            let Ok(b) = u8::from_str_radix(&blue_string, 16) else {
+                                return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
+                            };
+
+                            Ok(Color::Rgb { r: r as f64, g: g as f64, b: b as f64, a: 1.0 })
+                        }
+                        6 => {
+                            let Ok(r) = u8::from_str_radix(&value[0..2], 16) else {
+                                return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
+                            };
+
+                            let Ok(g) = u8::from_str_radix(&value[2..4], 16) else {
+                                return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
+                            };
+
+                            let Ok(b) = u8::from_str_radix(&value[4..6], 16) else {
+                                return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
+                            };
+                            Ok(Color::Rgb { r: r as f64, g: g as f64, b: b as f64, a: 1.0 })
+                        }
+                        4 => {
+                            let mut red_string = String::new();
+                            let mut green_string = String::new();
+                            let mut blue_string = String::new();
+                            let mut a_string = String::new();
+                            red_string.push_str(&value[0..1]);
+                            red_string.push_str(&value[0..1]);
+                            green_string.push_str(&value[1..2]);
+                            green_string.push_str(&value[1..2]);
+                            blue_string.push_str(&value[2..3]);
+                            blue_string.push_str(&value[2..3]);
+                            a_string.push_str(&value[3..4]);
+                            a_string.push_str(&value[3..4]);
+                            let Ok(r) = u8::from_str_radix(&red_string, 16) else {
+                                return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
+                            };
+                            let Ok(g) = u8::from_str_radix(&green_string, 16) else {
+                                return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
+                            };
+                            let Ok(b) = u8::from_str_radix(&blue_string, 16) else {
+                                return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
+                            };
+                            let Ok(a) = u8::from_str_radix(&a_string, 16) else {
+                                return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
+                            };
+                            let a = a as f64/255.0;
+                            Ok(Color::Rgb { r: r as f64, g: g as f64, b: b as f64, a })
+                        }
+                        8 => {
+                            let Ok(r) = u8::from_str_radix(&value[0..2], 16) else {
+                                return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
+                            };
+
+                            let Ok(g) = u8::from_str_radix(&value[2..4], 16) else {
+                                return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
+                            };
+
+                            let Ok(b) = u8::from_str_radix(&value[4..6], 16) else {
+                                return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
+                            };
+
+                            let Ok(a) = u8::from_str_radix(&value[6..8], 16) else {
+                                return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
+                            };
+                            let a = a as f64/255.0;
+
+                            Ok(Color::Rgb { r: r as f64, g: g as f64, b: b as f64, a})
+                        },
+                        _ => Err(ParsingError::wrong_token(token_at, "3, 4, 6, or 8 character long hex value")),
+                    }
+                    
+                }
                 _ => Err(ParsingError::wrong_token(token_at, "a color")),
             },
 
@@ -451,4 +541,78 @@ mod tests {
         let mut parser = Parser::new("hsla(50.0, 5.3%, 3.0%,-3)".chars());
         assert!(parser.parse::<Color>().is_err());
     }
+
+    #[test]
+    fn hex_6() {
+        let mut parser = Parser::new("#F4AA31".chars());
+        assert_eq!(
+            Ok(Color::Rgb {
+                r: 244.0,
+                g: 170.0,
+                b: 49.0,
+                a: 1.0
+            }),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn hex_4() {
+        let mut parser = Parser::new("#123F".chars());
+        assert_eq!(
+            Ok(Color::Rgb {
+                r: 17.0,
+                g: 34.0,
+                b: 51.0,
+                a: 1.0
+            }),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn hex_3() {
+        let mut parser = Parser::new("#123".chars());
+        assert_eq!(
+            Ok(Color::Rgb {
+                r: 17.0,
+                g: 34.0,
+                b: 51.0,
+                a: 1.0
+            }),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn hex_8() {
+        let mut parser = Parser::new("#112233ff".chars());
+        assert_eq!(
+            Ok(Color::Rgb {
+                r: 17.0,
+                g: 34.0,
+                b: 51.0,
+                a: 1.0
+            }),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn hex_10() {
+        let mut parser = Parser::new("#FF48FA6EBA".chars());
+        assert!(parser.parse::<Color>().is_err());
+    }
+
+    #[test]
+    fn hex_out_of_range() {
+        let mut parser = Parser::new("#H8NKNC".chars());
+        assert!(parser.parse::<Color>().is_err());
+    }
+
+    
 }
