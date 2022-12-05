@@ -155,6 +155,25 @@ impl Parsable for Color {
                         parser.expect(Token::CloseParenthesis())?;
                         Ok(Color::Hsl { h, s, l, a: 1.0 })
                     },
+                    "hsla" => {
+                        parser.optional_whitespace();
+                        let h = parse_num(parser, 0.0, 360.0)?;
+                        parser.optional_whitespace();
+                        parser.expect(Token::Comma())?;
+                        parser.optional_whitespace();
+                        let s = parse_percent(parser, 0.0, 100.0)?;
+                        parser.optional_whitespace();
+                        parser.expect(Token::Comma())?;
+                        parser.optional_whitespace();
+                        let l = parse_percent(parser, 0.0, 100.0)?;
+                        parser.optional_whitespace();
+                        parser.expect(Token::Comma())?;
+                        parser.optional_whitespace();
+                        let a = parse_num(parser, 0.0, 1.0)?;
+                        parser.optional_whitespace();
+                        parser.expect(Token::CloseParenthesis())?;
+                        Ok(Color::Hsl { h, s, l, a })
+                    },
                     _ => Err(ParsingError::wrong_token(token_at, "rgb, rgba, hex, hexa, hsl, or hsla")),
                 },
                 _ => Err(ParsingError::wrong_token(token_at, "a color")),
@@ -397,6 +416,39 @@ mod tests {
     #[test]
     fn hsl_out_of_lower_range() {
         let mut parser = Parser::new("hsl(50.0, 5.3%, -23.0%)".chars());
+        assert!(parser.parse::<Color>().is_err());
+    }
+
+    #[test]
+    fn hsla() {
+        let mut parser = Parser::new("hsla( 37,99.4%        ,0%, 0.4)".chars());
+        assert_eq!(
+            Ok(Color::Hsl {
+                h: 37.0,
+                s: 99.4,
+                l: 0.0,
+                a: 0.4
+            }),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn hsla_no_comma() {
+        let mut parser = Parser::new("hsla(50.0, 5.3% 23.0%, 0.6)".chars());
+        assert!(parser.parse::<Color>().is_err());
+    }
+
+    #[test]
+    fn hsla_out_of_upper_range() {
+        let mut parser = Parser::new("hsla(50.0, 1.3%, 23.0%, 65.6)".chars());
+        assert!(parser.parse::<Color>().is_err());
+    }
+
+    #[test]
+    fn hsla_out_of_lower_range() {
+        let mut parser = Parser::new("hsla(50.0, 5.3%, 3.0%,-3)".chars());
         assert!(parser.parse::<Color>().is_err());
     }
 }
