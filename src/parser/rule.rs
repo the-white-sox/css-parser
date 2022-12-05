@@ -8,3 +8,9 @@ pub enum Rule {
 
 #[derive(Debug, PartialEq)]
 pub struct Ruleset {}
+
+#[derive(Debug, PartialEq)]
+pub struct MediaRule {
+    pub media_queries: Vec<MediaQuery>,
+    pub rules: Vec<Rule>,
+}

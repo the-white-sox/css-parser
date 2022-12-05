@@ -3,7 +3,9 @@ use std::{fmt, str::FromStr};
 
 use crate::tokenizer::{Token, TokenAt, Tokenizer};
 
+mod from_identifier;
 mod import;
+mod length;
 mod media_query;
 mod rule;
 mod string;
@@ -94,7 +96,7 @@ impl<I: Iterator<Item = char>> Parser<I> {
                 }
             }
 
-            None => Err(ParsingError::end_of_file("a string")),
+            None => Err(ParsingError::end_of_file(&expected.to_string())),
         }
     }
 
@@ -117,6 +119,8 @@ impl<I: Iterator<Item = char>> Parser<I> {
 pub trait Parsable: Sized {
     fn parse<I: Iterator<Item = char>>(parser: &mut Parser<I>) -> Result<Self, ParsingError>;
 }
+
+pub use from_identifier::FromIdentifier;
 
 pub struct Stylesheet {}
 
