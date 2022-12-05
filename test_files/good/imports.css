@@ -1,0 +1,10 @@
+/*
+    this file contains syntactically valid import statements for testing purposes
+*/
+
+@import "example.com/imports.css";
+@import url("example.com/imports.css");
+@import url(example.com/imports.css);
+@import "example.com/imports.css" screen;
+@import url("example.com/imports.css") (orientation: landscape);
+@import url(example.com/imports.css) (color) and (prefers-color-scheme: dark), print;
