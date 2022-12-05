@@ -7,6 +7,7 @@ mod color;
 mod from_identifier;
 mod import;
 mod length;
+
 mod media_query;
 mod rule;
 mod string;
@@ -102,17 +103,6 @@ impl<I: Iterator<Item = char>> Parser<I> {
             }
 
             None => Err(ParsingError::end_of_file(&expected.to_string())),
-        }
-    }
-
-    /// consume whitespace token if there are any
-    fn optional_whitespace(&mut self) {
-        while let Some(TokenAt {
-            token: Token::Whitespace(),
-            ..
-        }) = self.tokens.peek()
-        {
-            self.tokens.next();
         }
     }
 
