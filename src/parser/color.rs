@@ -85,7 +85,7 @@ impl Parsable for Color {
     fn parse<I: Iterator<Item = char>>(parser: &mut Parser<I>) -> Result<Self, ParsingError> {
         match parser.tokens.next() {
             Some(token_at) => match &token_at.token {
-                Token::Identifier(key) => match key.to_lowercase().as_str() {
+                Token::Identifier(key) => match key.as_str() {
                     "black" => Ok(Color::Black),
                     "silver" => Ok(Color::Silver),
                     "gray" => Ok(Color::Gray),
@@ -105,7 +105,7 @@ impl Parsable for Color {
                     "aqua" => Ok(Color::Aqua),
                     _ => Err(ParsingError::wrong_token(token_at, "black, silver, gray, grey, white, maroon, red, purple, fuchsia, green, lime, olive, yellow, navy, blue, teal, or aqua")),
                 },
-                Token::Function(name) => match name.to_lowercase().as_str() {
+                Token::Function(name) => match name.as_str() {
                     "rgb" => {
                         parser.optional_whitespace();
                         let r = parse_num(parser, 0.0, 255.0)?;
@@ -406,8 +406,7 @@ mod tests {
     #[test]
     fn red_upper_case() {
         let mut parser = Parser::new("Red".chars());
-        assert_eq!(Ok(Color::Red), parser.parse());
-        assert_eq!(None, parser.tokens.next());
+        assert!(parser.parse::<Color>().is_err());
     }
 
     #[test]
@@ -428,6 +427,12 @@ mod tests {
     #[test]
     fn rgb_no_comma() {
         let mut parser = Parser::new("rgb(102 5 23)".chars());
+        assert!(parser.parse::<Color>().is_err());
+    }
+
+    #[test]
+    fn rgb_uppcase() {
+        let mut parser = Parser::new("RGB(50.0, 5.3, 23.0)".chars());
         assert!(parser.parse::<Color>().is_err());
     }
 
@@ -460,19 +465,25 @@ mod tests {
 
     #[test]
     fn rgba_out_of_lower_range() {
-        let mut parser = Parser::new("rgb(50.0, 5.3, 23.0, -.4)".chars());
+        let mut parser = Parser::new("rgba(50.0, 5.3, 23.0, -.4)".chars());
+        assert!(parser.parse::<Color>().is_err());
+    }
+
+    #[test]
+    fn rgba_uppcase() {
+        let mut parser = Parser::new("RGBA(50.0, 5.3, 23.0, 0.5)".chars());
         assert!(parser.parse::<Color>().is_err());
     }
 
     #[test]
     fn rgba_out_of_upper_range() {
-        let mut parser = Parser::new("rgb(50.0, 5.3, 23.0, 500)".chars());
+        let mut parser = Parser::new("rgba(50.0, 5.3, 23.0, 500)".chars());
         assert!(parser.parse::<Color>().is_err());
     }
 
     #[test]
     fn rgba_no_comma() {
-        let mut parser = Parser::new("rgb(50.0, 5.3, 23.0 .4)".chars());
+        let mut parser = Parser::new("rgba(50.0, 5.3, 23.0 .4)".chars());
         assert!(parser.parse::<Color>().is_err());
     }
 
@@ -494,6 +505,12 @@ mod tests {
     #[test]
     fn hsl_no_comma() {
         let mut parser = Parser::new("hsl(50.0, 5.3% 23.0%)".chars());
+        assert!(parser.parse::<Color>().is_err());
+    }
+
+    #[test]
+    fn hsl_uppcase() {
+        let mut parser = Parser::new("HSL(50.0, 5.3%, 23.0%)".chars());
         assert!(parser.parse::<Color>().is_err());
     }
 
@@ -527,6 +544,12 @@ mod tests {
     #[test]
     fn hsla_no_comma() {
         let mut parser = Parser::new("hsla(50.0, 5.3% 23.0%, 0.6)".chars());
+        assert!(parser.parse::<Color>().is_err());
+    }
+
+    #[test]
+    fn hsla_uppcase() {
+        let mut parser = Parser::new("HSLA(50.0, 5.3%, 23.0%,0.7)".chars());
         assert!(parser.parse::<Color>().is_err());
     }
 
