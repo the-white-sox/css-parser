@@ -296,4 +296,22 @@ mod tests {
         assert_eq!(Ok(Color::Rgb { r:37.0, g:102.4, b:0.0, a:0.4}), parser.parse());
         assert_eq!(None, parser.tokens.next());
     }
+
+    #[test]
+    fn rgba_out_of_lower_range() {
+        let mut parser = Parser::new("rgb(50.0, 5.3, 23.0, -.4)".chars());
+        assert!(parser.parse::<Color>().is_err());
+    }
+
+    #[test]
+    fn rgba_out_of_upper_range() {
+        let mut parser = Parser::new("rgb(50.0, 5.3, 23.0, 500)".chars());
+        assert!(parser.parse::<Color>().is_err());
+    }
+
+    #[test]
+    fn rgba_no_comma() {
+        let mut parser = Parser::new("rgb(50.0, 5.3, 23.0 .4)".chars());
+        assert!(parser.parse::<Color>().is_err());
+    }
 }
