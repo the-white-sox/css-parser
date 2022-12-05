@@ -5,7 +5,7 @@ use std::process::ExitCode;
 mod parser;
 mod tokenizer;
 
-use crate::parser::Stylesheet;
+use parser::Stylesheet;
 
 const GREEN_CHECK: &str = "\u{001b}[92m✓\u{001b}[0m";
 const RED_X: &str = "\u{001b}[31mX\u{001b}[0m";
