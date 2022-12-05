@@ -38,7 +38,7 @@ pub enum Token {
     CloseCurlyBracket(),
 }
 
-#[derive(Debug, PartialEq, Eq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum HashType {
     Id,
     Unrestricted,
@@ -75,7 +75,7 @@ impl fmt::Display for Token {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct TokenAt {
     pub line: usize,
     pub column: usize,
@@ -277,7 +277,7 @@ impl<I: Iterator<Item = char>> Tokenizer<I> {
                     Some((_, _, character)) => match character {
                         '\r' => {
                             if let Some((_, _, '\n')) = self.chars.peek() {
-                                self.next();
+                                self.chars.next();
                             }
                         }
                         '\n' => {}

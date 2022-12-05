@@ -2,7 +2,7 @@ use super::*;
 use crate::tokenizer::*;
 
 #[derive(Debug, PartialEq, Eq)]
-pub struct Url(String);
+pub struct Url(pub String);
 
 impl Parsable for Url {
     fn parse<I: Iterator<Item = char>>(parser: &mut Parser<I>) -> Result<Self, ParsingError> {
@@ -20,6 +20,23 @@ impl Parsable for Url {
             },
 
             None => Err(ParsingError::end_of_file("url")),
+        }
+    }
+}
+
+impl<I: Iterator<Item = char>> Parser<I> {
+    pub fn parse_url_or_string(&mut self) -> Result<Url, ParsingError> {
+        match self.tokens.peek() {
+            Some(token_at) => match token_at.token {
+                Token::String(_) => Ok(Url(self.parse()?)),
+                Token::Url(_) | Token::Function(_) => self.parse::<Url>(),
+                _ => Err(ParsingError::wrong_token(
+                    token_at.clone(),
+                    "a url or a string",
+                )),
+            },
+
+            None => Err(ParsingError::end_of_file("a url or a string")),
         }
     }
 }
