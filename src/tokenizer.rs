@@ -277,7 +277,7 @@ impl<I: Iterator<Item = char>> Tokenizer<I> {
                     Some((_, _, character)) => match character {
                         '\r' => {
                             if let Some((_, _, '\n')) = self.chars.peek() {
-                                self.next();
+                                self.chars.next();
                             }
                         }
                         '\n' => {}
