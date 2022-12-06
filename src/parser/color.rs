@@ -81,6 +81,16 @@ fn parse_num<I: Iterator<Item = char>>(
     }
 }
 
+/// doubles each character in a string
+fn double_hex_characters(input: &str) -> String {
+    let mut output = String::new();
+    for char in input.chars() {
+        output.push(char);
+        output.push(char);
+    }
+    output
+}
+
 impl Parsable for Color {
     fn parse<I: Iterator<Item = char>>(parser: &mut Parser<I>) -> Result<Self, ParsingError> {
         match parser.tokens.next() {
@@ -177,94 +187,34 @@ impl Parsable for Color {
                     _ => Err(ParsingError::wrong_token(token_at, "rgb, rgba, hsl, or hsla")),
                 },
                 Token::Hash(value, _) => {
-                     match value.len() {
-                        3 => {
-                            let mut red_string = String::new();
-                            let mut green_string = String::new();
-                            let mut blue_string = String::new();
-                            red_string.push_str(&value[0..1]);
-                            red_string.push_str(&value[0..1]);
-                            green_string.push_str(&value[1..2]);
-                            green_string.push_str(&value[1..2]);
-                            blue_string.push_str(&value[2..3]);
-                            blue_string.push_str(&value[2..3]);
-                            let Ok(r) = u8::from_str_radix(&red_string, 16) else {
-                                return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
-                            };
-                            let Ok(g) = u8::from_str_radix(&green_string, 16) else {
-                                return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
-                            };
-                            let Ok(b) = u8::from_str_radix(&blue_string, 16) else {
-                                return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
-                            };
+                    let value = match value.len() {
+                        3 | 4 => double_hex_characters(value),
+                        6 | 8 => value.clone(),
+                        _ => return Err(ParsingError::wrong_token(token_at, "3, 4, 6, or 8 character long hex value")),
+                    };
 
-                            Ok(Color::Rgb { r: r as f64, g: g as f64, b: b as f64, a: 1.0 })
-                        }
-                        6 => {
-                            let Ok(r) = u8::from_str_radix(&value[0..2], 16) else {
-                                return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
-                            };
+                    let Ok(r) = u8::from_str_radix(&value[0..2], 16) else {
+                        return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
+                    };
 
-                            let Ok(g) = u8::from_str_radix(&value[2..4], 16) else {
-                                return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
-                            };
+                    let Ok(g) = u8::from_str_radix(&value[2..4], 16) else {
+                        return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
+                    };
 
-                            let Ok(b) = u8::from_str_radix(&value[4..6], 16) else {
-                                return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
-                            };
-                            Ok(Color::Rgb { r: r as f64, g: g as f64, b: b as f64, a: 1.0 })
-                        }
-                        4 => {
-                            let mut red_string = String::new();
-                            let mut green_string = String::new();
-                            let mut blue_string = String::new();
-                            let mut a_string = String::new();
-                            red_string.push_str(&value[0..1]);
-                            red_string.push_str(&value[0..1]);
-                            green_string.push_str(&value[1..2]);
-                            green_string.push_str(&value[1..2]);
-                            blue_string.push_str(&value[2..3]);
-                            blue_string.push_str(&value[2..3]);
-                            a_string.push_str(&value[3..4]);
-                            a_string.push_str(&value[3..4]);
-                            let Ok(r) = u8::from_str_radix(&red_string, 16) else {
-                                return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
-                            };
-                            let Ok(g) = u8::from_str_radix(&green_string, 16) else {
-                                return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
-                            };
-                            let Ok(b) = u8::from_str_radix(&blue_string, 16) else {
-                                return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
-                            };
-                            let Ok(a) = u8::from_str_radix(&a_string, 16) else {
-                                return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
-                            };
-                            let a = a as f64/255.0;
-                            Ok(Color::Rgb { r: r as f64, g: g as f64, b: b as f64, a })
-                        }
-                        8 => {
-                            let Ok(r) = u8::from_str_radix(&value[0..2], 16) else {
-                                return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
-                            };
+                    let Ok(b) = u8::from_str_radix(&value[4..6], 16) else {
+                        return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
+                    };
 
-                            let Ok(g) = u8::from_str_radix(&value[2..4], 16) else {
-                                return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
-                            };
+                    let a = if value.len() == 8 {
+                        let Ok(a) = u8::from_str_radix(&value[6..8], 16) else {
+                            return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
+                        };
+                        a as f64 / 255.0
+                    } else {
+                        1.0
+                    };
 
-                            let Ok(b) = u8::from_str_radix(&value[4..6], 16) else {
-                                return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
-                            };
-
-                            let Ok(a) = u8::from_str_radix(&value[6..8], 16) else {
-                                return Err(ParsingError::wrong_token(token_at, "a valid hex value"));
-                            };
-                            let a = a as f64/255.0;
-
-                            Ok(Color::Rgb { r: r as f64, g: g as f64, b: b as f64, a})
-                        },
-                        _ => Err(ParsingError::wrong_token(token_at, "3, 4, 6, or 8 character long hex value")),
-                    }
-                    
+                    Ok(Color::Rgb { r: r as f64, g: g as f64, b: b as f64, a})
                 }
                 _ => Err(ParsingError::wrong_token(token_at, "a color")),
             },
@@ -566,6 +516,13 @@ mod tests {
     }
 
     #[test]
+    fn double_hex_characters_helper_functions() {
+        assert_eq!("112233", double_hex_characters("123"));
+        assert_eq!("aabbcc", double_hex_characters("abc"));
+        assert_eq!("11223344", double_hex_characters("1234"));
+    }
+
+    #[test]
     fn hex_6() {
         let mut parser = Parser::new("#F4AA31".chars());
         assert_eq!(
@@ -636,6 +593,4 @@ mod tests {
         let mut parser = Parser::new("#H8NKNC".chars());
         assert!(parser.parse::<Color>().is_err());
     }
-
-    
 }
