@@ -119,6 +119,8 @@ impl Parsable for MediaFeature {
 
 #[cfg(test)]
 mod tests {
+    use crate::parser::length::LengthUnit;
+
     use super::*;
 
     #[test]
@@ -132,6 +134,84 @@ mod tests {
     fn monochrome() {
         let mut parser = Parser::new("monochrome".chars());
         assert_eq!(Ok(MediaFeature::Monochrome), parser.parse());
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn min_width() {
+        let mut parser = Parser::new("min-width: 100px".chars());
+        assert_eq!(
+            Ok(MediaFeature::MinWidth(Length::Length(
+                100.0,
+                LengthUnit::Pixels
+            ))),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn width() {
+        let mut parser = Parser::new("width: 240cm".chars());
+        assert_eq!(
+            Ok(MediaFeature::Width(Length::Length(
+                240.0,
+                LengthUnit::Centimeters
+            ))),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn max_width() {
+        let mut parser = Parser::new("max-width: 700pt".chars());
+        assert_eq!(
+            Ok(MediaFeature::MaxWidth(Length::Length(
+                700.0,
+                LengthUnit::Points
+            ))),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn min_height() {
+        let mut parser = Parser::new("min-height: 342em".chars());
+        assert_eq!(
+            Ok(MediaFeature::MinHeight(Length::Length(
+                342.0,
+                LengthUnit::FontSize
+            ))),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn height() {
+        let mut parser = Parser::new("height: 100vw".chars());
+        assert_eq!(
+            Ok(MediaFeature::Height(Length::Length(
+                100.0,
+                LengthUnit::ViewportWidth
+            ))),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn max_height() {
+        let mut parser = Parser::new("max-height: 150vmin".chars());
+        assert_eq!(
+            Ok(MediaFeature::MaxHeight(Length::Length(
+                150.0,
+                LengthUnit::ViewportMinimum
+            ))),
+            parser.parse()
+        );
         assert_eq!(None, parser.tokens.next());
     }
 
