@@ -4,6 +4,7 @@ use std::{fmt, str::FromStr};
 use crate::tokenizer::{Token, TokenAt, Tokenizer};
 
 mod color;
+mod font_family;
 mod from_identifier;
 mod import;
 mod length;
