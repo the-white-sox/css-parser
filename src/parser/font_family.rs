@@ -17,7 +17,7 @@ impl Parsable for FontFamily {
                                 Some(token_at) => match &token_at.token {
                                     Token::Identifier(part) => {
                                         name.push(' ');
-                                        name.push_str(&part);
+                                        name.push_str(part);
                                         parser.tokens.next();
                                     }
                                     _ => break,
