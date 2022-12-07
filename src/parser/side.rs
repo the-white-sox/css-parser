@@ -1,4 +1,4 @@
-use super::{color::*, *};
+use super::*;
 
 #[derive(Debug, PartialEq)]
 pub enum Sides<T> {
@@ -47,7 +47,7 @@ pub trait CanStart: Parsable {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use super::{color::Color, *};
 
     #[test]
     fn test_single_keyword() {
