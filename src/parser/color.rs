@@ -57,7 +57,7 @@ fn parse_percent<I: Iterator<Item = char>>(
     }
 }
 
-fn parse_num<I: Iterator<Item = char>>(
+pub fn parse_num<I: Iterator<Item = char>>(
     parser: &mut Parser<I>,
     min: f64,
     max: f64,
