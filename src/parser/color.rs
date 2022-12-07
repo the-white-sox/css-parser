@@ -226,10 +226,10 @@ impl Parsable for Color {
 
 impl CanStart for Color {
     fn can_start(token: &Token) -> bool {
-        match token {
-            Token::Identifier(_) | Token::Function(_) | Token::Hash(_, _) => true,
-            _ => false,
-        }
+        matches!(
+            token,
+            Token::Identifier(_) | Token::Function(_) | Token::Hash(_, _)
+        )
     }
 }
 
