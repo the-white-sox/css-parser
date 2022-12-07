@@ -7,7 +7,6 @@ mod color;
 mod from_identifier;
 mod import;
 mod length;
-
 mod media_query;
 mod rule;
 mod string;
