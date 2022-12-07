@@ -160,6 +160,31 @@ mod tests {
     }
 
     #[test]
+    fn mixed_colors() {
+        let mut parser = Parser::new("red rgb(0, 0, 255) #00ff00 yellow".chars());
+        assert_eq!(
+            Ok(SideColors::Quad(
+                Color::Red,
+                Color::Rgb {
+                    r: 0.0,
+                    g: 0.0,
+                    b: 255.0,
+                    a: 1.0
+                },
+                Color::Rgb {
+                    r: 0.0,
+                    g: 255.0,
+                    b: 0.0,
+                    a: 1.0
+                },
+                Color::Yellow
+            )),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
     fn three_colors() {
         let mut parser = Parser::new("red blue green".chars());
         assert!(parser.parse::<SideColors>().is_err());
