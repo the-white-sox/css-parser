@@ -1,50 +1,48 @@
 use super::{color::*, *};
 
 #[derive(Debug, PartialEq)]
-pub enum SideColors {
-    Single(Color),
-    Double(Color, Color),
-    Quad(Color, Color, Color, Color),
+pub enum Sides<T> {
+    Single(T),
+    Double(T, T),
+    Quad(T, T, T, T),
 }
 
-impl Parsable for SideColors {
+impl<T: CanStart> Parsable for Sides<T> {
     fn parse<I: Iterator<Item = char>>(parser: &mut Parser<I>) -> Result<Self, ParsingError> {
-        let first: Color = parser.parse()?;
+        let first: T = parser.parse()?;
 
         parser.optional_whitespace();
 
         match parser.tokens.peek() {
-            Some(TokenAt {
-                token: Token::Identifier(_) | Token::Function(_) | Token::Hash(_, _),
-                ..
-            }) => {
+            Some(token_at) if T::can_start(&token_at.token) => {
                 // second color exists
             }
-            _ => return Ok(SideColors::Single(first)),
+            _ => return Ok(Sides::Single(first)),
         }
 
-        let second: Color = parser.parse()?;
+        let second: T = parser.parse()?;
 
         parser.optional_whitespace();
 
         match parser.tokens.peek() {
-            Some(TokenAt {
-                token: Token::Identifier(_) | Token::Function(_) | Token::Hash(_, _),
-                ..
-            }) => {
+            Some(token_at) if T::can_start(&token_at.token) => {
                 // third color exists
             }
-            _ => return Ok(SideColors::Double(first, second)),
+            _ => return Ok(Sides::Double(first, second)),
         }
 
-        let third: Color = parser.parse()?;
+        let third: T = parser.parse()?;
 
         parser.optional_whitespace();
 
-        let fourth: Color = parser.parse()?;
+        let fourth: T = parser.parse()?;
 
-        Ok(SideColors::Quad(first, second, third, fourth))
+        Ok(Sides::Quad(first, second, third, fourth))
     }
+}
+
+pub trait CanStart: Parsable {
+    fn can_start(token: &Token) -> bool;
 }
 
 #[cfg(test)]
@@ -54,7 +52,7 @@ mod tests {
     #[test]
     fn test_single_keyword() {
         let mut parser = Parser::new("red".chars());
-        assert_eq!(Ok(SideColors::Single(Color::Red)), parser.parse());
+        assert_eq!(Ok(Sides::Single(Color::Red)), parser.parse());
         assert_eq!(None, parser.tokens.next());
     }
 
@@ -62,7 +60,7 @@ mod tests {
     fn test_single_rgb() {
         let mut parser = Parser::new("rgb(255, 0, 0)".chars());
         assert_eq!(
-            Ok(SideColors::Single(Color::Rgb {
+            Ok(Sides::Single(Color::Rgb {
                 r: 255.0,
                 g: 0.0,
                 b: 0.0,
@@ -77,7 +75,7 @@ mod tests {
     fn test_single_hex() {
         let mut parser = Parser::new("#ff0000".chars());
         assert_eq!(
-            Ok(SideColors::Single(Color::Rgb {
+            Ok(Sides::Single(Color::Rgb {
                 r: 255.0,
                 g: 0.0,
                 b: 0.0,
@@ -91,10 +89,7 @@ mod tests {
     #[test]
     fn test_double_keyword() {
         let mut parser = Parser::new("red blue".chars());
-        assert_eq!(
-            Ok(SideColors::Double(Color::Red, Color::Blue)),
-            parser.parse()
-        );
+        assert_eq!(Ok(Sides::Double(Color::Red, Color::Blue)), parser.parse());
         assert_eq!(None, parser.tokens.next());
     }
 
@@ -102,7 +97,7 @@ mod tests {
     fn test_double_rgb() {
         let mut parser = Parser::new("rgb(255, 0, 0) rgb(0, 0, 255)".chars());
         assert_eq!(
-            Ok(SideColors::Double(
+            Ok(Sides::Double(
                 Color::Rgb {
                     r: 255.0,
                     g: 0.0,
@@ -125,7 +120,7 @@ mod tests {
     fn test_double_hex() {
         let mut parser = Parser::new("#ff0000 #0000ff".chars());
         assert_eq!(
-            Ok(SideColors::Double(
+            Ok(Sides::Double(
                 Color::Rgb {
                     r: 255.0,
                     g: 0.0,
@@ -148,7 +143,7 @@ mod tests {
     fn test_quad_keyword() {
         let mut parser = Parser::new("red blue green yellow".chars());
         assert_eq!(
-            Ok(SideColors::Quad(
+            Ok(Sides::Quad(
                 Color::Red,
                 Color::Blue,
                 Color::Green,
@@ -163,7 +158,7 @@ mod tests {
     fn mixed_colors() {
         let mut parser = Parser::new("red rgb(0, 0, 255) #00ff00 yellow".chars());
         assert_eq!(
-            Ok(SideColors::Quad(
+            Ok(Sides::Quad(
                 Color::Red,
                 Color::Rgb {
                     r: 0.0,
@@ -187,14 +182,14 @@ mod tests {
     #[test]
     fn three_colors() {
         let mut parser = Parser::new("red blue green".chars());
-        assert!(parser.parse::<SideColors>().is_err());
+        assert!(parser.parse::<Sides<Color>>().is_err());
     }
 
     #[test]
     fn five_colors() {
         let mut parser = Parser::new("red blue green yellow black".chars());
         assert_eq!(
-            Ok(SideColors::Quad(
+            Ok(Sides::Quad(
                 Color::Red,
                 Color::Blue,
                 Color::Green,
