@@ -47,6 +47,8 @@ pub trait CanStart: Parsable {
 
 #[cfg(test)]
 mod tests {
+    use crate::parser::length::{Length, LengthOrPercentage};
+
     use super::{color::Color, *};
 
     #[test]
@@ -196,6 +198,62 @@ mod tests {
                 Color::Yellow
             )),
             parser.parse()
+        );
+        assert_ne!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn one_zero() {
+        let mut parser = Parser::new("0".chars());
+        assert_eq!(
+            Ok(Sides::Single(LengthOrPercentage::Length(Length::Zero()))),
+            parser.parse(),
+        );
+    }
+
+    #[test]
+    fn two_zeros() {
+        let mut parser = Parser::new("0 0".chars());
+        assert_eq!(
+            Ok(Sides::Double(
+                LengthOrPercentage::Length(Length::Zero()),
+                LengthOrPercentage::Length(Length::Zero())
+            )),
+            parser.parse(),
+        );
+    }
+
+    #[test]
+    fn three_zeros() {
+        let mut parser = Parser::new("0 0 0".chars());
+        assert!(parser.parse::<Sides<LengthOrPercentage>>().is_err());
+    }
+
+    #[test]
+    fn four_zeros() {
+        let mut parser = Parser::new("0 0 0 0".chars());
+        assert_eq!(
+            Ok(Sides::Quad(
+                LengthOrPercentage::Length(Length::Zero()),
+                LengthOrPercentage::Length(Length::Zero()),
+                LengthOrPercentage::Length(Length::Zero()),
+                LengthOrPercentage::Length(Length::Zero())
+            )),
+            parser.parse(),
+        );
+    }
+
+    #[test]
+    fn five_zeros() {
+        let mut parser = Parser::new("0 0 0 0 0".chars());
+        assert_eq!(
+            Ok(Sides::Quad(
+                LengthOrPercentage::Length(Length::Zero()),
+                LengthOrPercentage::Length(Length::Zero()),
+                LengthOrPercentage::Length(Length::Zero()),
+                LengthOrPercentage::Length(Length::Zero())
+            )),
+            parser.parse(),
         );
         assert_ne!(None, parser.tokens.next());
     }
