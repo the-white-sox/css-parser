@@ -172,7 +172,7 @@ mod tests {
     }
 
     #[test]
-    fn attribute_selector_w_operator_1() {
+    fn attribute_selector_w_operator_equals() {
         let mut parser = Parser::new("[attributename='answer']".chars());
         assert_eq!(
             Ok(BasicSelector::AttributeWOperator(
@@ -186,7 +186,7 @@ mod tests {
     }
 
     #[test]
-    fn attribute_selector_w_operator_2() {
+    fn attribute_selector_w_operator_list_contains() {
         let mut parser = Parser::new("[attributename~='answer']".chars());
         assert_eq!(
             Ok(BasicSelector::AttributeWOperator(
@@ -200,7 +200,7 @@ mod tests {
     }
 
     #[test]
-    fn attribute_selector_w_operator_3() {
+    fn attribute_selector_w_operator_starts_with() {
         let mut parser = Parser::new("[attributename^='answer']".chars());
         assert_eq!(
             Ok(BasicSelector::AttributeWOperator(
@@ -214,7 +214,7 @@ mod tests {
     }
 
     #[test]
-    fn attribute_selector_w_operator_4() {
+    fn attribute_selector_w_operator_ends_with() {
         let mut parser = Parser::new("[attributename$='answer']".chars());
         assert_eq!(
             Ok(BasicSelector::AttributeWOperator(
@@ -228,7 +228,7 @@ mod tests {
     }
 
     #[test]
-    fn attribute_selector_w_operator_5() {
+    fn attribute_selector_w_operator_string_contains() {
         let mut parser = Parser::new("[attributename*='answer']".chars());
         assert_eq!(
             Ok(BasicSelector::AttributeWOperator(
@@ -239,5 +239,77 @@ mod tests {
             parser.parse()
         );
         assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn class_w_nums() {
+        let mut parser = Parser::new(".123".chars());
+        assert!(parser.parse::<BasicSelector>().is_err());
+    }
+
+    #[test]
+    fn bracket_w_nums() {
+        let mut parser = Parser::new("[123]".chars());
+        assert!(parser.parse::<BasicSelector>().is_err());
+    }
+
+    #[test]
+    fn just_nums() {
+        let mut parser = Parser::new("123".chars());
+        assert!(parser.parse::<BasicSelector>().is_err());
+    }
+
+    #[test]
+    fn hash_nums() {
+        let mut parser = Parser::new("#123".chars());
+        assert!(parser.parse::<BasicSelector>().is_err());
+    }
+
+    #[test]
+    fn attribute_operator_numbers() {
+        let mut parser = Parser::new("[12=3]".chars());
+        assert!(parser.parse::<BasicSelector>().is_err());
+    }
+
+    #[test]
+    fn attribute_value_is_number() {
+        let mut parser = Parser::new("[attr=3]".chars());
+        assert!(parser.parse::<BasicSelector>().is_err());
+    }
+
+    #[test]
+    fn attribute_name_is_number() {
+        let mut parser = Parser::new("[12='value']".chars());
+        assert!(parser.parse::<BasicSelector>().is_err());
+    }
+
+    #[test]
+    fn attribute_value_missing_quotes() {
+        let mut parser = Parser::new("[attr=value]".chars());
+        assert!(parser.parse::<BasicSelector>().is_err());
+    }
+
+    #[test]
+    fn attribute_operator_list_contains_numbers() {
+        let mut parser = Parser::new("[12~=3]".chars());
+        assert!(parser.parse::<BasicSelector>().is_err());
+    }
+
+    #[test]
+    fn attribute_list_contains_value_is_number() {
+        let mut parser = Parser::new("[attr~=3]".chars());
+        assert!(parser.parse::<BasicSelector>().is_err());
+    }
+
+    #[test]
+    fn attribute_name_list_contains_is_number() {
+        let mut parser = Parser::new("[12~='value']".chars());
+        assert!(parser.parse::<BasicSelector>().is_err());
+    }
+
+    #[test]
+    fn attribute_list_contains_value_missing_quotes() {
+        let mut parser = Parser::new("[attr~=value]".chars());
+        assert!(parser.parse::<BasicSelector>().is_err());
     }
 }
