@@ -1,7 +1,7 @@
 use super::*;
 
 mod side_length {
-    use crate::parser::side::Sides;
+    use crate::parser::{length_or_percentage::LengthOrPercentage, side::Sides};
 
     use super::*;
 
@@ -89,6 +89,8 @@ mod side_length {
     }
 
     mod length_or_percentage {
+        use crate::parser::percentage::Percentage;
+
         use super::*;
 
         fn parse_length_or_percentage(input: &str) -> Result<LengthOrPercentage, ParsingError> {
@@ -209,6 +211,8 @@ mod side_length {
     }
 
     mod double {
+        use crate::parser::percentage::Percentage;
+
         use super::*;
 
         #[test]

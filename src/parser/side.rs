@@ -47,7 +47,7 @@ pub trait CanStart: Parsable {
 
 #[cfg(test)]
 mod tests {
-    use crate::parser::length::{Length, LengthOrPercentage};
+    use crate::parser::{length::Length, length_or_percentage::LengthOrPercentage};
 
     use super::{color::Color, *};
 
