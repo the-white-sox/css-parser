@@ -34,9 +34,9 @@ impl Parsable for BasicSelector {
                 Token::Delimiter('.') => match parser.tokens.next() {
                     Some(token_at) => match token_at.token {
                         Token::Identifier(class_name) => Ok(BasicSelector::Class(class_name)),
-                        _ => Err(ParsingError::wrong_token(token_at, "Basic selector")),
+                        _ => Err(ParsingError::wrong_token(token_at, "class_name")),
                     },
-                    None => Err(ParsingError::end_of_file("Basic Selector")),
+                    None => Err(ParsingError::end_of_file("class_name")),
                 },
                 Token::Hash(id_name, HashType::Id) => Ok(BasicSelector::Id(id_name)),
                 Token::Hash(id_name, HashType::Unrestricted) => Err(ParsingError::WrongToken {
@@ -128,14 +128,14 @@ mod tests {
     use super::*;
 
     #[test]
-    fn universalselector() {
+    fn universal_selector() {
         let mut parser = Parser::new("*".chars());
         assert_eq!(Ok(BasicSelector::Universal()), parser.parse());
         assert_eq!(None, parser.tokens.next());
     }
 
     #[test]
-    fn elementselector() {
+    fn element_selector() {
         let mut parser = Parser::new("elementname".chars());
         assert_eq!(
             Ok(BasicSelector::Element("elementname".to_owned())),
@@ -145,7 +145,7 @@ mod tests {
     }
 
     #[test]
-    fn classselector() {
+    fn class_selector() {
         let mut parser = Parser::new(".classname".chars());
         assert_eq!(
             Ok(BasicSelector::Class("classname".to_owned())),
@@ -155,7 +155,7 @@ mod tests {
     }
 
     #[test]
-    fn idselector() {
+    fn id_selector() {
         let mut parser = Parser::new("#idname".chars());
         assert_eq!(Ok(BasicSelector::Id("idname".to_owned())), parser.parse());
         assert_eq!(None, parser.tokens.next());
