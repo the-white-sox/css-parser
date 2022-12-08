@@ -11,6 +11,7 @@ mod import;
 mod length;
 mod media_query;
 mod rule;
+mod selector;
 mod side;
 mod string;
 mod stylesheet;
