@@ -1,6 +1,6 @@
 use super::*;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum Sides<T> {
     Single(T),
     Double(T, T),
