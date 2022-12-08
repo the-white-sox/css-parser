@@ -34,9 +34,9 @@ impl Parsable for BasicSelector {
                 Token::Delimiter('.') => match parser.tokens.next() {
                     Some(token_at) => match token_at.token {
                         Token::Identifier(class_name) => Ok(BasicSelector::Class(class_name)),
-                        _ => Err(ParsingError::wrong_token(token_at, "class_name")),
+                        _ => Err(ParsingError::wrong_token(token_at, "class name")),
                     },
-                    None => Err(ParsingError::end_of_file("class_name")),
+                    None => Err(ParsingError::end_of_file("class name")),
                 },
                 Token::Hash(id_name, HashType::Id) => Ok(BasicSelector::Id(id_name)),
                 Token::Hash(id_name, HashType::Unrestricted) => Err(ParsingError::WrongToken {
