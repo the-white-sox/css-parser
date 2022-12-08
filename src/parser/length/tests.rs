@@ -1,11 +1,13 @@
 use super::*;
 
 mod side_length {
+    use crate::parser::side::Sides;
+
     use super::*;
 
-    fn parse_side_length(input: &str) -> Result<SideLength, ParsingError> {
+    fn parse_side_length(input: &str) -> Result<Sides<LengthOrPercentage>, ParsingError> {
         let mut parser = Parser::new(input.chars());
-        return parser.parse::<SideLength>();
+        return parser.parse();
     }
 
     mod unit {
@@ -220,7 +222,7 @@ mod side_length {
 
             assert_eq!(
                 result,
-                Ok(SideLength::Double(
+                Ok(Sides::Double(
                     LengthOrPercentage::Length(Length::Zero()),
                     LengthOrPercentage::Length(Length::Zero())
                 ))
@@ -233,7 +235,7 @@ mod side_length {
 
             assert_eq!(
                 result,
-                Ok(SideLength::Double(
+                Ok(Sides::Double(
                     LengthOrPercentage::Length(Length::Zero()),
                     LengthOrPercentage::Percentage(Percentage(5.0))
                 ))
@@ -246,7 +248,7 @@ mod side_length {
 
             assert_eq!(
                 result,
-                Ok(SideLength::Double(
+                Ok(Sides::Double(
                     LengthOrPercentage::Percentage(Percentage(25.0)),
                     LengthOrPercentage::Length(Length::Zero())
                 ))
@@ -259,7 +261,7 @@ mod side_length {
 
             assert_eq!(
                 result,
-                Ok(SideLength::Double(
+                Ok(Sides::Double(
                     LengthOrPercentage::Length(Length::Length(21.0, LengthUnit::RootFontSize)),
                     LengthOrPercentage::Length(Length::Length(-78.0, LengthUnit::Pixels))
                 ))
@@ -272,7 +274,7 @@ mod side_length {
 
             assert_eq!(
                 result,
-                Ok(SideLength::Double(
+                Ok(Sides::Double(
                     LengthOrPercentage::Percentage(Percentage(24.0)),
                     LengthOrPercentage::Percentage(Percentage(70.0))
                 ))
@@ -285,7 +287,7 @@ mod side_length {
 
             assert_eq!(
                 result,
-                Ok(SideLength::Double(
+                Ok(Sides::Double(
                     LengthOrPercentage::Length(Length::Zero()),
                     LengthOrPercentage::Length(Length::Length(284.0, LengthUnit::Pixels))
                 ))
@@ -298,7 +300,7 @@ mod side_length {
 
             assert_eq!(
                 result,
-                Ok(SideLength::Double(
+                Ok(Sides::Double(
                     LengthOrPercentage::Length(Length::Length(12.0, LengthUnit::ViewportMaximum)),
                     LengthOrPercentage::Length(Length::Zero())
                 ))

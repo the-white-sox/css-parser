@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use super::{percentage::Percentage, *};
+use super::{percentage::Percentage, side::CanStart, *};
 use crate::tokenizer::*;
 
 #[cfg(test)]
@@ -41,20 +41,6 @@ pub enum LengthOrPercentage {
     Percentage(Percentage),
 }
 
-/// Wrapper for side lengths ammounts of 1, 2, and 4.
-/// Grammar: `<side-length>`
-#[derive(Debug, PartialEq, Clone, Copy)]
-pub enum SideLength {
-    Single(LengthOrPercentage),
-    Double(LengthOrPercentage, LengthOrPercentage),
-    Quad(
-        LengthOrPercentage,
-        LengthOrPercentage,
-        LengthOrPercentage,
-        LengthOrPercentage,
-    ),
-}
-
 impl FromStr for LengthUnit {
     type Err = ();
 
@@ -76,6 +62,15 @@ impl FromStr for LengthUnit {
             "vmax" => Ok(ViewportMaximum),
             _ => Err(()),
         }
+    }
+}
+
+impl CanStart for LengthOrPercentage {
+    fn can_start(token: &Token) -> bool {
+        return matches!(
+            token,
+            Token::Number(_) | Token::Dimension(_, _) | Token::Percentage(_)
+        );
     }
 }
 
@@ -120,11 +115,5 @@ impl Parsable for LengthOrPercentage {
             },
             None => Err(ParsingError::end_of_file("length or percentage")),
         }
-    }
-}
-
-impl Parsable for SideLength {
-    fn parse<I: Iterator<Item = char>>(_: &mut Parser<I>) -> Result<Self, ParsingError> {
-        todo!();
     }
 }
