@@ -67,10 +67,10 @@ impl FromStr for LengthUnit {
 
 impl CanStart for LengthOrPercentage {
     fn can_start(token: &Token) -> bool {
-        return matches!(
+        matches!(
             token,
             Token::Number(_) | Token::Dimension(_, _) | Token::Percentage(_)
-        );
+        )
     }
 }
 
