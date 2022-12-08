@@ -311,4 +311,70 @@ mod side_length {
             );
         }
     }
+
+    mod quad {
+        use crate::parser::percentage::Percentage;
+
+        use super::*;
+
+        #[test]
+        fn four_units() {
+            let result = parse_side_length("12px 24px 36rem 48rem");
+
+            assert_eq!(
+                result,
+                Ok(Sides::Quad(
+                    LengthOrPercentage::Length(Length::Length(12.0, LengthUnit::Pixels)),
+                    LengthOrPercentage::Length(Length::Length(24.0, LengthUnit::Pixels)),
+                    LengthOrPercentage::Length(Length::Length(36.0, LengthUnit::RootFontSize)),
+                    LengthOrPercentage::Length(Length::Length(48.0, LengthUnit::RootFontSize))
+                ))
+            );
+        }
+
+        #[test]
+        fn two_units_two_percentages() {
+            let result = parse_side_length("45pt 50% 100pt 0%");
+
+            assert_eq!(
+                result,
+                Ok(Sides::Quad(
+                    LengthOrPercentage::Length(Length::Length(45.0, LengthUnit::Points)),
+                    LengthOrPercentage::Percentage(Percentage(50.0)),
+                    LengthOrPercentage::Length(Length::Length(100.0, LengthUnit::Points)),
+                    LengthOrPercentage::Percentage(Percentage(0.0))
+                ))
+            )
+        }
+
+        #[test]
+        fn three_units_one_percentage() {
+            let result = parse_side_length("30px -25px 50% -100px");
+
+            assert_eq!(
+                result,
+                Ok(Sides::Quad(
+                    LengthOrPercentage::Length(Length::Length(30.0, LengthUnit::Pixels)),
+                    LengthOrPercentage::Length(Length::Length(-25.0, LengthUnit::Pixels)),
+                    LengthOrPercentage::Percentage(Percentage(50.0)),
+                    LengthOrPercentage::Length(Length::Length(-100.0, LengthUnit::Pixels))
+                ))
+            )
+        }
+
+        #[test]
+        fn three_percentages_one_unit() {
+            let result = parse_side_length("23% -18.2% 65.4rem 29%");
+
+            assert_eq!(
+                result,
+                Ok(Sides::Quad(
+                    LengthOrPercentage::Percentage(Percentage(23.0)),
+                    LengthOrPercentage::Percentage(Percentage(-18.2)),
+                    LengthOrPercentage::Length(Length::Length(65.4, LengthUnit::RootFontSize)),
+                    LengthOrPercentage::Percentage(Percentage(29.0))
+                ))
+            )
+        }
+    }
 }
