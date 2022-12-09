@@ -21,14 +21,10 @@ impl Parsable for Percentage {
 mod tests {
     use super::*;
 
-    fn parse_percentage(input: &str) -> Result<Percentage, ParsingError> {
-        let mut parser = Parser::new(input.chars());
-        return parser.parse::<Percentage>();
-    }
-
     #[test]
     fn percent_no_value() {
-        assert!(parse_percentage("%").is_err());
+        let mut parser = Parser::new("%".chars());
+        assert!(parser.parse::<Percentage>().is_err());
     }
 
     #[test]
