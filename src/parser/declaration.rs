@@ -39,29 +39,56 @@ impl Parsable for Declaration {
             Some(token_at) => match &token_at.token {
                 Token::Identifier(key) => match key.as_str() {
                     "background-color" => {
-                        parser.optional_whitespace();
-                        parser.expect(Token::Colon())?;
-                        parser.optional_whitespace();
+                        parser.consume_colon_separator()?;
                         Ok(Declaration::BackgroundColor(parser.parse()?))
                     }
                     "border-color" => {
-                        parser.optional_whitespace();
-                        parser.expect(Token::Colon())?;
-                        parser.optional_whitespace();
+                        parser.consume_colon_separator()?;
                         Ok(Declaration::BorderColor(parser.parse()?))
                     }
                     "opacity" => {
-                        parser.optional_whitespace();
-                        parser.expect(Token::Colon())?;
-                        parser.optional_whitespace();
+                        parser.consume_colon_separator()?;
                         let opacity = parse_num(parser, 0.0, 1.0)?;
                         Ok(Declaration::Opacity(opacity))
                     }
                     "font-family" => {
-                        parser.optional_whitespace();
-                        parser.expect(Token::Colon())?;
-                        parser.optional_whitespace();
+                        parser.consume_colon_separator()?;
                         Ok(Declaration::FontFamily(parser.parse()?))
+                    }
+                    "font-size" => {
+                        parser.consume_colon_separator()?;
+                        let length: Length = parser.parse()?;
+                        Ok(Declaration::FontSize(length))
+                    }
+                    "height" => {
+                        parser.consume_colon_separator()?;
+                        let length: Length = parser.parse()?;
+                        Ok(Declaration::Height(length))
+                    }
+                    "width" => {
+                        parser.consume_colon_separator()?;
+                        let length: Length = parser.parse()?;
+                        Ok(Declaration::Width(length))
+                    }
+                    "margin" => {
+                        parser.consume_colon_separator()?;
+                        let length: Length = parser.parse()?;
+                        Ok(Declaration::Margin(length))
+                    }
+                    "padding" => {
+                        parser.consume_colon_separator()?;
+                        let length: Length = parser.parse()?;
+                        Ok(Declaration::Padding(length))
+                    }
+                    "border-width" => {
+                        parser.consume_colon_separator()?;
+                        let length: Length = parser.parse()?;
+                        Ok(Declaration::BorderWidth(length))
+                    }
+                    "border-radius" => {
+                        parser.consume_colon_separator()?;
+                        let length: Length = parser.parse()?;
+                        Ok(Declaration::BorderRadius(length))
                     }
 
                     _ => Err(ParsingError::wrong_token(token_at, "a declaration")),
