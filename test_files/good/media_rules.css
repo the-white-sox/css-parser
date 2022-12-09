@@ -14,9 +14,17 @@
     
 }
 
+@media (max-width: 600px) {
+
+}
+
 @media screen {
     @media (orientation: landscape) {
         @media (color) and (prefers-color-scheme: dark), print {
+
+        }
+
+        @media (max-width: 600px) {
             
         }
     }
