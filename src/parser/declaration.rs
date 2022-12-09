@@ -8,6 +8,8 @@
 // <sides-color-property> ::= "border-color"
 // <length-property> ::= "font-size" | "height" | "width"
 // <side-lengths-property> ::= "margin" | "padding" | "border-width" | "border-radius"
+pub mod text_align;
+mod vec;
 
 use super::{
     color::{parse_num, Color},
@@ -16,9 +18,10 @@ use super::{
     *,
 };
 use crate::tokenizer::*;
+use text_align::TextAlign;
+pub use vec::*;
 
 #[derive(Debug, PartialEq)]
-
 pub enum Declaration {
     BackgroundColor(Color),
     BorderColor(Color),
@@ -31,6 +34,7 @@ pub enum Declaration {
     Padding(Length),
     BorderWidth(Length),
     BorderRadius(Length),
+    TextAlign(TextAlign),
 }
 
 impl Parsable for Declaration {
@@ -89,6 +93,11 @@ impl Parsable for Declaration {
                         parser.consume_colon_separator()?;
                         let length: Length = parser.parse()?;
                         Ok(Declaration::BorderRadius(length))
+                    }
+                    "text-align" => {
+                        parser.consume_colon_separator()?;
+                        let text_al = parser.parse()?;
+                        Ok(Declaration::TextAlign(text_al))
                     }
 
                     _ => Err(ParsingError::wrong_token(token_at, "a declaration")),
@@ -150,6 +159,16 @@ mod tests {
             Ok(Declaration::FontFamily(FontFamily(
                 vec!["Arial".to_owned()]
             ))),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn text_align() {
+        let mut parser = Parser::new("text-align: center".chars());
+        assert_eq!(
+            Ok(Declaration::TextAlign(TextAlign::Center)),
             parser.parse()
         );
         assert_eq!(None, parser.tokens.next());
