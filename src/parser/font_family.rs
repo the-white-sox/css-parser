@@ -28,11 +28,9 @@ impl Parsable for FontName {
                     Ok(FontName(name))
                 }
                 Token::String(name) => Ok(FontName(name)),
-                _ => {
-                    return Err(ParsingError::wrong_token(token_at, "identifier or string"));
-                }
+                _ => Err(ParsingError::wrong_token(token_at, "identifier or string")),
             },
-            None => return Err(ParsingError::end_of_file("identifier or string")),
+            None => Err(ParsingError::end_of_file("identifier or string")),
         }
     }
 }
