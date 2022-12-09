@@ -73,8 +73,8 @@ these are features we don't currently have included but might include in the fut
 ## Stylesheet
 
 ```bnf
-<stylesheet> ::= <imports> <rulesets> <EOF>
-<rulesets> ::= <ruleset> <rulesets> | <media-query> <rulesets> | ""
+<stylesheet> ::= <imports> <rules> <EOF>
+<rules> ::= <ruleset> <rules> | <media-query> <rules> | ""
 ```
 
 ## Imports
