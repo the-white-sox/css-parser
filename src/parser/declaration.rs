@@ -110,52 +110,94 @@ mod tests {
         assert_eq!(None, parser.tokens.next());
     }
 
-    // #[test]
-    // fn font_size() {
-    //     let mut parser = Parser::new("font-size: 3px".chars());
-    //     assert_eq!(Ok(Declaration::FontSize(Length))), parser.parse());
-    //     assert_eq!(None, parser.tokens.next());
-    // }
+    #[test]
+    fn font_size() {
+        let mut parser = Parser::new("font-size: 3px".chars());
+        assert_eq!(
+            Ok(Declaration::FontSize(Length::Length(
+                3.0,
+                length::LengthUnit::Pixels
+            ))),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
 
-    // #[test]
-    // fn height() {
-    //     let mut parser = Parser::new("height: 3px".chars());
-    //     assert_eq!(Ok(Declaration::Height(Length))), parser.parse());
-    //     assert_eq!(None, parser.tokens.next());
-    // }
+    #[test]
+    fn height() {
+        let mut parser = Parser::new("height: 3px".chars());
+        assert_eq!(
+            Ok(Declaration::Height(Length::Length(
+                3.0,
+                length::LengthUnit::Pixels
+            ))),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
 
-    // #[test]
-    // fn width() {
-    //     let mut parser = Parser::new("width: 3px".chars());
-    //     assert_eq!(Ok(Declaration::Width(Length))), parser.parse());
-    //     assert_eq!(None, parser.tokens.next());
-    // }
+    #[test]
+    fn width() {
+        let mut parser = Parser::new("width: 3px".chars());
+        assert_eq!(
+            Ok(Declaration::Width(Length::Length(
+                3.0,
+                length::LengthUnit::Pixels
+            ))),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
 
-    // #[test]
-    // fn margin() {
-    //     let mut parser = Parser::new("margin: 3px".chars());
-    //     assert_eq!(Ok(Declaration::Margin(Length))), parser.parse());
-    //     assert_eq!(None, parser.tokens.next());
-    // }
+    #[test]
+    fn margin() {
+        let mut parser = Parser::new("margin: 3px".chars());
+        assert_eq!(
+            Ok(Declaration::Margin(Length::Length(
+                3.0,
+                length::LengthUnit::Pixels
+            ))),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
 
-    // #[test]
-    // fn padding() {
-    //     let mut parser = Parser::new("padding: 3px".chars());
-    //     assert_eq!(Ok(Declaration::Padding(Length))), parser.parse());
-    //     assert_eq!(None, parser.tokens.next());
-    // }
+    #[test]
+    fn padding() {
+        let mut parser = Parser::new("padding: 3px".chars());
+        assert_eq!(
+            Ok(Declaration::Padding(Length::Length(
+                3.0,
+                length::LengthUnit::Pixels
+            ))),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
 
-    // #[test]
-    // fn border_width() {
-    //     let mut parser = Parser::new("border-width: 3px".chars());
-    //     assert_eq!(Ok(Declaration::BorderWidth(Length))), parser.parse());
-    //     assert_eq!(None, parser.tokens.next());
-    // }
+    #[test]
+    fn border_width() {
+        let mut parser = Parser::new("border-width: 3px".chars());
+        assert_eq!(
+            Ok(Declaration::BorderWidth(Length::Length(
+                3.0,
+                length::LengthUnit::Pixels
+            ))),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
 
-    // #[test]
-    // fn border_radius() {
-    //     let mut parser = Parser::new("border-radius: 3px".chars());
-    //     assert_eq!(Ok(Declaration::BorderRadius(Length))), parser.parse());
-    //     assert_eq!(None, parser.tokens.next());
-    // }
+    #[test]
+    fn border_radius() {
+        let mut parser = Parser::new("border-radius: 3px".chars());
+        assert_eq!(
+            Ok(Declaration::BorderRadius(Length::Length(
+                3.0,
+                length::LengthUnit::Pixels
+            ))),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
 }
