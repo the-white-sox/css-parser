@@ -28,6 +28,10 @@ we are not supporting grid or flex related properties
 
 This document intentionally ignores whitespace.
 
+### Case sensitivity
+
+Although CSS is often case insensitive. This document is intentionally case sensitive.
+
 ### Operator Persistence and ambiguity
 
 This document intentionally ignores operator persistence. This mean that this document describes an ambiguous grammar
@@ -155,13 +159,14 @@ p.class.class2#id[target].class:has(p.class) {}
 <declaration-list> ::= <declaration> ";" <declaration-list> | <declaration> | <declaration> ";"
 <declaration> ::= <color-property> ":" <color> | <sides-color-property> ":" <sides-color>
 <declaration> ::= <length-property> ":" <length-or-percentage> | <side-lengths-property> ":" <side-lengths>
-<declaration> ::= "font-family" ":" <string>
+<declaration> ::= "font-family" ":" <string> | <identifier> | <identifiers>
 <declaration> ::= "opacity" ":" <alpha>
 <declaration> ::= "text-align" ":" <text-align-value>
 <color-property> ::= "color" | "background-color"
 <sides-color-property> ::= "border-color"
 <length-property> ::= "font-size" | "height" | "width"
 <side-lengths-property> ::= "margin" | "padding" | "border-width" | "border-radius"
+<identifiers> ::= <identifier> <identifiers> | <identifier>
 ```
 
 ### Examples

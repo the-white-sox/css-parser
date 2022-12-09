@@ -3,6 +3,7 @@ use std::{fmt, str::FromStr};
 
 use crate::tokenizer::{Token, TokenAt, Tokenizer};
 
+mod basic_selector;
 mod color;
 mod declaration;
 mod font_family;
@@ -11,6 +12,7 @@ mod import;
 mod length;
 mod media_query;
 mod rule;
+mod side;
 mod string;
 mod stylesheet;
 mod url;

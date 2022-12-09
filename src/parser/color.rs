@@ -7,7 +7,7 @@
 // <hsl> ::= "hsl(" <0-360> "," <0-100> "%," <0-100> "%)" | "hsla(" <0-360> "," <0-100> "%," <0-100> "%," <alpha> ")"
 // <alpha> ::= "0." <digits> | "." <digits> | 1 | 0
 
-use super::*;
+use super::{side::CanStart, *};
 use crate::tokenizer::*;
 
 #[derive(Debug, PartialEq)]
@@ -221,6 +221,15 @@ impl Parsable for Color {
 
             None => Err(ParsingError::end_of_file("a color")),
         }
+    }
+}
+
+impl CanStart for Color {
+    fn can_start(token: &Token) -> bool {
+        matches!(
+            token,
+            Token::Identifier(_) | Token::Function(_) | Token::Hash(_, _)
+        )
     }
 }
 
