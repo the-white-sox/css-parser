@@ -112,6 +112,12 @@ mod tests {
     }
 
     #[test]
+    fn background_color_garbage() {
+        let mut parser = Parser::new("background-color: aifdsn".chars());
+        assert!(parser.parse::<Declaration>().is_err());
+    }
+
+    #[test]
     fn border_color() {
         let mut parser = Parser::new("border-color: red".chars());
         assert_eq!(Ok(Declaration::BorderColor(Color::Red)), parser.parse());
@@ -119,10 +125,22 @@ mod tests {
     }
 
     #[test]
+    fn border_color_garbage() {
+        let mut parser = Parser::new("border-color: aifdsn".chars());
+        assert!(parser.parse::<Declaration>().is_err());
+    }
+
+    #[test]
     fn opacity() {
         let mut parser = Parser::new("opacity: 0.3".chars());
         assert_eq!(Ok(Declaration::Opacity(0.3)), parser.parse());
         assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn opacity_negative() {
+        let mut parser = Parser::new("opacity: -4.3".chars());
+        assert!(parser.parse::<Declaration>().is_err());
     }
 
     #[test]
@@ -226,5 +244,11 @@ mod tests {
             parser.parse()
         );
         assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn bad_declaration() {
+        let mut parser = Parser::new("band-color: red".chars());
+        assert!(parser.parse::<Declaration>().is_err());
     }
 }
