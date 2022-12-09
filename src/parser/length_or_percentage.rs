@@ -14,13 +14,11 @@ impl Parsable for LengthOrPercentage {
             Some(token_at) => match token_at.token {
                 // parse length
                 Token::Number(_) | Token::Dimension(_, _) => {
-                    Ok(LengthOrPercentage::Length(parser.parse::<Length>()?))
+                    Ok(LengthOrPercentage::Length(parser.parse()?))
                 }
 
                 // parse percentage
-                Token::Percentage(_) => Ok(LengthOrPercentage::Percentage(
-                    parser.parse::<Percentage>()?,
-                )),
+                Token::Percentage(_) => Ok(LengthOrPercentage::Percentage(parser.parse()?)),
 
                 // neither
                 _ => Err(ParsingError::wrong_token(
