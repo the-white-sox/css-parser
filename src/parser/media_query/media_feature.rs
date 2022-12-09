@@ -1,4 +1,4 @@
-use crate::parser::length::Distance;
+use crate::parser::length::Length;
 
 use super::*;
 
@@ -16,12 +16,12 @@ pub use pointer::Pointer;
 pub enum MediaFeature {
     Color,
     Monochrome,
-    MinWidth(Distance),
-    Width(Distance),
-    MaxWidth(Distance),
-    MinHeight(Distance),
-    Height(Distance),
-    MaxHeight(Distance),
+    MinWidth(Length),
+    Width(Length),
+    MaxWidth(Length),
+    MinHeight(Length),
+    Height(Length),
+    MaxHeight(Length),
     Orientation(Orientation),
     Hover(Hover),
     AnyHover(Hover),
@@ -48,33 +48,33 @@ impl Parsable for MediaFeature {
                     "monochrome" => Ok(MediaFeature::Monochrome),
                     "min-width" => {
                         parser.consume_colon_separator()?;
-                        let distance: Distance = parser.parse()?;
-                        Ok(MediaFeature::MinWidth(distance))
+                        let length: Length = parser.parse()?;
+                        Ok(MediaFeature::MinWidth(length))
                     }
                     "width" => {
                         parser.consume_colon_separator()?;
-                        let distance: Distance = parser.parse()?;
-                        Ok(MediaFeature::Width(distance))
+                        let length: Length = parser.parse()?;
+                        Ok(MediaFeature::Width(length))
                     }
                     "max-width" => {
                         parser.consume_colon_separator()?;
-                        let distance: Distance = parser.parse()?;
-                        Ok(MediaFeature::MaxWidth(distance))
+                        let length: Length = parser.parse()?;
+                        Ok(MediaFeature::MaxWidth(length))
                     }
                     "min-height" => {
                         parser.consume_colon_separator()?;
-                        let distance: Distance = parser.parse()?;
-                        Ok(MediaFeature::MinHeight(distance))
+                        let length: Length = parser.parse()?;
+                        Ok(MediaFeature::MinHeight(length))
                     }
                     "height" => {
                         parser.consume_colon_separator()?;
-                        let distance: Distance = parser.parse()?;
-                        Ok(MediaFeature::Height(distance))
+                        let length: Length = parser.parse()?;
+                        Ok(MediaFeature::Height(length))
                     }
                     "max-height" => {
                         parser.consume_colon_separator()?;
-                        let distance: Distance = parser.parse()?;
-                        Ok(MediaFeature::MaxHeight(distance))
+                        let length: Length = parser.parse()?;
+                        Ok(MediaFeature::MaxHeight(length))
                     }
                     "orientation" => {
                         parser.consume_colon_separator()?;
@@ -119,6 +119,8 @@ impl Parsable for MediaFeature {
 
 #[cfg(test)]
 mod tests {
+    use crate::parser::length::LengthUnit;
+
     use super::*;
 
     #[test]
@@ -132,6 +134,84 @@ mod tests {
     fn monochrome() {
         let mut parser = Parser::new("monochrome".chars());
         assert_eq!(Ok(MediaFeature::Monochrome), parser.parse());
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn min_width() {
+        let mut parser = Parser::new("min-width: 100px".chars());
+        assert_eq!(
+            Ok(MediaFeature::MinWidth(Length::Length(
+                100.0,
+                LengthUnit::Pixels
+            ))),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn width() {
+        let mut parser = Parser::new("width: 240cm".chars());
+        assert_eq!(
+            Ok(MediaFeature::Width(Length::Length(
+                240.0,
+                LengthUnit::Centimeters
+            ))),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn max_width() {
+        let mut parser = Parser::new("max-width: 700pt".chars());
+        assert_eq!(
+            Ok(MediaFeature::MaxWidth(Length::Length(
+                700.0,
+                LengthUnit::Points
+            ))),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn min_height() {
+        let mut parser = Parser::new("min-height: 342em".chars());
+        assert_eq!(
+            Ok(MediaFeature::MinHeight(Length::Length(
+                342.0,
+                LengthUnit::FontSize
+            ))),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn height() {
+        let mut parser = Parser::new("height: 100vw".chars());
+        assert_eq!(
+            Ok(MediaFeature::Height(Length::Length(
+                100.0,
+                LengthUnit::ViewportWidth
+            ))),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn max_height() {
+        let mut parser = Parser::new("max-height: 150vmin".chars());
+        assert_eq!(
+            Ok(MediaFeature::MaxHeight(Length::Length(
+                150.0,
+                LengthUnit::ViewportMinimum
+            ))),
+            parser.parse()
+        );
         assert_eq!(None, parser.tokens.next());
     }
 
