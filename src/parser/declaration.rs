@@ -51,43 +51,35 @@ impl Parsable for Declaration {
                     }
                     "font-size" => {
                         parser.consume_colon_separator()?;
-                        let length: Length = parser.parse()?;
-                        Ok(Declaration::FontSize(length))
+                        Ok(Declaration::FontSize(parser.parse()?))
                     }
                     "height" => {
                         parser.consume_colon_separator()?;
-                        let length: Length = parser.parse()?;
-                        Ok(Declaration::Height(length))
+                        Ok(Declaration::Height(parser.parse()?))
                     }
                     "width" => {
                         parser.consume_colon_separator()?;
-                        let length: Length = parser.parse()?;
-                        Ok(Declaration::Width(length))
+                        Ok(Declaration::Width(parser.parse()?))
                     }
                     "margin" => {
                         parser.consume_colon_separator()?;
-                        let length: Length = parser.parse()?;
-                        Ok(Declaration::Margin(length))
+                        Ok(Declaration::Margin(parser.parse()?))
                     }
                     "padding" => {
                         parser.consume_colon_separator()?;
-                        let length: Length = parser.parse()?;
-                        Ok(Declaration::Padding(length))
+                        Ok(Declaration::Padding(parser.parse()?))
                     }
                     "border-width" => {
                         parser.consume_colon_separator()?;
-                        let length: Length = parser.parse()?;
-                        Ok(Declaration::BorderWidth(length))
+                        Ok(Declaration::BorderWidth(parser.parse()?))
                     }
                     "border-radius" => {
                         parser.consume_colon_separator()?;
-                        let length: Length = parser.parse()?;
-                        Ok(Declaration::BorderRadius(length))
+                        Ok(Declaration::BorderRadius(parser.parse()?))
                     }
                     "text-align" => {
                         parser.consume_colon_separator()?;
-                        let text_al = parser.parse()?;
-                        Ok(Declaration::TextAlign(text_al))
+                        Ok(Declaration::TextAlign(parser.parse()?))
                     }
 
                     _ => Err(ParsingError::wrong_token(token_at, "a declaration")),
