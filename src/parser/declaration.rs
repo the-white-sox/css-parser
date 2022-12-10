@@ -93,7 +93,7 @@ impl Parsable for Declaration {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use super::{length::LengthUnit, *};
 
     #[test]
     fn background_color() {
@@ -162,7 +162,7 @@ mod tests {
         assert_eq!(
             Ok(Declaration::FontSize(Length::Length(
                 3.0,
-                length::LengthUnit::Pixels
+                LengthUnit::Pixels
             ))),
             parser.parse()
         );
@@ -173,10 +173,7 @@ mod tests {
     fn height() {
         let mut parser = Parser::new("height: 3px".chars());
         assert_eq!(
-            Ok(Declaration::Height(Length::Length(
-                3.0,
-                length::LengthUnit::Pixels
-            ))),
+            Ok(Declaration::Height(Length::Length(3.0, LengthUnit::Pixels))),
             parser.parse()
         );
         assert_eq!(None, parser.tokens.next());
@@ -186,10 +183,7 @@ mod tests {
     fn width() {
         let mut parser = Parser::new("width: 3px".chars());
         assert_eq!(
-            Ok(Declaration::Width(Length::Length(
-                3.0,
-                length::LengthUnit::Pixels
-            ))),
+            Ok(Declaration::Width(Length::Length(3.0, LengthUnit::Pixels))),
             parser.parse()
         );
         assert_eq!(None, parser.tokens.next());
@@ -199,10 +193,7 @@ mod tests {
     fn margin() {
         let mut parser = Parser::new("margin: 3px".chars());
         assert_eq!(
-            Ok(Declaration::Margin(Length::Length(
-                3.0,
-                length::LengthUnit::Pixels
-            ))),
+            Ok(Declaration::Margin(Length::Length(3.0, LengthUnit::Pixels))),
             parser.parse()
         );
         assert_eq!(None, parser.tokens.next());
@@ -214,7 +205,7 @@ mod tests {
         assert_eq!(
             Ok(Declaration::Padding(Length::Length(
                 3.0,
-                length::LengthUnit::Pixels
+                LengthUnit::Pixels
             ))),
             parser.parse()
         );
@@ -227,7 +218,7 @@ mod tests {
         assert_eq!(
             Ok(Declaration::BorderWidth(Length::Length(
                 3.0,
-                length::LengthUnit::Pixels
+                LengthUnit::Pixels
             ))),
             parser.parse()
         );
@@ -240,7 +231,7 @@ mod tests {
         assert_eq!(
             Ok(Declaration::BorderRadius(Length::Length(
                 3.0,
-                length::LengthUnit::Pixels
+                LengthUnit::Pixels
             ))),
             parser.parse()
         );
