@@ -1,12 +1,3 @@
-// <sides-color> ::= <color> | <color> <color> | <color> <color> <color> <color>
-// <color> ::= "black" | "silver" | "gray" | "grey" | "white" | "maroon" | "red" | "purple" | "fuchsia" | "green" | "lime" | "olive" | "yellow" | "navy" | "blue" | "teal" | "aqua" | <rgb> | <hsl> | <hex>
-// <rgb> ::= "rgb(" <0-255> "," <0-255> "," <0-255> ")" | "rgba(" <0-255> "," <0-255> "," <0-255> "," <alpha> ")"
-// <hex> ::= "#" <hex-byte> <hex-byte> <hex-byte> | "#" <hex-byte> <hex-byte> <hex-byte> <hex-byte> | "#" <hex-digit> <hex-digit> <hex-digit> | "#" <hex-digit> <hex-digit> <hex-digit> <hex-digit>
-// <hex-digit> ::= <digit> | "a" - "f" | "A" - "F"
-// <hex-byte> ::= <hex-digit> <hex-digit>
-// <hsl> ::= "hsl(" <0-360> "," <0-100> "%," <0-100> "%)" | "hsla(" <0-360> "," <0-100> "%," <0-100> "%," <alpha> ")"
-// <alpha> ::= "0." <digits> | "." <digits> | 1 | 0
-
 use super::{side::CanStart, *};
 use crate::tokenizer::*;
 
