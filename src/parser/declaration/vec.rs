@@ -61,7 +61,7 @@ mod tests {
     }
 
     #[test]
-    fn two_dec_no_ending_semi_colon() {
+    fn two_dec_no_ending_semicolon() {
         let mut parser = Parser::new("background-color: red; border-color: red".chars());
         assert_eq!(
             Ok(vec![
