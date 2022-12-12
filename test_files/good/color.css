@@ -1,0 +1,12 @@
+/* This file contains syntactically valid color values and usage */
+
+#test1 {background-color: #fa5}
+#test2 {background-color: #fa5c;}
+#test3 {color: #fa5cfa ;}
+#test4 {color: #34be64aa}
+#test5 {color: red}
+#test6 {color: gray ;}
+#test7 {color:rgb(236, 78.3 , 6)}
+#test8 {color: rgba(138,97,56,.8) ;}
+#test9 {color:hsl(56, 99%, 45%);}
+#test10 {color:hsla(24,56.4%,33.3%, 0.9)}
