@@ -54,7 +54,7 @@ mod tests {
         assert_eq!(
             Ok(vec![
                 Declaration::BackgroundColor(Color::Red),
-                Declaration::BorderColor(Color::Red)
+                Declaration::BorderColor(Sides::Single(Color::Red))
             ]),
             parser.parse()
         );
@@ -67,7 +67,7 @@ mod tests {
         assert_eq!(
             Ok(vec![
                 Declaration::BackgroundColor(Color::Red),
-                Declaration::BorderColor(Color::Red)
+                Declaration::BorderColor(Sides::Single(Color::Red))
             ]),
             parser.parse()
         );
