@@ -69,8 +69,8 @@ impl fmt::Display for Token {
             Self::CloseSquareBracket() => write!(f, "]"),
             Self::OpenParenthesis() => write!(f, "("),
             Self::CloseParenthesis() => write!(f, ")"),
-            Self::OpenCurlyBracket() => write!(f, "}}"),
-            Self::CloseCurlyBracket() => write!(f, "{{"),
+            Self::OpenCurlyBracket() => write!(f, "{{"),
+            Self::CloseCurlyBracket() => write!(f, "}}"),
         }
     }
 }
@@ -112,7 +112,7 @@ impl<I: Iterator<Item = char>> Tokenizer<I> {
         match self.chars.peek() {
             Some((_, _, character)) => match character {
                 'a'..='z' | 'A'..='Z' | '_' => true,
-                '\\' => todo!("add support for escapes"),
+                '\\' => unimplemented!("escape sequences"),
                 _ => false,
             },
             None => false,
@@ -130,7 +130,7 @@ impl<I: Iterator<Item = char>> Tokenizer<I> {
                     identifier.push(character);
                 }
                 '\\' => {
-                    todo!("add support for escapes");
+                    unimplemented!("escape sequences");
                 }
                 _ => break,
             }
@@ -182,7 +182,7 @@ impl<I: Iterator<Item = char>> Tokenizer<I> {
                 ' ' | '\t' | '\r' | '\n' => break,
                 '"' | '\'' | '(' | '\0' | '\x08' | '\x0B' | '\x0E'..='\x1F' | '\x7F' => break,
                 '\\' => {
-                    todo!("add support for escapes");
+                    unimplemented!("escape sequences");
                 }
                 _ => {
                     self.chars.next();
@@ -345,7 +345,7 @@ impl<I: Iterator<Item = char>> Iterator for Tokenizer<I> {
                     '0'..='9' | '-' => {
                         Token::Hash(self.consume_identifier_sequence(), HashType::Unrestricted)
                     }
-                    '\\' => todo!("add support for escapes"),
+                    '\\' => unimplemented!("escape sequences"),
                     _ => Token::Delimiter('#'),
                 },
                 None => Token::Delimiter('#'),
@@ -388,7 +388,7 @@ impl<I: Iterator<Item = char>> Iterator for Tokenizer<I> {
                 }
             }
 
-            '\\' => todo!("add support for escapes"),
+            '\\' => unimplemented!("escape sequences"),
             ':' => Token::Colon(),
             ';' => Token::Semicolon(),
             ',' => Token::Comma(),

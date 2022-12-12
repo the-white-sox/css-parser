@@ -74,7 +74,7 @@ these are features we don't currently have included but might include in the fut
 
 ```bnf
 <stylesheet> ::= <imports> <rules> <EOF>
-<rules> ::= <rule> <rules> | <media-query> <rules> | ""
+<rules> ::= <ruleset> <rules> | <media-query> <rules> | ""
 ```
 
 ## Imports
@@ -118,7 +118,7 @@ these are features we don't currently have included but might include in the fut
 ## Rules
 
 ```bnf
-<rule> ::= <selector-list> "{" <declaration-list> "}"
+<ruleset> ::= <selector-list> "{" <declaration-list> "}"
 ```
 
 ## Selectors

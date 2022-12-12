@@ -113,4 +113,16 @@ mod tests {
         assert_eq!(Ok(PseudoClass::Checked), parser.parse());
         assert_eq!(None, parser.tokens.next());
     }
+
+    #[test]
+    fn missing_colon() {
+        let mut parser = Parser::new("focus".chars());
+        assert!(parser.parse::<PseudoClass>().is_err());
+    }
+
+    #[test]
+    fn invalid_pseudo_class() {
+        let mut parser = Parser::new(":invalid".chars());
+        assert!(parser.parse::<PseudoClass>().is_err());
+    }
 }
