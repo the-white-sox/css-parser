@@ -12,9 +12,9 @@ pub struct Ruleset {
 impl Parsable for Ruleset {
     fn parse<I: Iterator<Item = char>>(parser: &mut Parser<I>) -> Result<Self, ParsingError> {
         let selectors = parser.parse()?;
-        parser.expect(Token::Delimiter('{'))?;
+        parser.expect(Token::OpenCurlyBracket())?;
         let declarations = parser.parse()?;
-        parser.expect(Token::Delimiter('}'))?;
+        parser.expect(Token::CloseCurlyBracket())?;
         Ok(Ruleset {
             selectors,
             declarations,
