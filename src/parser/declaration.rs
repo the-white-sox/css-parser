@@ -95,7 +95,7 @@ impl Parsable for Declaration {
 
 #[cfg(test)]
 mod tests {
-    use super::{length::LengthUnit, *};
+    use super::{length::LengthUnit, percentage::Percentage, *};
 
     #[test]
     fn background_color() {
@@ -197,6 +197,21 @@ mod tests {
         assert_eq!(
             Ok(Declaration::Margin(Sides::Single(
                 LengthOrPercentage::Length(Length::Length(3.0, LengthUnit::Pixels))
+            ))),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn quad_margin() {
+        let mut parser = Parser::new("margin: 3px 20% 700rem -100pt".chars());
+        assert_eq!(
+            Ok(Declaration::Margin(Sides::Quad(
+                LengthOrPercentage::Length(Length::Length(3.0, LengthUnit::Pixels)),
+                LengthOrPercentage::Percentage(Percentage(20.0)),
+                LengthOrPercentage::Length(Length::Length(700.0, LengthUnit::RootFontSize)),
+                LengthOrPercentage::Length(Length::Length(-100.0, LengthUnit::Points)),
             ))),
             parser.parse()
         );
