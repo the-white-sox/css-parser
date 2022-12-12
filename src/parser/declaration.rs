@@ -5,6 +5,8 @@ use super::{
     color::{parse_num, Color},
     font_family::FontFamily,
     length::Length,
+    length_or_percentage::LengthOrPercentage,
+    side::Sides,
     *,
 };
 use crate::tokenizer::*;
@@ -20,10 +22,10 @@ pub enum Declaration {
     FontSize(Length),
     Height(Length),
     Width(Length),
-    Margin(Length),
-    Padding(Length),
-    BorderWidth(Length),
-    BorderRadius(Length),
+    Margin(Sides<LengthOrPercentage>),
+    Padding(Sides<LengthOrPercentage>),
+    BorderWidth(Sides<LengthOrPercentage>),
+    BorderRadius(Sides<LengthOrPercentage>),
     TextAlign(TextAlign),
 }
 
@@ -193,7 +195,9 @@ mod tests {
     fn margin() {
         let mut parser = Parser::new("margin: 3px".chars());
         assert_eq!(
-            Ok(Declaration::Margin(Length::Length(3.0, LengthUnit::Pixels))),
+            Ok(Declaration::Margin(Sides::Single(
+                LengthOrPercentage::Length(Length::Length(3.0, LengthUnit::Pixels))
+            ))),
             parser.parse()
         );
         assert_eq!(None, parser.tokens.next());
@@ -203,9 +207,8 @@ mod tests {
     fn padding() {
         let mut parser = Parser::new("padding: 3px".chars());
         assert_eq!(
-            Ok(Declaration::Padding(Length::Length(
-                3.0,
-                LengthUnit::Pixels
+            Ok(Declaration::Padding(Sides::Single(
+                LengthOrPercentage::Length(Length::Length(3.0, LengthUnit::Pixels))
             ))),
             parser.parse()
         );
@@ -216,9 +219,8 @@ mod tests {
     fn border_width() {
         let mut parser = Parser::new("border-width: 3px".chars());
         assert_eq!(
-            Ok(Declaration::BorderWidth(Length::Length(
-                3.0,
-                LengthUnit::Pixels
+            Ok(Declaration::BorderWidth(Sides::Single(
+                LengthOrPercentage::Length(Length::Length(3.0, LengthUnit::Pixels))
             ))),
             parser.parse()
         );
@@ -229,9 +231,8 @@ mod tests {
     fn border_radius() {
         let mut parser = Parser::new("border-radius: 3px".chars());
         assert_eq!(
-            Ok(Declaration::BorderRadius(Length::Length(
-                3.0,
-                LengthUnit::Pixels
+            Ok(Declaration::BorderRadius(Sides::Single(
+                LengthOrPercentage::Length(Length::Length(3.0, LengthUnit::Pixels))
             ))),
             parser.parse()
         );
