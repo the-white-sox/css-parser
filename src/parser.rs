@@ -5,6 +5,7 @@ use crate::tokenizer::{Token, TokenAt, Tokenizer};
 
 mod basic_selector;
 mod color;
+mod comma_separated;
 mod declaration;
 mod font_family;
 mod from_identifier;
@@ -19,6 +20,7 @@ mod string;
 mod stylesheet;
 mod url;
 
+pub use comma_separated::*;
 pub use from_identifier::*;
 pub use stylesheet::*;
 

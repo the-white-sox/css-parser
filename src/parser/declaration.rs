@@ -3,7 +3,7 @@ mod vec;
 
 use super::{
     color::{parse_num, Color},
-    font_family::FontFamily,
+    font_family::FontName,
     length::Length,
     length_or_percentage::LengthOrPercentage,
     side::Sides,
@@ -18,7 +18,7 @@ pub enum Declaration {
     BackgroundColor(Color),
     BorderColor(Sides<Color>),
     Opacity(f64),
-    FontFamily(FontFamily),
+    FontFamily(Vec<FontName>),
     FontSize(Length),
     Height(Length),
     Width(Length),
@@ -163,9 +163,7 @@ mod tests {
     fn font_family() {
         let mut parser = Parser::new("font-family: Arial".chars());
         assert_eq!(
-            Ok(Declaration::FontFamily(FontFamily(
-                vec!["Arial".to_owned()]
-            ))),
+            Ok(Declaration::FontFamily(vec![FontName("Arial".to_owned())])),
             parser.parse()
         );
         assert_eq!(None, parser.tokens.next());
