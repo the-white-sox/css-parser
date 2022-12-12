@@ -122,6 +122,8 @@ impl Parsable for BasicSelector {
     }
 }
 
+impl CommaSeparated for BasicSelector {}
+
 #[cfg(test)]
 
 mod tests {
