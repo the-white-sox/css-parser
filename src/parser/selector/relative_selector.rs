@@ -1,4 +1,4 @@
-use super::*;
+use super::{combinator::Combinator, *};
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum RelativeSelector {
