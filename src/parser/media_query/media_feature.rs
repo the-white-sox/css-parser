@@ -31,7 +31,7 @@ pub enum MediaFeature {
 }
 
 impl<I: Iterator<Item = char>> Parser<I> {
-    fn consume_colon_separator(&mut self) -> Result<(), ParsingError> {
+    pub fn consume_colon_separator(&mut self) -> Result<(), ParsingError> {
         self.optional_whitespace();
         self.expect(Token::Colon())?;
         self.optional_whitespace();
