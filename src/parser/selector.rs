@@ -4,6 +4,7 @@ pub mod pseudo_class;
 pub mod relative_selector;
 
 use attribute_selector::AttributeSelector;
+use combinator::Combinator;
 use pseudo_class::PseudoClass;
 
 use super::*;
