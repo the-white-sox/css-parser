@@ -15,8 +15,8 @@ pub use vec::*;
 
 #[derive(Debug, PartialEq)]
 pub enum Declaration {
-    BackgroundColor(Color),
-    BorderColor(Color),
+    BackgroundColor(Sides<Color>),
+    BorderColor(Sides<Color>),
     Opacity(f64),
     FontFamily(FontFamily),
     FontSize(Length),
@@ -100,7 +100,10 @@ mod tests {
     #[test]
     fn background_color() {
         let mut parser = Parser::new("background-color: red".chars());
-        assert_eq!(Ok(Declaration::BackgroundColor(Color::Red)), parser.parse());
+        assert_eq!(
+            Ok(Declaration::BackgroundColor(Sides::Single(Color::Red))),
+            parser.parse()
+        );
         assert_eq!(None, parser.tokens.next());
     }
 
@@ -113,7 +116,10 @@ mod tests {
     #[test]
     fn border_color() {
         let mut parser = Parser::new("border-color: red".chars());
-        assert_eq!(Ok(Declaration::BorderColor(Color::Red)), parser.parse());
+        assert_eq!(
+            Ok(Declaration::BorderColor(Sides::Single(Color::Red))),
+            parser.parse()
+        );
         assert_eq!(None, parser.tokens.next());
     }
 
