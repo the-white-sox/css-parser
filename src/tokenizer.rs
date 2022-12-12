@@ -69,8 +69,8 @@ impl fmt::Display for Token {
             Self::CloseSquareBracket() => write!(f, "]"),
             Self::OpenParenthesis() => write!(f, "("),
             Self::CloseParenthesis() => write!(f, ")"),
-            Self::OpenCurlyBracket() => write!(f, "}}"),
-            Self::CloseCurlyBracket() => write!(f, "{{"),
+            Self::OpenCurlyBracket() => write!(f, "{{"),
+            Self::CloseCurlyBracket() => write!(f, "}}"),
         }
     }
 }
