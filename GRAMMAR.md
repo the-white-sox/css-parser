@@ -28,6 +28,10 @@ we are not supporting grid or flex related properties
 
 This document intentionally ignores whitespace.
 
+### Case sensitivity
+
+Although CSS is often case insensitive. This document is intentionally case sensitive.
+
 ### Operator Persistence and ambiguity
 
 This document intentionally ignores operator persistence. This mean that this document describes an ambiguous grammar
