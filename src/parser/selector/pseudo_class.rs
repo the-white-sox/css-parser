@@ -18,7 +18,25 @@ pub enum PseudoClass {
 
 impl Parsable for PseudoClass {
     fn parse<I: Iterator<Item = char>>(parser: &mut Parser<I>) -> Result<Self, ParsingError> {
-        todo!()
+        parser.expect(Token::Colon())?;
+
+        match parser.tokens.next() {
+            Some(token_at) => match token_at.token {
+                Token::Identifier(pseudo_class_name) => match pseudo_class_name.as_str() {
+                    "focus" => Ok(PseudoClass::Focus),
+                    "focus-within" => Ok(PseudoClass::FocusWithin),
+                    "focus-visible" => Ok(PseudoClass::FocusVisible),
+                    "hover" => Ok(PseudoClass::Hover),
+                    "visited" => Ok(PseudoClass::Visited),
+                    "default" => Ok(PseudoClass::Default),
+                    "active" => Ok(PseudoClass::Active),
+                    "target" => Ok(PseudoClass::Target),
+                    "root" => Ok(PseudoClass::Root),
+                    "checked" => Ok(PseudoClass::Checked),
+                    _ => Err(ParsingError::wrong_token(token_at, "focus, focus-within, focus-visible, hover, visited, default, active, target, root, checked")),
+                },
+            },
+        }
     }
 }
 
