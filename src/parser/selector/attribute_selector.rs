@@ -18,62 +18,55 @@ pub enum AttributeSelector {
 
 impl Parsable for AttributeSelector {
     fn parse<I: Iterator<Item = char>>(parser: &mut Parser<I>) -> Result<Self, ParsingError> {
-        match parser.tokens.next() {
-            Some(token_at) => match token_at.token {
-                Token::OpenSquareBracket() => match parser.tokens.next() {
-                    Some(token_at) => match token_at.token {
-                        Token::Identifier(attribute_name) => match parser.tokens.next() {
-                            Some(token_at) => match token_at.token {
-                                Token::CloseSquareBracket() => {
-                                    Ok(AttributeSelector::Exists(attribute_name))
-                                }
-                                Token::Delimiter('=') => {
-                                    let value: String = parser.parse()?;
-                                    parser.expect(Token::CloseSquareBracket())?;
-                                    Ok(AttributeSelector::Equals(attribute_name, value))
-                                }
-                                Token::Delimiter('~') => {
-                                    parser.expect(Token::Delimiter('='))?;
-                                    let value: String = parser.parse()?;
-                                    parser.expect(Token::CloseSquareBracket())?;
-                                    Ok(AttributeSelector::ListContains(attribute_name, value))
-                                }
-                                Token::Delimiter('^') => {
-                                    parser.expect(Token::Delimiter('='))?;
-                                    let value: String = parser.parse()?;
-                                    parser.expect(Token::CloseSquareBracket())?;
-                                    Ok(AttributeSelector::StartsWith(attribute_name, value))
-                                }
-                                Token::Delimiter('$') => {
-                                    parser.expect(Token::Delimiter('='))?;
-                                    let value: String = parser.parse()?;
-                                    parser.expect(Token::CloseSquareBracket())?;
-                                    Ok(AttributeSelector::EndsWith(attribute_name, value))
-                                }
-                                Token::Delimiter('*') => {
-                                    parser.expect(Token::Delimiter('='))?;
-                                    let value: String = parser.parse()?;
-                                    parser.expect(Token::CloseSquareBracket())?;
-                                    Ok(AttributeSelector::StringContains(attribute_name, value))
-                                }
-                                _ => Err(ParsingError::wrong_token(
-                                    token_at,
-                                    "closing square bracket or attribute operator",
-                                )),
-                            },
-                            None => Err(ParsingError::end_of_file(
-                                "closing square bracket or attribute operator",
-                            )),
-                        },
-                        _ => Err(ParsingError::wrong_token(token_at, "attribute name")),
-                    },
-                    None => Err(ParsingError::end_of_file("attribute name")),
-                },
-                _ => Err(ParsingError::wrong_token(token_at, "Basic selector")),
-            },
+        parser.expect(Token::OpenSquareBracket())?;
 
-            None => Err(ParsingError::end_of_file("Basic Selector")),
-        }
+        let Some(token_at) = parser.tokens.next() else {
+            return Err(ParsingError::end_of_file("attribute name"));
+        };
+
+        let Token::Identifier(attribute_name) = token_at.token else {
+            return Err(ParsingError::wrong_token(token_at, "attribute name"));
+        };
+
+        let attribute_selector = match parser.tokens.next() {
+            Some(token_at) => match token_at.token {
+                Token::CloseSquareBracket() => {
+                    return Ok(AttributeSelector::Exists(attribute_name))
+                }
+                Token::Delimiter('=') => AttributeSelector::Equals(attribute_name, parser.parse()?),
+                Token::Delimiter('~') => {
+                    parser.expect(Token::Delimiter('='))?;
+                    AttributeSelector::ListContains(attribute_name, parser.parse()?)
+                }
+                Token::Delimiter('^') => {
+                    parser.expect(Token::Delimiter('='))?;
+                    AttributeSelector::StartsWith(attribute_name, parser.parse()?)
+                }
+                Token::Delimiter('$') => {
+                    parser.expect(Token::Delimiter('='))?;
+                    AttributeSelector::EndsWith(attribute_name, parser.parse()?)
+                }
+                Token::Delimiter('*') => {
+                    parser.expect(Token::Delimiter('='))?;
+                    AttributeSelector::StringContains(attribute_name, parser.parse()?)
+                }
+                _ => {
+                    return Err(ParsingError::wrong_token(
+                        token_at,
+                        "closing square bracket or attribute operator",
+                    ))
+                }
+            },
+            None => {
+                return Err(ParsingError::end_of_file(
+                    "closing square bracket or attribute operator",
+                ))
+            }
+        };
+
+        parser.expect(Token::CloseSquareBracket())?;
+
+        Ok(attribute_selector)
     }
 }
 
