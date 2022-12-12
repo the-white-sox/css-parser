@@ -38,8 +38,16 @@ impl Parsable for PseudoClass {
                     _ => Err(ParsingError::wrong_token(token_at, EXPECTED)),
                 },
                 Token::Function(pseudo_class_name) => match pseudo_class_name.as_str() {
-                    "not" => Ok(PseudoClass::Not(parser.parse()?)),
-                    "has" => Ok(PseudoClass::Has(parser.parse()?)),
+                    "not" => {
+                        let relative_selector = parser.parse()?;
+                        parser.expect(Token::CloseParenthesis())?;
+                        Ok(PseudoClass::Not(relative_selector))
+                    }
+                    "has" => {
+                        let relative_selector = parser.parse()?;
+                        parser.expect(Token::CloseParenthesis())?;
+                        Ok(PseudoClass::Has(relative_selector))
+                    }
                     _ => Err(ParsingError::wrong_token(token_at, EXPECTED)),
                 },
                 _ => Err(ParsingError::wrong_token(token_at, EXPECTED)),
