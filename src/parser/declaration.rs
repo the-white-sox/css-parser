@@ -27,6 +27,7 @@ pub enum Declaration {
     BorderWidth(Sides<LengthOrPercentage>),
     BorderRadius(Sides<LengthOrPercentage>),
     TextAlign(TextAlign),
+    Color(Color),
 }
 
 impl Parsable for Declaration {
@@ -82,6 +83,10 @@ impl Parsable for Declaration {
                     "text-align" => {
                         parser.consume_colon_separator()?;
                         Ok(Declaration::TextAlign(parser.parse()?))
+                    }
+                    "color" => {
+                        parser.consume_colon_separator()?;
+                        Ok(Declaration::Color(parser.parse()?))
                     }
 
                     _ => Err(ParsingError::wrong_token(token_at, "a declaration")),
@@ -278,6 +283,19 @@ mod tests {
     #[test]
     fn bad_declaration() {
         let mut parser = Parser::new("band-color: red".chars());
+        assert!(parser.parse::<Declaration>().is_err());
+    }
+
+    #[test]
+    fn color() {
+        let mut parser = Parser::new("color: red".chars());
+        assert_eq!(Ok(Declaration::Color(Color::Red)), parser.parse());
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn color_garbage() {
+        let mut parser = Parser::new("color: awrrvads".chars());
         assert!(parser.parse::<Declaration>().is_err());
     }
 }
