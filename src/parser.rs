@@ -5,6 +5,7 @@ use crate::tokenizer::{Token, TokenAt, Tokenizer};
 
 mod basic_selector;
 mod color;
+mod declaration;
 mod font_family;
 mod from_identifier;
 mod import;
