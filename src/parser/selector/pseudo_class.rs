@@ -16,12 +16,14 @@ pub enum PseudoClass {
     Has(RelativeSelector),
 }
 
+const EXPECTED: &str = "focus, focus-within, focus-visible, hover, visited, default, active, target, root, checked, not(), or has()";
+
 impl Parsable for PseudoClass {
     fn parse<I: Iterator<Item = char>>(parser: &mut Parser<I>) -> Result<Self, ParsingError> {
         parser.expect(Token::Colon())?;
 
         match parser.tokens.next() {
-            Some(token_at) => match token_at.token {
+            Some(token_at) => match &token_at.token {
                 Token::Identifier(pseudo_class_name) => match pseudo_class_name.as_str() {
                     "focus" => Ok(PseudoClass::Focus),
                     "focus-within" => Ok(PseudoClass::FocusWithin),
@@ -33,9 +35,16 @@ impl Parsable for PseudoClass {
                     "target" => Ok(PseudoClass::Target),
                     "root" => Ok(PseudoClass::Root),
                     "checked" => Ok(PseudoClass::Checked),
-                    _ => Err(ParsingError::wrong_token(token_at, "focus, focus-within, focus-visible, hover, visited, default, active, target, root, checked")),
+                    _ => Err(ParsingError::wrong_token(token_at, EXPECTED)),
                 },
+                Token::Function(pseudo_class_name) => match pseudo_class_name.as_str() {
+                    "not" => Ok(PseudoClass::Not(parser.parse()?)),
+                    "has" => Ok(PseudoClass::Has(parser.parse()?)),
+                    _ => Err(ParsingError::wrong_token(token_at, EXPECTED)),
+                },
+                _ => Err(ParsingError::wrong_token(token_at, EXPECTED)),
             },
+            None => Err(ParsingError::end_of_file(EXPECTED)),
         }
     }
 }
