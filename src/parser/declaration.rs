@@ -127,6 +127,26 @@ mod tests {
     }
 
     #[test]
+    fn quad_border_color() {
+        let mut parser = Parser::new("border-color: red green blue rgb(10, 20, 30)".chars());
+        assert_eq!(
+            Ok(Declaration::BorderColor(Sides::Quad(
+                Color::Red,
+                Color::Green,
+                Color::Blue,
+                Color::Rgb {
+                    r: 10.0,
+                    g: 20.0,
+                    b: 30.0,
+                    a: 1.0
+                }
+            ))),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
     fn opacity() {
         let mut parser = Parser::new("opacity: 0.3".chars());
         assert_eq!(Ok(Declaration::Opacity(0.3)), parser.parse());
