@@ -4,6 +4,8 @@ impl Parsable for Vec<Declaration> {
     fn parse<I: Iterator<Item = char>>(parser: &mut Parser<I>) -> Result<Self, ParsingError> {
         let mut declarations = Vec::new();
         loop {
+            parser.optional_whitespace();
+
             match parser.tokens.peek() {
                 Some(TokenAt {
                     token: Token::Identifier(_),
@@ -23,7 +25,6 @@ impl Parsable for Vec<Declaration> {
                     ..
                 }) => {
                     parser.tokens.next();
-                    parser.optional_whitespace();
                     continue;
                 }
                 _ => break,
