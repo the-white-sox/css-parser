@@ -18,7 +18,62 @@ pub enum AttributeSelector {
 
 impl Parsable for AttributeSelector {
     fn parse<I: Iterator<Item = char>>(parser: &mut Parser<I>) -> Result<Self, ParsingError> {
-        todo!()
+        match parser.tokens.next() {
+            Some(token_at) => match token_at.token {
+                Token::OpenSquareBracket() => match parser.tokens.next() {
+                    Some(token_at) => match token_at.token {
+                        Token::Identifier(attribute_name) => match parser.tokens.next() {
+                            Some(token_at) => match token_at.token {
+                                Token::CloseSquareBracket() => {
+                                    Ok(AttributeSelector::Exists(attribute_name))
+                                }
+                                Token::Delimiter('=') => {
+                                    let value: String = parser.parse()?;
+                                    parser.expect(Token::CloseSquareBracket())?;
+                                    Ok(AttributeSelector::Equals(attribute_name, value))
+                                }
+                                Token::Delimiter('~') => {
+                                    parser.expect(Token::Delimiter('='))?;
+                                    let value: String = parser.parse()?;
+                                    parser.expect(Token::CloseSquareBracket())?;
+                                    Ok(AttributeSelector::ListContains(attribute_name, value))
+                                }
+                                Token::Delimiter('^') => {
+                                    parser.expect(Token::Delimiter('='))?;
+                                    let value: String = parser.parse()?;
+                                    parser.expect(Token::CloseSquareBracket())?;
+                                    Ok(AttributeSelector::StartsWith(attribute_name, value))
+                                }
+                                Token::Delimiter('$') => {
+                                    parser.expect(Token::Delimiter('='))?;
+                                    let value: String = parser.parse()?;
+                                    parser.expect(Token::CloseSquareBracket())?;
+                                    Ok(AttributeSelector::EndsWith(attribute_name, value))
+                                }
+                                Token::Delimiter('*') => {
+                                    parser.expect(Token::Delimiter('='))?;
+                                    let value: String = parser.parse()?;
+                                    parser.expect(Token::CloseSquareBracket())?;
+                                    Ok(AttributeSelector::StringContains(attribute_name, value))
+                                }
+                                _ => Err(ParsingError::wrong_token(
+                                    token_at,
+                                    "closing square bracket or attribute operator",
+                                )),
+                            },
+                            None => Err(ParsingError::end_of_file(
+                                "closing square bracket or attribute operator",
+                            )),
+                        },
+                        _ => Err(ParsingError::wrong_token(token_at, "attribute name")),
+                    },
+                    None => Err(ParsingError::end_of_file("attribute name")),
+                },
+                _ => Err(ParsingError::wrong_token(token_at, "Basic selector")),
+            },
+
+            None => Err(ParsingError::end_of_file("Basic Selector")),
+        }
     }
 }
 
