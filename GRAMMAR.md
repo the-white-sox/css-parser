@@ -161,11 +161,13 @@ p.class.class2#id[target].class:has(p.class) {}
 <declaration> ::= "font-family" ":" <string> | <identifier> | <identifiers>
 <declaration> ::= "opacity" ":" <alpha>
 <declaration> ::= "text-align" ":" <text-align-value>
+<declaration> ::= "display" ":" <display>
 <color-property> ::= "color" | "background-color"
 <sides-color-property> ::= "border-color"
 <length-property> ::= "font-size" | "height" | "width"
 <side-lengths-property> ::= "margin" | "padding" | "border-width" | "border-radius"
 <identifiers> ::= <identifier> <identifiers> | <identifier>
+<display> ::= "block" | "inline" | "inline-block"
 ```
 
 ### Examples

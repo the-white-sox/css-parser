@@ -1,3 +1,4 @@
+pub mod display;
 pub mod text_align;
 mod vec;
 
@@ -10,6 +11,7 @@ use super::{
     *,
 };
 use crate::tokenizer::*;
+use display::Display;
 use text_align::TextAlign;
 pub use vec::*;
 
@@ -87,6 +89,10 @@ impl Parsable for Declaration {
                     "color" => {
                         parser.consume_colon_separator()?;
                         Ok(Declaration::Color(parser.parse()?))
+                    }
+                    "display" => {
+                        parser.consume_colon_separator()?;
+                        Ok(Declaration::Display(parser.parse()?))
                     }
 
                     _ => Err(ParsingError::wrong_token(token_at, "a declaration")),
@@ -280,6 +286,12 @@ mod tests {
         assert_eq!(None, parser.tokens.next());
     }
 
+    #[test]
+    fn display() {
+        let mut parser = Parser::new("display: block".chars());
+        assert_eq!(Ok(Declaration::Display(Display::Block)), parser.parse());
+        assert_eq!(None, parser.tokens.next());
+    }
     #[test]
     fn bad_declaration() {
         let mut parser = Parser::new("band-color: red".chars());
