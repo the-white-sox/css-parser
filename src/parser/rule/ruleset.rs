@@ -1,11 +1,11 @@
-use super::basic_selector::BasicSelector;
 use super::declaration::Declaration;
+use super::selector::Selector;
 
 use super::*;
 
 #[derive(Debug, PartialEq)]
 pub struct Ruleset {
-    pub selectors: Vec<BasicSelector>,
+    pub selectors: Vec<Selector>,
     pub declarations: Vec<Declaration>,
 }
 
@@ -24,17 +24,22 @@ impl Parsable for Ruleset {
 
 #[cfg(test)]
 mod tests {
-    use super::basic_selector::BasicSelector;
-    use super::declaration::Declaration;
+    use super::selector::SelectorRestriction;
     use super::*;
     use crate::parser::color::Color;
+
+    const UNIVERSAL_SELECTOR: Selector = Selector {
+        element: None,
+        restrictions: vec![],
+        combinator: None,
+    };
 
     #[test]
     fn empty_ruleset() {
         let mut parser = Parser::new("* {}".chars());
         assert_eq!(
             Ok(Ruleset {
-                selectors: vec![BasicSelector::Universal()],
+                selectors: vec![UNIVERSAL_SELECTOR],
                 declarations: vec![]
             }),
             parser.parse()
@@ -47,7 +52,7 @@ mod tests {
         let mut parser = Parser::new("* {background-color: blue; opacity: 0.7}".chars());
         assert_eq!(
             Ok(Ruleset {
-                selectors: vec![BasicSelector::Universal()],
+                selectors: vec![UNIVERSAL_SELECTOR],
                 declarations: vec![
                     Declaration::BackgroundColor(Color::Blue),
                     Declaration::Opacity(0.7)
@@ -64,8 +69,16 @@ mod tests {
         assert_eq!(
             Ok(Ruleset {
                 selectors: vec![
-                    BasicSelector::Element("div".to_string()),
-                    BasicSelector::Id("fab".to_string())
+                    Selector {
+                        element: Some("div".to_owned()),
+                        restrictions: vec![],
+                        combinator: None
+                    },
+                    Selector {
+                        element: None,
+                        restrictions: vec![SelectorRestriction::Id("fab".to_owned())],
+                        combinator: None
+                    }
                 ],
                 declarations: vec![Declaration::BackgroundColor(Color::Blue)]
             }),

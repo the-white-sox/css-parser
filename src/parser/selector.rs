@@ -144,6 +144,8 @@ impl Parsable for Selector {
     }
 }
 
+impl CommaSeparated for Selector {}
+
 #[cfg(test)]
 mod tests {
     use super::*;

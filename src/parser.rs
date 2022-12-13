@@ -3,7 +3,6 @@ use std::{fmt, str::FromStr};
 
 use crate::tokenizer::{Token, TokenAt, Tokenizer};
 
-mod basic_selector;
 mod color;
 mod comma_separated;
 mod declaration;
