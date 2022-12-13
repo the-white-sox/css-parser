@@ -39,12 +39,16 @@ impl Parsable for PseudoClass {
                 },
                 Token::Function(pseudo_class_name) => match pseudo_class_name.as_str() {
                     "not" => {
+                        parser.optional_whitespace();
                         let selector = parser.parse()?;
+                        parser.optional_whitespace();
                         parser.expect(Token::CloseParenthesis())?;
                         Ok(PseudoClass::Not(selector))
                     }
                     "has" => {
+                        parser.optional_whitespace();
                         let combinator = parser.parse()?;
+                        parser.optional_whitespace();
                         parser.expect(Token::CloseParenthesis())?;
                         Ok(PseudoClass::Has(combinator))
                     }
@@ -141,5 +145,47 @@ mod tests {
     fn invalid_pseudo_class() {
         let mut parser = Parser::new(":invalid".chars());
         assert!(parser.parse::<PseudoClass>().is_err());
+    }
+
+    #[test]
+    fn not() {
+        let mut parser = Parser::new(":not(div)".chars());
+        assert_eq!(
+            Ok(PseudoClass::Not(Selector {
+                element: Some("div".to_owned()),
+                restrictions: vec![],
+                combinator: None,
+            })),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn has() {
+        let mut parser = Parser::new(":has(div)".chars());
+        assert_eq!(
+            Ok(PseudoClass::Has(Combinator::Descendant(Selector {
+                element: Some("div".to_owned()),
+                restrictions: vec![],
+                combinator: None,
+            }))),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn has_with_whitespace() {
+        let mut parser = Parser::new(":has( div )".chars());
+        assert_eq!(
+            Ok(PseudoClass::Has(Combinator::Descendant(Selector {
+                element: Some("div".to_owned()),
+                restrictions: vec![],
+                combinator: None,
+            }))),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
     }
 }
