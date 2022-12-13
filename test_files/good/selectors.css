@@ -1,0 +1,48 @@
+/*
+    this file contains syntactically valid selectors for testing purposes
+*/
+
+
+
+*,
+div,
+.class,
+#id,
+[attribute],
+[attribute="value"],
+[attribute="value with spaces"],
+[attribute~="value"],
+[attribute^="value"],
+[attribute$="value"],
+[attribute*="value"],
+:focus,
+:focus-within,
+:focus-visible,
+:hover,
+:visited,
+:default,
+:active,
+:target,
+:root,
+:checked,
+:not(div),
+:has(div),
+:has(> div),
+:has(~ div),
+:has(+ div),
+div div,
+div > div,
+div ~ div,
+div + div,
+div div div div div div
+{color:red}
+
+
+/* complex examples */
+:not(a.class#id > :hover:not(a.class)) p,
+p.class.class2#id[target].class:has(p.class)
+{color:red}
+
+
+
+
