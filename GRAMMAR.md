@@ -162,12 +162,14 @@ p.class.class2#id[target].class:has(p.class) {}
 <declaration> ::= "opacity" ":" <alpha>
 <declaration> ::= "text-align" ":" <text-align-value>
 <declaration> ::= "display" ":" <display>
+<declaration> ::= "position" ":" <position>
 <color-property> ::= "color" | "background-color"
 <sides-color-property> ::= "border-color"
-<length-property> ::= "font-size" | "height" | "width"
+<length-property> ::= "font-size" | "height" | "width" | "top" | "bottom" | "left" | "right"
 <side-lengths-property> ::= "margin" | "padding" | "border-width" | "border-radius"
 <identifiers> ::= <identifier> <identifiers> | <identifier>
 <display> ::= "block" | "inline" | "inline-block"
+<position> ::= "static" | "relative" | "absolute" | "fixed" | "sticky"
 ```
 
 ### Examples
