@@ -165,7 +165,7 @@ p.class.class2#id[target].class:has(p.class) {}
 <declaration> ::= "position" ":" <position>
 <color-property> ::= "color" | "background-color"
 <sides-color-property> ::= "border-color"
-<length-property> ::= "font-size" | "height" | "width" | "top" | "bottom" | "left" | "right"
+<length-property> ::= "font-size" | "min-height" | "height" | "max-height" | "min-width" | "width" | "max-width" | "top" | "bottom" | "left" | "right"
 <side-lengths-property> ::= "margin" | "padding" | "border-width" | "border-radius"
 <identifiers> ::= <identifier> <identifiers> | <identifier>
 <display> ::= "block" | "inline" | "inline-block"
