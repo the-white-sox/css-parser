@@ -95,11 +95,11 @@ impl Parsable for Declaration {
                         Ok(Declaration::Display(parser.parse()?))
                     }
 
-                    _ => Err(ParsingError::wrong_token(token_at, "a declaration")),
+                    _ => Err(ParsingError::wrong_token(token_at, "a valid property name")),
                 },
-                _ => Err(ParsingError::wrong_token(token_at, "a declaration")),
+                _ => Err(ParsingError::wrong_token(token_at, "a valid property name")),
             },
-            _ => Err(ParsingError::end_of_file("a declaration")),
+            _ => Err(ParsingError::end_of_file("a valid property name")),
         }
     }
 }
