@@ -133,9 +133,8 @@ these are features we don't currently have included but might include in the fut
 <non-element-simple-selector> ::= <basic-selector> | <pseudo-class>
 <basic-selector> ::= "." <identifier> | "#" <identifier> | <attribute-selector>
 <attribute-selector> ::= "[" <identifier> "]" | "[" <identifier> "=" <string> "]" | "[" <identifier> "~=" <string> "]" | "[" <identifier> "|=" <string> "]" | "[" <identifier> "^=" <string> "]" | "[" <identifier> "$=" <string> "]" | "[" <identifier> "*=" <string> "]"
-<pseudo-class> ::= ":focus" | ":focus-within" | ":focus-visible" | ":hover" | ":visited" | ":default" | ":active" | ":target" | ":root"
-<pseudo-class> ::= ":not(" <relative-selector> ")" | ":has(" <relative-selector> ")"
-<relative-selector> ::= <combinator> <complex-selector> | <complex-selector>
+<pseudo-class> ::= ":focus" | ":focus-within" | ":focus-visible" | ":hover" | ":visited" | ":default" | ":active" | ":target" | ":root" | ":checked"
+<pseudo-class> ::= ":not(" <complex-selector> ")" | ":has(" <combinator> <complex-selector> ")"
 ```
 
 ### Examples
