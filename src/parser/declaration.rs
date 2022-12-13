@@ -23,8 +23,12 @@ pub enum Declaration {
     Opacity(f64),
     FontFamily(Vec<FontName>),
     FontSize(LengthOrPercentage),
+    MinHeight(LengthOrPercentage),
     Height(LengthOrPercentage),
+    MaxHeight(LengthOrPercentage),
+    MinWidth(LengthOrPercentage),
     Width(LengthOrPercentage),
+    MaxWidth(LengthOrPercentage),
     Margin(Sides<LengthOrPercentage>),
     Padding(Sides<LengthOrPercentage>),
     BorderWidth(Sides<LengthOrPercentage>),
@@ -65,13 +69,29 @@ impl Parsable for Declaration {
                         parser.consume_colon_separator()?;
                         Ok(Declaration::FontSize(parser.parse()?))
                     }
+                    "min-height" => {
+                        parser.consume_colon_separator()?;
+                        Ok(Declaration::MinHeight(parser.parse()?))
+                    }
                     "height" => {
                         parser.consume_colon_separator()?;
                         Ok(Declaration::Height(parser.parse()?))
                     }
+                    "max-height" => {
+                        parser.consume_colon_separator()?;
+                        Ok(Declaration::MaxHeight(parser.parse()?))
+                    }
+                    "min-width" => {
+                        parser.consume_colon_separator()?;
+                        Ok(Declaration::MinWidth(parser.parse()?))
+                    }
                     "width" => {
                         parser.consume_colon_separator()?;
                         Ok(Declaration::Width(parser.parse()?))
+                    }
+                    "max-width" => {
+                        parser.consume_colon_separator()?;
+                        Ok(Declaration::MaxWidth(parser.parse()?))
                     }
                     "margin" => {
                         parser.consume_colon_separator()?;
