@@ -1,3 +1,5 @@
+pub mod display;
+pub mod position;
 pub mod text_align;
 mod vec;
 
@@ -9,6 +11,8 @@ use super::{
     *,
 };
 use crate::tokenizer::*;
+use display::Display;
+use position::Position;
 use text_align::TextAlign;
 pub use vec::*;
 
@@ -19,14 +23,24 @@ pub enum Declaration {
     Opacity(f64),
     FontFamily(Vec<FontName>),
     FontSize(LengthOrPercentage),
+    MinHeight(LengthOrPercentage),
     Height(LengthOrPercentage),
+    MaxHeight(LengthOrPercentage),
+    MinWidth(LengthOrPercentage),
     Width(LengthOrPercentage),
+    MaxWidth(LengthOrPercentage),
     Margin(Sides<LengthOrPercentage>),
     Padding(Sides<LengthOrPercentage>),
     BorderWidth(Sides<LengthOrPercentage>),
     BorderRadius(Sides<LengthOrPercentage>),
     TextAlign(TextAlign),
     Color(Color),
+    Display(Display),
+    Position(Position),
+    Top(LengthOrPercentage),
+    Bottom(LengthOrPercentage),
+    Left(LengthOrPercentage),
+    Right(LengthOrPercentage),
 }
 
 impl Parsable for Declaration {
@@ -55,13 +69,29 @@ impl Parsable for Declaration {
                         parser.consume_colon_separator()?;
                         Ok(Declaration::FontSize(parser.parse()?))
                     }
+                    "min-height" => {
+                        parser.consume_colon_separator()?;
+                        Ok(Declaration::MinHeight(parser.parse()?))
+                    }
                     "height" => {
                         parser.consume_colon_separator()?;
                         Ok(Declaration::Height(parser.parse()?))
                     }
+                    "max-height" => {
+                        parser.consume_colon_separator()?;
+                        Ok(Declaration::MaxHeight(parser.parse()?))
+                    }
+                    "min-width" => {
+                        parser.consume_colon_separator()?;
+                        Ok(Declaration::MinWidth(parser.parse()?))
+                    }
                     "width" => {
                         parser.consume_colon_separator()?;
                         Ok(Declaration::Width(parser.parse()?))
+                    }
+                    "max-width" => {
+                        parser.consume_colon_separator()?;
+                        Ok(Declaration::MaxWidth(parser.parse()?))
                     }
                     "margin" => {
                         parser.consume_colon_separator()?;
@@ -87,12 +117,36 @@ impl Parsable for Declaration {
                         parser.consume_colon_separator()?;
                         Ok(Declaration::Color(parser.parse()?))
                     }
+                    "display" => {
+                        parser.consume_colon_separator()?;
+                        Ok(Declaration::Display(parser.parse()?))
+                    }
+                    "position" => {
+                        parser.consume_colon_separator()?;
+                        Ok(Declaration::Position(parser.parse()?))
+                    }
+                    "top" => {
+                        parser.consume_colon_separator()?;
+                        Ok(Declaration::Top(parser.parse()?))
+                    }
+                    "bottom" => {
+                        parser.consume_colon_separator()?;
+                        Ok(Declaration::Bottom(parser.parse()?))
+                    }
+                    "left" => {
+                        parser.consume_colon_separator()?;
+                        Ok(Declaration::Left(parser.parse()?))
+                    }
+                    "right" => {
+                        parser.consume_colon_separator()?;
+                        Ok(Declaration::Right(parser.parse()?))
+                    }
 
-                    _ => Err(ParsingError::wrong_token(token_at, "a declaration")),
+                    _ => Err(ParsingError::wrong_token(token_at, "a valid property name")),
                 },
-                _ => Err(ParsingError::wrong_token(token_at, "a declaration")),
+                _ => Err(ParsingError::wrong_token(token_at, "a valid property name")),
             },
-            _ => Err(ParsingError::end_of_file("a declaration")),
+            _ => Err(ParsingError::end_of_file("a valid property name")),
         }
     }
 }
@@ -276,6 +330,69 @@ mod tests {
         assert_eq!(
             Ok(Declaration::BorderRadius(Sides::Single(
                 LengthOrPercentage::Length(Length::Length(3.0, LengthUnit::Pixels))
+            ))),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn display() {
+        let mut parser = Parser::new("display: block".chars());
+        assert_eq!(Ok(Declaration::Display(Display::Block)), parser.parse());
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn position() {
+        let mut parser = Parser::new("position: absolute".chars());
+        assert_eq!(
+            Ok(Declaration::Position(Position::Absolute)),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn top() {
+        let mut parser = Parser::new("top: 0".chars());
+        assert_eq!(
+            Ok(Declaration::Top(LengthOrPercentage::Length(Length::Zero()))),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn bottom() {
+        let mut parser = Parser::new("bottom: 0".chars());
+        assert_eq!(
+            Ok(Declaration::Bottom(LengthOrPercentage::Length(
+                Length::Zero()
+            ))),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn left() {
+        let mut parser = Parser::new("left: 0".chars());
+        assert_eq!(
+            Ok(Declaration::Left(
+                LengthOrPercentage::Length(Length::Zero())
+            )),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn right() {
+        let mut parser = Parser::new("right: 0".chars());
+        assert_eq!(
+            Ok(Declaration::Right(LengthOrPercentage::Length(
+                Length::Zero()
             ))),
             parser.parse()
         );
