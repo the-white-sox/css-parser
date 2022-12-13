@@ -83,6 +83,11 @@ mod side_length {
         }
 
         #[test]
+        fn zero_character_width() {
+            assert_eq!(parse_unit("ch"), Ok(LengthUnit::ZeroCharacterWidth));
+        }
+
+        #[test]
         fn invalid_unit() {
             assert!(parse_unit("xd").is_err());
         }
@@ -326,14 +331,17 @@ mod side_length {
 
         #[test]
         fn three_percentages_one_unit() {
-            let result = parse_side_length("23% -18.2% 65.4rem 29%");
+            let result = parse_side_length("23% -18.2% 65.4ch 29%");
 
             assert_eq!(
                 result,
                 Ok(Sides::Quad(
                     LengthOrPercentage::Percentage(Percentage(23.0)),
                     LengthOrPercentage::Percentage(Percentage(-18.2)),
-                    LengthOrPercentage::Length(Length::Length(65.4, LengthUnit::RootFontSize)),
+                    LengthOrPercentage::Length(Length::Length(
+                        65.4,
+                        LengthUnit::ZeroCharacterWidth
+                    )),
                     LengthOrPercentage::Percentage(Percentage(29.0))
                 ))
             )

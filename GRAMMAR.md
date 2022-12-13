@@ -193,7 +193,7 @@ p.class.class2#id[target].class:has(p.class) {}
 <length-or-percentage> ::= <length> | <percentage>
 <percentage> ::= <number> "%"
 <length> ::= "0" | <number> <length-unit>
-<length-unit> ::= "px" | "cm" | "in" | "pt" | "em" | "rem" | "vh" | "vw" | "vb" | "vi" | "vmin" | "vmax"
+<length-unit> ::= "px" | "cm" | "in" | "pt" | "em" | "rem" | "vh" | "vw" | "vb" | "vi" | "vmin" | "vmax" | "ch"
 <sides-color> ::= <color> | <color> <color> | <color> <color> <color> <color>
 <color> ::= "black" | "silver" | "gray" | "grey" | "white" | "maroon" | "red" | "purple" | "fuchsia" | "green" | "lime" | "olive" | "yellow" | "navy" | "blue" | "teal" | "aqua" | <rgb> | <hsl> | <hex>
 <rgb> ::= "rgb(" <0-255> "," <0-255> "," <0-255> ")" | "rgba(" <0-255> "," <0-255> "," <0-255> "," <alpha> ")"

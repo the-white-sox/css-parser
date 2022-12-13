@@ -31,6 +31,7 @@ pub enum LengthUnit {
     ViewportInlineSize, // vi
     ViewportMinimum,    // vmin
     ViewportMaximum,    // vmax
+    ZeroCharacterWidth, // ch
 }
 
 impl FromStr for LengthUnit {
@@ -52,6 +53,7 @@ impl FromStr for LengthUnit {
             "vi" => Ok(ViewportInlineSize),
             "vmin" => Ok(ViewportMinimum),
             "vmax" => Ok(ViewportMaximum),
+            "ch" => Ok(ZeroCharacterWidth),
             _ => Err(()),
         }
     }
@@ -66,7 +68,7 @@ impl Parsable for Length {
                     Ok(unit) => Ok(Length::Length(*value, unit)),
                     Err(()) => Err(ParsingError::wrong_token(
                         token_at,
-                        "one of px, cm, in, pt, em, rem, vh, vw, vb, vi, vmin, or vmax",
+                        "one of px, cm, in, pt, em, rem, vh, vw, vb, vi, vmin, vmax, or ch",
                     )),
                 },
                 _ => Err(ParsingError::wrong_token(token_at, "dimension")),
