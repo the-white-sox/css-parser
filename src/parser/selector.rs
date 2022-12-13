@@ -12,9 +12,9 @@ use super::*;
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct Selector {
-    element: Option<String>,
-    restrictions: Vec<SelectorRestriction>,
-    combinator: Option<Box<Combinator>>,
+    pub element: Option<String>,
+    pub restrictions: Vec<SelectorRestriction>,
+    pub combinator: Option<Box<Combinator>>,
 }
 
 #[derive(Debug, PartialEq, Eq)]
