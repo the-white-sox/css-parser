@@ -1,0 +1,49 @@
+/* This file contains syntactically valid side length declarations for testing purposes */
+
+#standard-length-declarations {
+    font-size: 20px;
+    height: 100px;
+    width: 200px;
+    margin: 50px 50px 50% -50%;
+    padding: 10px 0 0 10px;
+    border-width: 0.5rem 0.5rem;
+    border-radius: 1000vmax;
+}
+
+#goofy-length-declarations               /*
+
+:eyes:
+
+
+
+*/ {
+    font-size                 : 100px;
+    height: -20.2cm;
+    width       :                    10px;
+    margin 
+        /*  Here's a comment right in  the middle :) */
+    : 50px 100px         /*
+    
+    
+        margin: 2q34tgwesdfdvaesv
+    
+    */     
+    
+    
+    
+    
+    -12.134212341234566876932% /* here's another comment */ 1245673356.14356253451233352865in;
+    padding: -10px 20vmin
+    
+    
+    1000rem 
+                 80em;
+
+
+
+                    border-width: 0px        /* have another */        90000000rem;
+    
+    
+    
+/*     */        border-radius: 1000vmax;
+}
