@@ -20,6 +20,7 @@ pub enum Color {
     Blue,
     Teal,
     Aqua,
+    Transparent,
     Rgb { r: f64, g: f64, b: f64, a: f64 },
     Hsl { h: f64, s: f64, l: f64, a: f64 },
 }
@@ -104,7 +105,8 @@ impl Parsable for Color {
                     "blue" => Ok(Color::Blue),
                     "teal" => Ok(Color::Teal),
                     "aqua" => Ok(Color::Aqua),
-                    _ => Err(ParsingError::wrong_token(token_at, "black, silver, gray, grey, white, maroon, red, purple, fuchsia, green, lime, olive, yellow, navy, blue, teal, or aqua")),
+                    "transparent" => Ok(Color::Transparent),
+                    _ => Err(ParsingError::wrong_token(token_at, "black, silver, gray, grey, white, maroon, red, purple, fuchsia, green, lime, olive, yellow, navy, blue, teal, aqua, or transparent")),
                 },
                 Token::Function(name) => match name.as_str() {
                     "rgb" => {
@@ -344,6 +346,13 @@ mod tests {
     fn aqua() {
         let mut parser = Parser::new("aqua".chars());
         assert_eq!(Ok(Color::Aqua), parser.parse());
+        assert_eq!(None, parser.tokens.next());
+    }
+
+    #[test]
+    fn transparent() {
+        let mut parser = Parser::new("transparent".chars());
+        assert_eq!(Ok(Color::Transparent), parser.parse());
         assert_eq!(None, parser.tokens.next());
     }
 
