@@ -1,7 +1,6 @@
 pub mod attribute_selector;
 pub mod combinator;
 pub mod pseudo_class;
-pub mod relative_selector;
 
 use attribute_selector::AttributeSelector;
 use combinator::Combinator;
@@ -110,7 +109,32 @@ impl Parsable for Selector {
             }
         }
 
-        let combinator = None;
+        let has_whitespace =
+            matches!(parser.tokens.peek(), Some(token_at) if token_at.token == Token::Whitespace());
+
+        parser.optional_whitespace();
+
+        let combinator = match parser.tokens.peek() {
+            Some(token_at) => match &token_at.token {
+                Token::Delimiter('>') | Token::Delimiter('+') | Token::Delimiter('~') => {
+                    Some(Box::new(parser.parse()?))
+                }
+
+                Token::Delimiter('*')
+                | Token::Identifier(_)
+                | Token::Hash(_, _)
+                | Token::Delimiter('.')
+                | Token::OpenSquareBracket()
+                | Token::Colon()
+                    if has_whitespace =>
+                {
+                    Some(Box::new(parser.parse()?))
+                }
+
+                _ => None,
+            },
+            None => None,
+        };
 
         Ok(Selector {
             element,
@@ -143,7 +167,7 @@ mod tests {
         let mut parser = Parser::new("div".chars());
         assert_eq!(
             Ok(Selector {
-                element: Some("div".to_string()),
+                element: Some("div".to_owned()),
                 restrictions: vec![],
                 combinator: None,
             }),
@@ -158,7 +182,7 @@ mod tests {
         assert_eq!(
             Ok(Selector {
                 element: None,
-                restrictions: vec![SelectorRestriction::Id("id".to_string())],
+                restrictions: vec![SelectorRestriction::Id("id".to_owned())],
                 combinator: None,
             }),
             parser.parse()
@@ -172,7 +196,7 @@ mod tests {
         assert_eq!(
             Ok(Selector {
                 element: None,
-                restrictions: vec![SelectorRestriction::Class("class".to_string())],
+                restrictions: vec![SelectorRestriction::Class("class".to_owned())],
                 combinator: None,
             }),
             parser.parse()
@@ -187,7 +211,7 @@ mod tests {
             Ok(Selector {
                 element: None,
                 restrictions: vec![SelectorRestriction::Attribute(AttributeSelector::Exists(
-                    "key".to_string()
+                    "key".to_owned()
                 ))],
                 combinator: None,
             }),
@@ -215,8 +239,8 @@ mod tests {
         let mut parser = Parser::new("div.class".chars());
         assert_eq!(
             Ok(Selector {
-                element: Some("div".to_string()),
-                restrictions: vec![SelectorRestriction::Class("class".to_string())],
+                element: Some("div".to_owned()),
+                restrictions: vec![SelectorRestriction::Class("class".to_owned())],
                 combinator: None,
             }),
             parser.parse()
@@ -230,7 +254,7 @@ mod tests {
         assert_eq!(
             Ok(Selector {
                 element: None,
-                restrictions: vec![SelectorRestriction::Class("class".to_string())],
+                restrictions: vec![SelectorRestriction::Class("class".to_owned())],
                 combinator: None,
             }),
             parser.parse()
@@ -243,8 +267,8 @@ mod tests {
         let mut parser = Parser::new("div#id".chars());
         assert_eq!(
             Ok(Selector {
-                element: Some("div".to_string()),
-                restrictions: vec![SelectorRestriction::Id("id".to_string())],
+                element: Some("div".to_owned()),
+                restrictions: vec![SelectorRestriction::Id("id".to_owned())],
                 combinator: None,
             }),
             parser.parse()
@@ -259,9 +283,9 @@ mod tests {
             Ok(Selector {
                 element: None,
                 restrictions: vec![
-                    SelectorRestriction::Class("class1".to_string()),
-                    SelectorRestriction::Class("class2".to_string()),
-                    SelectorRestriction::Class("class3".to_string())
+                    SelectorRestriction::Class("class1".to_owned()),
+                    SelectorRestriction::Class("class2".to_owned()),
+                    SelectorRestriction::Class("class3".to_owned())
                 ],
                 combinator: None,
             }),
@@ -304,5 +328,101 @@ mod tests {
     fn class_before_universal() {
         let mut parser = Parser::new(".class*".chars());
         assert!(parser.parse::<Selector>().is_err());
+    }
+
+    #[test]
+    fn not() {
+        let mut parser = Parser::new(":not(div)".chars());
+        assert_eq!(
+            Ok(Selector {
+                element: None,
+                restrictions: vec![SelectorRestriction::PseudoClass(PseudoClass::Not(
+                    Selector {
+                        element: Some("div".to_owned()),
+                        restrictions: vec![],
+                        combinator: None,
+                    }
+                ))],
+                combinator: None,
+            }),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.peek());
+    }
+
+    #[test]
+    fn has() {
+        let mut parser = Parser::new(":has(div)".chars());
+        assert_eq!(
+            Ok(Selector {
+                element: None,
+                restrictions: vec![SelectorRestriction::PseudoClass(PseudoClass::Has(
+                    Combinator::Descendant(Selector {
+                        element: Some("div".to_owned()),
+                        restrictions: vec![],
+                        combinator: None,
+                    })
+                ))],
+                combinator: None,
+            }),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.peek());
+    }
+
+    #[test]
+    fn has_sibling() {
+        let mut parser = Parser::new(":has(~ div)".chars());
+        assert_eq!(
+            Ok(Selector {
+                element: None,
+                restrictions: vec![SelectorRestriction::PseudoClass(PseudoClass::Has(
+                    Combinator::GeneralSibling(Selector {
+                        element: Some("div".to_owned()),
+                        restrictions: vec![],
+                        combinator: None,
+                    })
+                ))],
+                combinator: None,
+            }),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.peek());
+    }
+
+    #[test]
+    fn descendant() {
+        let mut parser = Parser::new("div span".chars());
+        assert_eq!(
+            Ok(Selector {
+                element: Some("div".to_owned()),
+                restrictions: vec![],
+                combinator: Some(Box::new(Combinator::Descendant(Selector {
+                    element: Some("span".to_owned()),
+                    restrictions: vec![],
+                    combinator: None,
+                }))),
+            }),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.peek());
+    }
+
+    #[test]
+    fn sibling() {
+        let mut parser = Parser::new("div ~ span".chars());
+        assert_eq!(
+            Ok(Selector {
+                element: Some("div".to_owned()),
+                restrictions: vec![],
+                combinator: Some(Box::new(Combinator::GeneralSibling(Selector {
+                    element: Some("span".to_owned()),
+                    restrictions: vec![],
+                    combinator: None,
+                }))),
+            }),
+            parser.parse()
+        );
+        assert_eq!(None, parser.tokens.peek());
     }
 }

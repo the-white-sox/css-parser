@@ -1,4 +1,4 @@
-use super::{relative_selector::RelativeSelector, *};
+use super::*;
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum PseudoClass {
@@ -12,8 +12,8 @@ pub enum PseudoClass {
     Target,
     Root,
     Checked,
-    Not(RelativeSelector),
-    Has(RelativeSelector),
+    Not(Selector),
+    Has(Combinator),
 }
 
 const EXPECTED: &str = "focus, focus-within, focus-visible, hover, visited, default, active, target, root, checked, not(), or has()";
@@ -39,14 +39,14 @@ impl Parsable for PseudoClass {
                 },
                 Token::Function(pseudo_class_name) => match pseudo_class_name.as_str() {
                     "not" => {
-                        let relative_selector = parser.parse()?;
+                        let selector = parser.parse()?;
                         parser.expect(Token::CloseParenthesis())?;
-                        Ok(PseudoClass::Not(relative_selector))
+                        Ok(PseudoClass::Not(selector))
                     }
                     "has" => {
-                        let relative_selector = parser.parse()?;
+                        let combinator = parser.parse()?;
                         parser.expect(Token::CloseParenthesis())?;
-                        Ok(PseudoClass::Has(relative_selector))
+                        Ok(PseudoClass::Has(combinator))
                     }
                     _ => Err(ParsingError::wrong_token(token_at, EXPECTED)),
                 },
