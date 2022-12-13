@@ -4,7 +4,6 @@ mod vec;
 use super::{
     color::{parse_num, Color},
     font_family::FontName,
-    length::Length,
     length_or_percentage::LengthOrPercentage,
     side::Sides,
     *,
@@ -19,9 +18,9 @@ pub enum Declaration {
     BorderColor(Sides<Color>),
     Opacity(f64),
     FontFamily(Vec<FontName>),
-    FontSize(Length),
-    Height(Length),
-    Width(Length),
+    FontSize(LengthOrPercentage),
+    Height(LengthOrPercentage),
+    Width(LengthOrPercentage),
     Margin(Sides<LengthOrPercentage>),
     Padding(Sides<LengthOrPercentage>),
     BorderWidth(Sides<LengthOrPercentage>),
@@ -100,7 +99,7 @@ impl Parsable for Declaration {
 
 #[cfg(test)]
 mod tests {
-    use super::{length::LengthUnit, percentage::Percentage, *};
+    use super::{length::Length, length::LengthUnit, percentage::Percentage, *};
 
     #[test]
     fn background_color() {
@@ -188,9 +187,8 @@ mod tests {
     fn font_size() {
         let mut parser = Parser::new("font-size: 3px".chars());
         assert_eq!(
-            Ok(Declaration::FontSize(Length::Length(
-                3.0,
-                LengthUnit::Pixels
+            Ok(Declaration::FontSize(LengthOrPercentage::Length(
+                Length::Length(3.0, LengthUnit::Pixels)
             ))),
             parser.parse()
         );
@@ -201,7 +199,9 @@ mod tests {
     fn height() {
         let mut parser = Parser::new("height: 3px".chars());
         assert_eq!(
-            Ok(Declaration::Height(Length::Length(3.0, LengthUnit::Pixels))),
+            Ok(Declaration::Height(LengthOrPercentage::Length(
+                Length::Length(3.0, LengthUnit::Pixels)
+            ))),
             parser.parse()
         );
         assert_eq!(None, parser.tokens.next());
@@ -211,7 +211,9 @@ mod tests {
     fn width() {
         let mut parser = Parser::new("width: 3px".chars());
         assert_eq!(
-            Ok(Declaration::Width(Length::Length(3.0, LengthUnit::Pixels))),
+            Ok(Declaration::Width(LengthOrPercentage::Length(
+                Length::Length(3.0, LengthUnit::Pixels)
+            ))),
             parser.parse()
         );
         assert_eq!(None, parser.tokens.next());
